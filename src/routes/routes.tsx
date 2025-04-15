@@ -2,13 +2,17 @@
 
 import MainLayout from "@/components/layouts/MainLayout";
 import { navMain } from "@/components/Routs/Routs";
-import Test from "@/page/Test/Test";
+import StudentCreate from "@/page/Student/Create/StudentCreate";
+import StudentUpdate from "@/page/Student/Update/StudentUpdate";
+import Student from "@/page/Student/View/Student";
 import { LogIn } from "lucide-react";
 import { createBrowserRouter } from "react-router-dom";
 
 const componentMapping: Record<string, React.ElementType> = {
   // student routes
-  "/test": Test,
+  "/view-student": Student,
+  "/create-student": StudentCreate,
+  "/update-student": StudentUpdate,
 };
 
 const routs = createBrowserRouter([
