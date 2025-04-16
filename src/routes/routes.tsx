@@ -2,9 +2,9 @@
 
 import MainLayout from "@/components/layouts/MainLayout";
 import { navMain } from "@/components/Routs/Routs";
+import Login from "@/page/Login/Login";
 import Test from "@/page/Test/Test";
 import PrivateRout from "@/PrivateRout/PrivateRout";
-import { LogIn } from "lucide-react";
 import { createBrowserRouter } from "react-router-dom";
 
 
@@ -34,7 +34,7 @@ const routs = createBrowserRouter([
   },
   {
     path: "/login",
-    element: <LogIn />,
+    element: <Login />,
   },
 ]);
 
