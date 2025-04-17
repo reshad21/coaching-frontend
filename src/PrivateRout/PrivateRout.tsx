@@ -1,16 +1,43 @@
-import { useCurrentToken } from "@/redux/features/authSlice/authSlice";
-import { useAppSelector } from "@/redux/hooks";
-import { ReactNode } from "react";
-import { Navigate } from "react-router-dom";
+
+import { clearUserToken, useCurrentToken } from "@/redux/features/authSlice/authSlice";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { ReactNode, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
+import { AppDispatch } from "@/redux/store";
 
 const PrivateRout = ({ children }: { children: ReactNode }) => {
   const token = useAppSelector(useCurrentToken);
+  const dispatch = useAppDispatch<AppDispatch>();
+  const navigate = useNavigate();
+  const [isExpired, setIsExpired] = useState(false);
 
-  if (!token) {
-    return <Navigate to="/login" replace />;
+  useEffect(() => {
+    if (!token) {
+      navigate("/login", { replace: true });
+      return;
+    }
+
+    try {
+      const decoded: { exp: number } = jwtDecode(token);
+      const currentTimestamp = Math.floor(Date.now() / 1000);
+      if (decoded.exp <= currentTimestamp) {
+        setIsExpired(true);
+        dispatch(clearUserToken());
+        navigate("/login", { replace: true });
+      }
+    } catch (error) {
+      console.error("Invalid token:", error);
+      dispatch(clearUserToken());
+      navigate("/login", { replace: true });
+    }
+  }, [token, dispatch, navigate]);
+
+  if (!token || isExpired) {
+    return null; 
   }
 
-  return <>{children}</>; 
+  return <>{children}</>;
 };
 
 export default PrivateRout;
