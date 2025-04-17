@@ -6,8 +6,8 @@ import Login from "@/page/Login/Login";
 import ShiftCreate from "@/page/Shift/Create/ShiftCreate";
 import ShiftUpdate from "@/page/Shift/Update/ShiftUpdate";
 import ShiftView from "@/page/Shift/View/ShiftView";
-
 import Test from "@/page/Test/Test";
+import PrivateRout from "@/PrivateRout/PrivateRout";
 import { createBrowserRouter } from "react-router-dom";
 
 
@@ -26,9 +26,9 @@ const routs = createBrowserRouter([
   {
     path: "/",
     element: (
-      // <PrivateRout>
+       <PrivateRout>
         <MainLayout />
-      // </PrivateRout>
+       </PrivateRout>
     ),
     children: navMain.flatMap((section) =>
       section.items?.map((item: any) => {

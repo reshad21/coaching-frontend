@@ -1,4 +1,4 @@
-import { ArrowBigUp, ArrowRight } from 'lucide-react';
+import { ArrowBigUp } from 'lucide-react';
 
 const featureAccess = {admin:[1] };
 
