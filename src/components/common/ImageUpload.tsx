@@ -6,13 +6,15 @@ import profileImg from "@/assets/default.jpg"
 interface ImageUploadProps {
   name: string
   fileTypes?: string
+  defaultUrl?:string
 }
 
-export const ImageUpload = ({ name, fileTypes = "image/jpeg,image/png,image/gif" }: ImageUploadProps) => {
+export const ImageUpload = ({ name, fileTypes = "image/jpeg,image/png,image/gif",defaultUrl}: ImageUploadProps) => {
   const { setValue } = useFormContext() 
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [fileName, setFileName] = useState("No file chosen")
 
+  const defaultImage = `http://localhost:3000${defaultUrl}`;
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
@@ -30,8 +32,8 @@ export const ImageUpload = ({ name, fileTypes = "image/jpeg,image/png,image/gif"
     <div className="w-full">
       <label htmlFor="image-upload" className="block mb-2">Upload File</label>
       <div className="flex items-center gap-4 w-full">
-        <div className="relative w-[70px] h-[70px] rounded-full overflow-hidden bg-gray-100">
-          <img src={selectedImage || profileImg} alt="Preview" />
+        <div className="relative h-[4rem] w-[4rem] rounded-full overflow-hidden bg-gray-100">
+          <img src={selectedImage || defaultImage || profileImg} alt="Preview" className="h-[4rem] w-[4rem]"/>
         </div>
         <div className="flex-1 border rounded-lg w-full">
           <Button  type="button" variant="secondary" onClick={() => document.getElementById("image-upload")?.click()} className="h-full bg-[#1F2A37] text-white rounded-l-lg rounded-r-none">Choose file</Button>

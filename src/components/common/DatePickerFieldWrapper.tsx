@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState } from "react"
 import { useController, Control } from "react-hook-form"
 import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
@@ -10,14 +11,31 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/comp
 interface DatePickerFieldWrapperProps {
   name: string
   label: string
-  control: Control<any> 
+  control: Control<any>
+  required?: boolean
+  rules?: Record<string, any>
 }
 
-export const DatePickerFieldWrapper = ({ name, label, control }: DatePickerFieldWrapperProps) => {
+export const DatePickerFieldWrapper = ({
+  name,
+  label,
+  control,
+  required = false,
+  rules = {},
+}: DatePickerFieldWrapperProps) => {
+  const [open, setOpen] = useState(false)
+
   const {
     field: { value, onChange },
     fieldState: { error },
-  } = useController({ name, control })
+  } = useController({
+    name,
+    control,
+    rules: {
+      required: required ? `${label} is required` : false,
+      ...rules,
+    },
+  })
 
   return (
     <FormField
@@ -26,7 +44,7 @@ export const DatePickerFieldWrapper = ({ name, label, control }: DatePickerField
       render={() => (
         <FormItem className="flex flex-col">
           <FormLabel className="pb-[0.35rem]">{label}</FormLabel>
-          <Popover>
+          <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
               <FormControl>
                 <Button variant="outline" className="w-full justify-start">
@@ -35,11 +53,20 @@ export const DatePickerFieldWrapper = ({ name, label, control }: DatePickerField
                 </Button>
               </FormControl>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0">
-              <Calendar mode="single" selected={value} onSelect={onChange} />
+            <PopoverContent className="w-auto p-0 bg-gray-50">
+              <Calendar
+                mode="single"
+                selected={value}
+                onSelect={(date) => {
+                  onChange(date)
+                  setOpen(false)
+                }}
+              />
             </PopoverContent>
           </Popover>
-          <FormMessage>{error?.message}</FormMessage>
+          <FormMessage className="text-red-500 text-sm mt-1">
+            {error?.message}
+          </FormMessage>
         </FormItem>
       )}
     />
