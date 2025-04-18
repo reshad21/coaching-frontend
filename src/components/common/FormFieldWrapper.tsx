@@ -59,7 +59,7 @@ export const FormFieldWrapper = ({
               />
             )}
           </FormControl>
-          <FormMessage />
+          <FormMessage className="text-red-500 text-xs"/>
         </FormItem>
       )}
     />
