@@ -12,7 +12,7 @@ const studentApi = baseApi.injectEndpoints({
                     });
                 }
                 return {
-                    url: '/students',
+                    url: '/student',
                     method: 'GET',
                     params: params
                 }
@@ -22,7 +22,7 @@ const studentApi = baseApi.injectEndpoints({
 
         getStudentById: builder.query({
             query: (id) => ({
-                url: `/students/${id}`,
+                url: `/student/${id}`,
                 method: 'GET',
             }),
             providesTags: (id) => [{ type: 'student', id }]
@@ -32,7 +32,7 @@ const studentApi = baseApi.injectEndpoints({
             query: (id) => {
                 console.log("inside base api=>", id);
                 return {
-                    url: `/students/${id}`,
+                    url: `/student/${id}`,
                     method: "DELETE",
                 };
             },
@@ -43,7 +43,7 @@ const studentApi = baseApi.injectEndpoints({
             query: (data) => {
                 console.log("inside base api=>", data);
                 return {
-                    url: "/students",
+                    url: "/student",
                     method: "POST",
                     body: data,
                 };
@@ -55,7 +55,7 @@ const studentApi = baseApi.injectEndpoints({
             query: ({ id, data }) => {
                 console.log("Updating teacher with id:", id, "and data:", data);
                 return {
-                    url: `/students/${id}`,
+                    url: `/student/${id}`,
                     method: "PATCH",
                     body: data,
                 };
@@ -65,7 +65,7 @@ const studentApi = baseApi.injectEndpoints({
         updateStudentCertificate: builder.mutation({
             query: ({ id, data }) => {
                 return {
-                    url: `/students/create-certificate/${id}`,
+                    url: `/student/create-certificate/${id}`,
                     method: "POST",
                     body: data,
                 };
