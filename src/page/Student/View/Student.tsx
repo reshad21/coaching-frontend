@@ -6,7 +6,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useGetAllStudentQuery } from "@/redux/api/student/student";
+import { useGetAllStudentQuery } from "@/redux/api/studentApi/studentApi";
 
 const Student = () => {
   const { data: students, isLoading } = useGetAllStudentQuery(undefined);

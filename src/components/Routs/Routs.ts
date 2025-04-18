@@ -36,7 +36,7 @@ export const navMain = [
       featureAccess["admin"]?.includes(1) && {
         title: "Create Shift",
         url: "/shift-create",
-        isShow: true,
+        isShow: false,
       },
       featureAccess["admin"]?.includes(1) && {
         title: "Update Shift",
