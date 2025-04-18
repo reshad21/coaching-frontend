@@ -7,9 +7,11 @@ import ShiftCreate from "@/page/Shift/Create/ShiftCreate";
 import ShiftUpdate from "@/page/Shift/Update/ShiftUpdate";
 import ShiftView from "@/page/Shift/View/ShiftView";
 import Test from "@/page/Test/Test";
+import StudentCreate from "@/page/Student/Create/StudentCreate";
+import StudentUpdate from "@/page/Student/Update/StudentUpdate";
+import Student from "@/page/Student/View/Student";
 import PrivateRout from "@/PrivateRout/PrivateRout";
 import { createBrowserRouter } from "react-router-dom";
-
 
 const componentMapping: Record<string, React.ElementType> = {
   // student routes
@@ -20,6 +22,9 @@ const componentMapping: Record<string, React.ElementType> = {
   "/shift-create":ShiftCreate,
   "/shift-update":ShiftUpdate,
   
+  "/view-student": Student,
+  "/create-student": StudentCreate,
+  "/update-student": StudentUpdate,
 };
 
 const routs = createBrowserRouter([
