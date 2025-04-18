@@ -64,9 +64,11 @@ const Student = () => {
           <TableHeader>
             <TableRow>
               <TableHead className="w-[100px]">Full Name</TableHead>
+              <TableHead className="w-[100px]">Std Id</TableHead>
               <TableHead>Class</TableHead>
               <TableHead>Phone</TableHead>
-              <TableHead className="text-right">Amount</TableHead>
+              <TableHead>Batch</TableHead>
+              <TableHead className="text-right">Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
