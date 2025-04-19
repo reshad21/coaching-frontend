@@ -13,7 +13,8 @@ import toast from "react-hot-toast";
 const StudentCreate = () => {
   //fetch batch data from redux store
   const { data: batchData } = useGetAllBatchQuery(undefined);
-  const [addStudent]=useAddStudentMutation();
+  console.log("see all batch data", batchData);
+  const [addStudent] = useAddStudentMutation();
   // Initialize React Hook Form
   const form = useForm({
     defaultValues: {
@@ -49,11 +50,13 @@ const StudentCreate = () => {
       formData.append("fatherName", data.fatherName);
       formData.append("motherName", data.motherName);
       formData.append("religion", data.religion);
+      formData.append("schoolName", data.schoolName);
       formData.append("batch", data.batch);
-      formData.append("batchConfigurationId", data.batchConfigurationId);
       formData.append("address", data.address);
       formData.append("image", data.image);
-      formData.append("password", data.password);
+      formData.append("gender", data.gender);
+      formData.append("class", data.class);
+      formData.append("Payment", data.Payment);
 
       const res = await addStudent(formData);
       if ("data" in res && res.data?.success) {
@@ -154,21 +157,7 @@ const StudentCreate = () => {
             <SelectFieldWrapper
               name="batch"
               label="Batch"
-              options={batchData}
-              control={form.control}
-            />
-            <FormFieldWrapper
-              name="password"
-              label="Password"
-              placeholder="Enter your password"
-              isPassword={true}
-              control={form.control}
-            />
-            <FormFieldWrapper
-              name="confirmPassword"
-              label="Confirm Password"
-              placeholder="Enter your password again"
-              isPassword={true}
+              options={batchData?.data}
               control={form.control}
             />
           </div>
