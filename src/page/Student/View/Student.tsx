@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import SelectBatch from "@/components/Batch/SelectBatch";
+import SearchInputField from "@/components/CommonSearch/SearchInputField";
 import EduCPagination from "@/components/EduCPagination/EduCPagination";
+import SelectStudentClass from "@/components/studentClass/SelectStudentClass";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -10,16 +13,22 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useGetAllStudentQuery } from "@/redux/api/student/student";
-import { ChevronsRight, Eye, SquarePen, Trash } from "lucide-react";
+import { ChevronsRight, Eye, Mail, SquarePen, Trash } from "lucide-react";
 import { useState } from "react";
 
 const Student = () => {
-  // * Pagination state
+  // * Pagination, search and filter state
   const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [selectedBatch, setSelectedBatch] = useState("");
+  const [selectedStdClass, setSelectedStdClass] = useState("");
 
   const { data: students, isLoading } = useGetAllStudentQuery([
     { name: "limit", value: 5 },
     { name: "page", value: page },
+    { name: "search", value: search },
+    ...(selectedBatch ? [{ name: "batchName", value: selectedBatch }] : []),
+    ...(selectedBatch ? [{ name: "class", value: selectedBatch }] : []),
   ]);
 
   console.log("students=>", students);
@@ -32,6 +41,25 @@ const Student = () => {
           <ChevronsRight />
         </span>
         <h1 className="text-2xl font-bold text-slate-600">All Student</h1>
+      </div>
+      <div className="filter-section grid grid-cols-1 md:grid-cols-3 gap-3 mb-5">
+      <SearchInputField
+          value={search}
+          onChange={setSearch}
+          onSearch={setSearch}
+        />
+        <SelectBatch value={selectedBatch} onChange={setSelectedBatch} />
+        <SelectStudentClass value={selectedStdClass} onChange={setSelectedStdClass}/>
+        <Button
+          onClick={() => {
+            setSearch("");
+            setSelectedBatch("");
+            setSelectedStdClass("");
+          }}
+          className="text-slate-500 w-1/4 bg-gray-50 hover:bg-gray-100"
+        >
+          Clear Filter
+        </Button>
       </div>
       {students?.data?.length > 0 ? (
         <div className="border rounded-lg">
@@ -116,6 +144,14 @@ const Student = () => {
                     >
                       <Trash />
                     </Button>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="h-8 w-8 text-yellow-600 hover:text-yellow-700 border-blue-100 hover:border-blue-200"
+                    >
+                      <Mail />
+                    </Button>
+
                   </TableCell>
                 </TableRow>
               ))}
@@ -127,7 +163,7 @@ const Student = () => {
       )}
 
       {/* pagination  */}
-      {students.meta?.total > students.meta?.limit && (
+      {students?.meta?.total > students?.meta?.limit && (
         <EduCPagination
           page={page}
           setPage={setPage}
