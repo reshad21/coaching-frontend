@@ -13,7 +13,6 @@ import toast from "react-hot-toast";
 const StudentCreate = () => {
   //fetch batch data from redux store
   const { data: batchData } = useGetAllBatchQuery(undefined);
-  console.log("see all batch data", batchData);
   const [addStudent] = useAddStudentMutation();
   // Initialize React Hook Form
   const form = useForm({
@@ -58,7 +57,10 @@ const StudentCreate = () => {
       formData.append("class", data.class);
       formData.append("Payment", data.Payment);
 
+      console.log("student data", Object.fromEntries(formData));
+
       const res = await addStudent(formData);
+      console.log("response", res);
       if ("data" in res && res.data?.success) {
         toast.success(res.data.message || "Student added successfully!");
         form.reset();
@@ -149,15 +151,40 @@ const StudentCreate = () => {
               ]}
               control={form.control}
             />
+            <SelectFieldWrapper
+              name="gender"
+              label="Gender"
+              options={[
+                { value: "male", name: "Male" },
+                { value: "female", name: "Female" },
+                { value: "others", name: "Others" },
+              ]}
+              control={form.control}
+            />
             <FormFieldWrapper
               name="address"
               label="Address"
               placeholder="Enter your Address"
             />
+            <FormFieldWrapper
+              name="schoolName"
+              label="School Name"
+              placeholder="Enter your School Name"
+            />
+            <FormFieldWrapper
+              name="class"
+              label="Enter Class"
+              placeholder="Enter your class"
+            />
             <SelectFieldWrapper
               name="batch"
               label="Batch"
-              options={batchData?.data}
+              options={
+                batchData?.data?.map((batch: any) => ({
+                  value: batch?.id,
+                  name: batch?.batchName,
+                })) || []
+              }
               control={form.control}
             />
           </div>
