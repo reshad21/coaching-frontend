@@ -5,7 +5,7 @@ import { SelectFieldWrapper } from "@/components/common/SelectFieldWrapper";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useGetAllBatchQuery } from "@/redux/api/batch/batchApi";
-import { useAddStudentMutation } from "@/redux/api/student/student";
+import { useAddStudentMutation } from "@/redux/api/studentApi/studentApi";
 import { ChevronsRight, Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";

@@ -12,7 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useGetAllStudentQuery } from "@/redux/api/student/student";
+import { useGetAllStudentQuery } from "@/redux/api/studentApi/studentApi";
 import { ChevronsRight, Eye, Mail, SquarePen, Trash } from "lucide-react";
 import { useState } from "react";
 
