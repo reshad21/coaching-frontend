@@ -9,12 +9,14 @@ import { useAddStudentMutation } from "@/redux/api/studentApi/studentApi";
 import { ChevronsRight, Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const StudentCreate = () => {
-  //fetch batch data from redux store
+  const navigate = useNavigate();
+  //*fetch batch data from and student mutation redux store
   const { data: batchData } = useGetAllBatchQuery(undefined);
   const [addStudent] = useAddStudentMutation();
-  // Initialize React Hook Form
+
   const form = useForm({
     defaultValues: {
       firstName: "",
@@ -30,10 +32,11 @@ const StudentCreate = () => {
       image: "",
       gender: "",
       class: "",
-      Payment: "",
+      batchId: "",
     },
   });
 
+  //handle form submission
   const onSubmit = async (data: any) => {
     try {
       const isoDateOfBirth = new Date(data.dateOfBirth).toISOString();
@@ -50,21 +53,20 @@ const StudentCreate = () => {
       formData.append("motherName", data.motherName);
       formData.append("religion", data.religion);
       formData.append("schoolName", data.schoolName);
-      formData.append("batch", data.batch);
       formData.append("address", data.address);
       formData.append("image", data.image);
       formData.append("gender", data.gender);
       formData.append("class", data.class);
-      formData.append("Payment", data.Payment);
+      formData.append("batchId", data.batchId);
 
-      console.log("student data", Object.fromEntries(formData));
+      // console.log("student data", Object.fromEntries(formData));
 
       const res = await addStudent(formData);
-      console.log("response", res);
+      // console.log("response", res);
       if ("data" in res && res.data?.success) {
         toast.success(res.data.message || "Student added successfully!");
         form.reset();
-        // navigate("/students");
+        navigate("/view-student");
       } else {
         toast.error("An error occurred while adding the student.");
       }
@@ -177,7 +179,7 @@ const StudentCreate = () => {
               placeholder="Enter your class"
             />
             <SelectFieldWrapper
-              name="batch"
+              name="batchId"
               label="Batch"
               options={
                 batchData?.data?.map((batch: any) => ({
