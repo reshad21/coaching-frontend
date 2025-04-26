@@ -10,7 +10,7 @@ export const navMain = [
     isActive: false,
     items: [
       featureAccess["admin"]?.includes(1) && {
-        title: "Student",
+        title: "All Students",
         url: "/view-student",
         isShow: true,
       },
