@@ -87,120 +87,122 @@ const StudentCreate = () => {
         </span>
         <h1 className="text-2xl font-bold text-slate-600">Create Student</h1>
       </div>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <ImageUpload
-            name="image"
-            fileTypes="image/jpeg,image/png,image/gif"
-          />
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <FormFieldWrapper
-              name="firstName"
-              label="First Name"
-              placeholder="Enter your First Name"
+      <div className="border-1 border-slate-500 rounded-lg shadow-md p-5">
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <ImageUpload
+              name="image"
+              fileTypes="image/jpeg,image/png,image/gif"
             />
-            <FormFieldWrapper
-              name="lastName"
-              label="Last Name"
-              placeholder="Enter your Last Name"
-            />
-            <FormFieldWrapper
-              name="dateOfBirth"
-              label="Date of Birth"
-              type="date"
-              placeholder="Enter your Date of Birth"
-            />
-            <FormFieldWrapper
-              name="idNumber"
-              label="ID Number"
-              placeholder="Enter your ID Number"
-            />
-            <FormFieldWrapper
-              name="regNumber"
-              label="Reg Number"
-              placeholder="Enter your Reg Number"
-            />
-            <FormFieldWrapper
-              name="email"
-              label="Email"
-              type="email"
-              placeholder="Enter your Email"
-            />
-            <FormFieldWrapper
-              name="phone"
-              label="Phone"
-              placeholder="Enter your Phone Number"
-            />
-            <FormFieldWrapper
-              name="fatherName"
-              label="Father's Name"
-              placeholder="Enter your Father's Name"
-            />
-            <FormFieldWrapper
-              name="motherName"
-              label="Mother's Name"
-              placeholder="Enter your Mother's Name"
-            />
-            <SelectFieldWrapper
-              name="religion"
-              label="Religion"
-              options={[
-                { value: "islam", name: "Islam" },
-                { value: "hindu", name: "Hindu" },
-                { value: "christian", name: "Christian" },
-                { value: "buddhist", name: "Buddhist" },
-                { value: "others", name: "Others" },
-              ]}
-              control={form.control}
-            />
-            <SelectFieldWrapper
-              name="gender"
-              label="Gender"
-              options={[
-                { value: "male", name: "Male" },
-                { value: "female", name: "Female" },
-                { value: "others", name: "Others" },
-              ]}
-              control={form.control}
-            />
-            <FormFieldWrapper
-              name="address"
-              label="Address"
-              placeholder="Enter your Address"
-            />
-            <FormFieldWrapper
-              name="schoolName"
-              label="School Name"
-              placeholder="Enter your School Name"
-            />
-            <FormFieldWrapper
-              name="class"
-              label="Enter Class"
-              placeholder="Enter your class"
-            />
-            <SelectFieldWrapper
-              name="batchId"
-              label="Batch"
-              options={
-                batchData?.data?.map((batch: any) => ({
-                  value: batch?.id,
-                  name: batch?.batchName,
-                })) || []
-              }
-              control={form.control}
-            />
-          </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <FormFieldWrapper
+                name="firstName"
+                label="First Name"
+                placeholder="Enter your First Name"
+              />
+              <FormFieldWrapper
+                name="lastName"
+                label="Last Name"
+                placeholder="Enter your Last Name"
+              />
+              <FormFieldWrapper
+                name="dateOfBirth"
+                label="Date of Birth"
+                type="date"
+                placeholder="Enter your Date of Birth"
+              />
+              <FormFieldWrapper
+                name="idNumber"
+                label="ID Number"
+                placeholder="Enter your ID Number"
+              />
+              <FormFieldWrapper
+                name="regNumber"
+                label="Reg Number"
+                placeholder="Enter your Reg Number"
+              />
+              <FormFieldWrapper
+                name="email"
+                label="Email"
+                type="email"
+                placeholder="Enter your Email"
+              />
+              <FormFieldWrapper
+                name="phone"
+                label="Phone"
+                placeholder="Enter your Phone Number"
+              />
+              <FormFieldWrapper
+                name="fatherName"
+                label="Father's Name"
+                placeholder="Enter your Father's Name"
+              />
+              <FormFieldWrapper
+                name="motherName"
+                label="Mother's Name"
+                placeholder="Enter your Mother's Name"
+              />
+              <SelectFieldWrapper
+                name="religion"
+                label="Religion"
+                options={[
+                  { value: "islam", name: "Islam" },
+                  { value: "hindu", name: "Hindu" },
+                  { value: "christian", name: "Christian" },
+                  { value: "buddhist", name: "Buddhist" },
+                  { value: "others", name: "Others" },
+                ]}
+                control={form.control}
+              />
+              <SelectFieldWrapper
+                name="gender"
+                label="Gender"
+                options={[
+                  { value: "male", name: "Male" },
+                  { value: "female", name: "Female" },
+                  { value: "others", name: "Others" },
+                ]}
+                control={form.control}
+              />
+              <FormFieldWrapper
+                name="address"
+                label="Address"
+                placeholder="Enter your Address"
+              />
+              <FormFieldWrapper
+                name="schoolName"
+                label="School Name"
+                placeholder="Enter your School Name"
+              />
+              <FormFieldWrapper
+                name="class"
+                label="Enter Class"
+                placeholder="Enter your class"
+              />
+              <SelectFieldWrapper
+                name="batchId"
+                label="Batch"
+                options={
+                  batchData?.data?.map((batch: any) => ({
+                    value: batch?.id,
+                    name: batch?.batchName,
+                  })) || []
+                }
+                control={form.control}
+              />
+            </div>
 
-          <Button
-            type="submit"
-            // disabled={!passwordsMatch}
-            className="w-full bg-green-700 hover:bg-green-800 text-white flex items-center justify-center gap-2 py-2 px-4 rounded-md transition"
-          >
-            <Plus className="w-5 h-5" />
-            Add Student
-          </Button>
-        </form>
-      </Form>
+            <Button
+              type="submit"
+              // disabled={!passwordsMatch}
+              className="w-full bg-green-700 hover:bg-green-800 text-white flex items-center justify-center gap-2 py-2 px-4 rounded-md transition"
+            >
+              <Plus className="w-5 h-5" />
+              Add Student
+            </Button>
+          </form>
+        </Form>
+      </div>
     </div>
   );
 };
