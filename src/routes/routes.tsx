@@ -7,6 +7,7 @@ import ShiftCreate from "@/page/Shift/Create/ShiftCreate";
 import ShiftUpdate from "@/page/Shift/Update/ShiftUpdate";
 import ShiftView from "@/page/Shift/View/ShiftView";
 import StudentCreate from "@/page/Student/Create/StudentCreate";
+import SingleStdView from "@/page/Student/SingleStdView/SingleStdView";
 import StudentUpdate from "@/page/Student/Update/StudentUpdate";
 import Student from "@/page/Student/View/Student";
 import Test from "@/page/Test/Test";
@@ -14,17 +15,23 @@ import PrivateRout from "@/PrivateRout/PrivateRout";
 import { createBrowserRouter } from "react-router-dom";
 
 const componentMapping: Record<string, React.ElementType> = {
-  // student routes
   "/test": Test,
   // login route
   "/login": Login,
+
+  // shift routes
   "/shift": ShiftView,
   "/shift-create": ShiftCreate,
   "/shift-update": ShiftUpdate,
-
+  
+  // student routes
   "/view-student": Student,
   "/create-student": StudentCreate,
-  "/update-student": StudentUpdate,
+  "/update-student/:id": StudentUpdate,
+  "/view-student/:id": SingleStdView,
+
+  // class routes
+  
 };
 
 const routs = createBrowserRouter([

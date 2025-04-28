@@ -11,9 +11,15 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useGetAllStudentQuery } from "@/redux/api/studentApi/studentApi";
+import {
+  useDeleteStudentMutation,
+  useGetAllStudentQuery,
+} from "@/redux/api/studentApi/studentApi";
 import { ChevronsRight, Eye, Mail, SquarePen, Trash } from "lucide-react";
 import { useState } from "react";
+import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const Student = () => {
   // * Pagination, search and filter state
@@ -30,6 +36,34 @@ const Student = () => {
 
   console.log("students=>", students);
   console.log("isLoading=>", isLoading);
+
+  const [deleteStudent] = useDeleteStudentMutation();
+
+  const handleDelete = (id?: string) => {
+    if (!id) return;
+    try {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#09733D",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then(async (result: any) => {
+        if (result.isConfirmed) {
+          const res = await deleteStudent(id);
+          if (res?.data?.statusCode) {
+            toast.success("Student deleted successfully");
+          }
+        }
+      });
+    } catch (error) {
+      console.error("Error deleting Teacher:", error);
+      toast.error("Failed to delete Teacher.");
+    }
+  };
+
   return (
     <div>
       <div className="flex items-center mb-4">
@@ -125,24 +159,29 @@ const Student = () => {
                     </span>
                   </TableCell>
                   <TableCell className="flex items-center gap-2">
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="h-8 w-8 text-green-600 hover:text-green-700 border-blue-100 hover:border-blue-200"
-                    >
-                      <Eye />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="h-8 w-8 text-blue-600 hover:text-blue-700 border-blue-100 hover:border-blue-200"
-                    >
-                      <SquarePen />
-                    </Button>
+                    <Link to={`/view-student/${student.id}`}>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8 text-green-600 hover:text-green-700 border-blue-100 hover:border-blue-200"
+                      >
+                        <Eye />
+                      </Button>
+                    </Link>
+                    <Link to={`/update-student/${student.id}`}>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8 text-blue-600 hover:text-blue-700 border-blue-100 hover:border-blue-200"
+                      >
+                        <SquarePen />
+                      </Button>
+                    </Link>
                     <Button
                       variant="outline"
                       size="icon"
                       className="h-8 w-8 text-red-600 hover:text-red-700 border-blue-100 hover:border-blue-200"
+                      onClick={() => handleDelete(student.id)}
                     >
                       <Trash />
                     </Button>
