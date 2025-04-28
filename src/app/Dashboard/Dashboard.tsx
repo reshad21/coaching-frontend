@@ -22,7 +22,7 @@ export default function Dashboard() {
       <AppSidebar />
 
       {/* Full-Width Header */}
-      <header className="fixed top-0 left-0 w-full bg-[#09733D]   shadow-md h-16 flex items-center px-6 z-50">
+      <header className="fixed top-0 left-0 w-full bg-primary   shadow-md h-16 flex items-center px-6 z-50">
         <SidebarTrigger className="-ml-1" />
         <Separator orientation="vertical" className="mx-2 h-6" />
         <Breadcrumb className="hidden">
