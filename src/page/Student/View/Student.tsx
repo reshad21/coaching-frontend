@@ -34,7 +34,6 @@ const Student = () => {
     ...(selectedBatch ? [{ name: "batchName", value: selectedBatch }] : []),
   ]);
 
-  console.log("students=>", students);
   console.log("isLoading=>", isLoading);
 
   const [deleteStudent] = useDeleteStudentMutation();
