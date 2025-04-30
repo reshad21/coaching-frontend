@@ -3,6 +3,9 @@
 import MainLayout from "@/components/layouts/MainLayout";
 import { navMain } from "@/components/Routs/Routs";
 import Login from "@/page/Login/Login";
+import AdmissionPayment from "@/page/Payment/AdmissionPayment/AdmissionPayment";
+import MonthlyPayment from "@/page/Payment/MonthlyPayment/MonthlyPayment";
+import PaymentStatus from "@/page/Payment/PaymentStatus/PaymentStatus";
 import ShiftCreate from "@/page/Shift/Create/ShiftCreate";
 import ShiftUpdate from "@/page/Shift/Update/ShiftUpdate";
 import ShiftView from "@/page/Shift/View/ShiftView";
@@ -30,7 +33,10 @@ const componentMapping: Record<string, React.ElementType> = {
   "/update-student/:id": StudentUpdate,
   "/view-student/:id": SingleStdView,
 
-  // class routes
+  // payment routes
+  "/admission-payment": AdmissionPayment,
+  "/monthly-payment": MonthlyPayment,
+  "/payment-status": PaymentStatus,
   
 };
 
