@@ -14,6 +14,7 @@ import {
   import { useDeleteClassMutation, useGetAllClassQuery } from "@/redux/api/class/classApi";
 import Swal from "sweetalert2";
 import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
   
   const ClassView = () => {
     const { data: classResponse, isLoading } = useGetAllClassQuery(undefined);
@@ -76,6 +77,7 @@ import toast from "react-hot-toast";
                       {classItem.className}
                     </TableCell>
                     <TableCell className="flex justify-end gap-2">
+                     <Link to={`/update-class/${classItem.id}`}>
                       <Button
                         variant="outline"
                         size="icon"
@@ -83,6 +85,9 @@ import toast from "react-hot-toast";
                       >
                         <Edit className="h-4 w-4" />
                       </Button>
+                      </Link>
+
+
                       <Button
                         variant="outline"
                         size="icon"
