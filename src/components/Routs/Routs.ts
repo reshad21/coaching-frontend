@@ -1,4 +1,4 @@
-import { ArrowBigUp, CircleDollarSign, CircleSlash2Icon, CircleSlashIcon, CircleUser, PcCase } from "lucide-react";
+import { ArrowBigUp, CircleDollarSign, CircleSlash2Icon, CircleSlashIcon, CircleUser, DatabaseZapIcon, PcCase } from "lucide-react";
 
 const featureAccess = { admin: [1] };
 
@@ -102,7 +102,30 @@ export const navMain = [
       },
       featureAccess["admin"]?.includes(1) && {
         title: "Update Class",
-        url: "/shift",
+        url: "/update-class/:id",
+        isShow: false,
+      },
+    ].filter(Boolean), // Remove false values
+  },
+  {
+    title: "Batch",
+    url: "#",
+    icon: DatabaseZapIcon,
+    isActive: false,
+    items: [
+      featureAccess["admin"]?.includes(1) && {
+        title: "Batch",
+        url: "/batch",
+        isShow: true,
+      },
+      featureAccess["admin"]?.includes(1) && {
+        title: "Create Batch",
+        url: "/class-batch",
+        isShow: false,
+      },
+      featureAccess["admin"]?.includes(1) && {
+        title: "Update Batch",
+        url: "/update-batch/:id",
         isShow: false,
       },
     ].filter(Boolean), // Remove false values
