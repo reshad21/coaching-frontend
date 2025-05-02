@@ -2,6 +2,10 @@
 
 import MainLayout from "@/components/layouts/MainLayout";
 import { navMain } from "@/components/Routs/Routs";
+import BatchCreate from "@/page/Batch/Create/BatchCreate";
+import BatchView from "@/page/Batch/View/BatchView";
+import ClassCreate from "@/page/Class/Create/ClassCreate";
+import ClassView from "@/page/Class/View/ClassView";
 import Login from "@/page/Login/Login";
 import AdmissionPayment from "@/page/Payment/AdmissionPayment/AdmissionPayment";
 import MonthlyPayment from "@/page/Payment/MonthlyPayment/MonthlyPayment";
@@ -37,6 +41,16 @@ const componentMapping: Record<string, React.ElementType> = {
   "/admission-payment": AdmissionPayment,
   "/monthly-payment": MonthlyPayment,
   "/payment-status": PaymentStatus,
+
+  //class routes
+  "/class":ClassView,
+  "class-create":ClassCreate,
+
+
+  //Batch routes
+  "/batch":BatchView,
+  "batch-create":BatchCreate,
+
   
 };
 

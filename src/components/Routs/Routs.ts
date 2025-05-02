@@ -1,4 +1,4 @@
-import { ArrowBigUp, CircleDollarSign, CircleUser } from "lucide-react";
+import { ArrowBigUp, CircleDollarSign, CircleSlash2Icon, CircleSlashIcon, CircleUser, DatabaseZapIcon, PcCase } from "lucide-react";
 
 const featureAccess = { admin: [1] };
 
@@ -63,7 +63,7 @@ export const navMain = [
   {
     title: "Pyment",
     url: "#",
-    icon: CircleDollarSign,
+    icon: CircleSlashIcon,
     isActive: false,
     items: [
       featureAccess["admin"]?.includes(1) && {
@@ -82,6 +82,52 @@ export const navMain = [
         isShow: true,
       },
       
+    ].filter(Boolean), // Remove false values
+  },
+  {
+    title: "Class",
+    url: "#",
+    icon: PcCase,
+    isActive: false,
+    items: [
+      featureAccess["admin"]?.includes(1) && {
+        title: "Class",
+        url: "/class",
+        isShow: true,
+      },
+      featureAccess["admin"]?.includes(1) && {
+        title: "Create Class",
+        url: "/class-create",
+        isShow: false,
+      },
+      featureAccess["admin"]?.includes(1) && {
+        title: "Update Class",
+        url: "/update-class/:id",
+        isShow: false,
+      },
+    ].filter(Boolean), // Remove false values
+  },
+  {
+    title: "Batch",
+    url: "#",
+    icon: DatabaseZapIcon,
+    isActive: false,
+    items: [
+      featureAccess["admin"]?.includes(1) && {
+        title: "Batch",
+        url: "/batch",
+        isShow: true,
+      },
+      featureAccess["admin"]?.includes(1) && {
+        title: "Create Batch",
+        url: "/class-batch",
+        isShow: false,
+      },
+      featureAccess["admin"]?.includes(1) && {
+        title: "Update Batch",
+        url: "/update-batch/:id",
+        isShow: false,
+      },
     ].filter(Boolean), // Remove false values
   },
 ];
