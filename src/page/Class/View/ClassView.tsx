@@ -11,12 +11,39 @@ import {
   import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
   import { Button } from "@/components/ui/button";
   import ClassCreate from "../Create/ClassCreate";
-  import { useGetAllClassQuery } from "@/redux/api/class/classApi";
+  import { useDeleteClassMutation, useGetAllClassQuery } from "@/redux/api/class/classApi";
+import Swal from "sweetalert2";
+import toast from "react-hot-toast";
   
   const ClassView = () => {
     const { data: classResponse, isLoading } = useGetAllClassQuery(undefined);
     const classData = classResponse?.data;
   
+ const  [deleteClass] =useDeleteClassMutation();
+      const handleDelete = (id?: string) => {
+        if (!id) return;
+        try {
+          Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#09733D",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!",
+          }).then(async (result: any) => {
+            if (result.isConfirmed) {
+              const res = await deleteClass(id);
+              if (res?.data?.statusCode) {
+                toast.success("Student deleted successfully");
+              }
+            }
+          });
+        } catch (error) {
+          console.error("Error deleting Teacher:", error);
+          toast.error("Failed to delete Teacher.");
+        }
+      };
     return (
       <div className="container mx-auto">
         <Card>
@@ -60,6 +87,7 @@ import {
                         variant="outline"
                         size="icon"
                         className="h-8 w-8 text-red-600 hover:text-red-700 border-red-100 hover:border-red-200"
+                        onClick={() => handleDelete(classItem.id)}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
