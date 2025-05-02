@@ -1,4 +1,4 @@
-import { ArrowBigUp, CircleDollarSign, CircleSlash2Icon, CircleSlashIcon, CircleUser, DatabaseZapIcon, PcCase } from "lucide-react";
+import { ArrowBigUp, CircleSlashIcon, CircleUser, DatabaseZapIcon, PcCase } from "lucide-react";
 
 const featureAccess = { admin: [1] };
 
@@ -81,7 +81,7 @@ export const navMain = [
         url: "/payment-status",
         isShow: true,
       },
-      
+
     ].filter(Boolean), // Remove false values
   },
   {
