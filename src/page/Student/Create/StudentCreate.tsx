@@ -62,7 +62,7 @@ const StudentCreate = () => {
       // console.log("student data", Object.fromEntries(formData));
 
       const res = await addStudent(formData);
-      // console.log("response", res);
+      console.log("response", res);
       if ("data" in res && res.data?.success) {
         toast.success(res.data.message || "Student added successfully!");
         form.reset();

@@ -9,6 +9,7 @@ import ClassCreate from "@/page/Class/Create/ClassCreate";
 import ClassUpdate from "@/page/Class/Update/ClassUpdate";
 import ClassView from "@/page/Class/View/ClassView";
 import Login from "@/page/Login/Login";
+import Message from "@/page/Message/Message";
 import AdmissionPayment from "@/page/Payment/AdmissionPayment/AdmissionPayment";
 import MonthlyPayment from "@/page/Payment/MonthlyPayment/MonthlyPayment";
 import PaymentStatus from "@/page/Payment/PaymentStatus/PaymentStatus";
@@ -54,6 +55,10 @@ const componentMapping: Record<string, React.ElementType> = {
   "/batch":BatchView,
   "/batch-create":BatchCreate,
   "/batch-update/:id":BatchUpdate,
+
+  
+  //message routes
+  "/message":Message,
 
   
 };

@@ -130,4 +130,17 @@ export const navMain = [
       },
     ].filter(Boolean), // Remove false values
   },
+  {
+    title: "Message",
+    url: "#",
+    icon: DatabaseZapIcon,
+    isActive: false,
+    items: [
+      featureAccess["admin"]?.includes(1) && {
+        title: "Message",
+        url: "/message",
+        isShow: true,
+      },
+    ].filter(Boolean), // Remove false values
+  },
 ];
