@@ -2,15 +2,59 @@
 
 import MainLayout from "@/components/layouts/MainLayout";
 import { navMain } from "@/components/Routs/Routs";
+import BatchCreate from "@/page/Batch/Create/BatchCreate";
+import BatchUpdate from "@/page/Batch/update/BatchUpdate";
+import BatchView from "@/page/Batch/View/BatchView";
+import ClassCreate from "@/page/Class/Create/ClassCreate";
+import ClassUpdate from "@/page/Class/Update/ClassUpdate";
+import ClassView from "@/page/Class/View/ClassView";
 import Login from "@/page/Login/Login";
+import AdmissionPayment from "@/page/Payment/AdmissionPayment/AdmissionPayment";
+import MonthlyPayment from "@/page/Payment/MonthlyPayment/MonthlyPayment";
+import PaymentStatus from "@/page/Payment/PaymentStatus/PaymentStatus";
+import ShiftCreate from "@/page/Shift/Create/ShiftCreate";
+import ShiftUpdate from "@/page/Shift/Update/ShiftUpdate";
+import ShiftView from "@/page/Shift/View/ShiftView";
+import StudentCreate from "@/page/Student/Create/StudentCreate";
+import SingleStdView from "@/page/Student/SingleStdView/SingleStdView";
+import StudentUpdate from "@/page/Student/Update/StudentUpdate";
+import Student from "@/page/Student/View/Student";
 import Test from "@/page/Test/Test";
 import PrivateRout from "@/PrivateRout/PrivateRout";
 import { createBrowserRouter } from "react-router-dom";
 
-
 const componentMapping: Record<string, React.ElementType> = {
-  // student routes
   "/test": Test,
+  // login route
+  "/login": Login,
+
+  // shift routes
+  "/shift": ShiftView,
+  "/shift-create": ShiftCreate,
+  "/shift-update/:id": ShiftUpdate,
+  
+  // student routes
+  "/view-student": Student,
+  "/create-student": StudentCreate,
+  "/update-student/:id": StudentUpdate,
+  "/view-student/:id": SingleStdView,
+
+  // payment routes
+  "/admission-payment": AdmissionPayment,
+  "/monthly-payment": MonthlyPayment,
+  "/payment-status": PaymentStatus,
+
+  //class routes
+  "/class":ClassView,
+  "/class-create":ClassCreate,
+  "class-update/:id":ClassUpdate,
+
+
+  //Batch routes
+  "/batch":BatchView,
+  "/batch-create":BatchCreate,
+  "/batch-update/:id":BatchUpdate,
+
   
 };
 
