@@ -13,7 +13,6 @@ import { useNavigate } from "react-router-dom";
 
 const StudentCreate = () => {
   const navigate = useNavigate();
-  //*fetch batch data from and student mutation redux store
   const { data: batchData } = useGetAllBatchQuery(undefined);
   const [addStudent] = useAddStudentMutation();
 
@@ -36,7 +35,6 @@ const StudentCreate = () => {
     },
   });
 
-  //handle form submission
   const onSubmit = async (data: any) => {
     try {
       const isoDateOfBirth = new Date(data.dateOfBirth).toISOString();
@@ -56,13 +54,10 @@ const StudentCreate = () => {
       formData.append("address", data.address);
       formData.append("image", data.image);
       formData.append("gender", data.gender);
-      formData.append("class", data.class);
+      formData.append("class", data.class); // auto-filled
       formData.append("batchId", data.batchId);
 
-      // console.log("student data", Object.fromEntries(formData));
-
       const res = await addStudent(formData);
-      // console.log("response", res);
       if ("data" in res && res.data?.success) {
         toast.success(res.data.message || "Student added successfully!");
         form.reset();
@@ -94,6 +89,7 @@ const StudentCreate = () => {
               name="image"
               fileTypes="image/jpeg,image/png,image/gif"
             />
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <FormFieldWrapper
                 name="firstName"
@@ -109,7 +105,6 @@ const StudentCreate = () => {
                 name="dateOfBirth"
                 label="Date of Birth"
                 type="date"
-                placeholder="Enter your Date of Birth"
               />
               <FormFieldWrapper
                 name="idNumber"
@@ -174,28 +169,40 @@ const StudentCreate = () => {
                 label="School Name"
                 placeholder="Enter your School Name"
               />
-              <FormFieldWrapper
-                name="class"
-                label="Enter Class"
-                placeholder="Enter your class"
-              />
+
+              {/* Batch selector that updates class field */}
               <SelectFieldWrapper
                 name="batchId"
                 label="Batch"
                 options={
-                  batchData?.data?.map((batch: any) => ({
-                    value: batch?.id,
-                    name: batch?.batchName,
+                  batchData?.data?.map((item: any) => ({
+                    value: item.id,
+                    name: item.batchName,
                   })) || []
                 }
                 control={form.control}
+                onChange={(value) => {
+                  const selectedBatch = batchData?.data?.find(
+                    (item: any) => item.id === value
+                  );
+
+                  // Setting the class value based on the selected batch
+                  form.setValue("class", selectedBatch?.Class?.className || ""); // Corrected reference to Class object
+                }}
+              />
+
+              {/* Class field that auto-fills and is disabled */}
+              <FormFieldWrapper
+                name="class"
+                label="Class"
+                placeholder="Class will be selected based on Batch"
+                disabled
               />
             </div>
 
             <Button
               type="submit"
-              // disabled={!passwordsMatch}
-              className="w-full bg-green-700 hover:bg-green-800 text-white flex items-center justify-center gap-2 py-2 px-4 rounded-md transition"
+              className="w-full bg-primary hover:bg-cyan-800 text-white flex items-center justify-center gap-2 py-2 px-4 rounded-md transition"
             >
               <Plus className="w-5 h-5" />
               Add Student

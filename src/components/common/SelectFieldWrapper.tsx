@@ -1,86 +1,63 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { SelectTrigger } from "@radix-ui/react-select";
-import { ChevronDown } from "lucide-react";
-import { Select, SelectContent, SelectItem, SelectValue } from "../ui/select";
-import { Control } from "react-hook-form"; 
+import { FormControl, FormDescription, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Controller } from "react-hook-form";
 
-interface Option {
+type Option = {
   value: string;
   name: string;
-}
+};
 
 interface SelectFieldWrapperProps {
   name: string;
   label: string;
   options: Option[];
-  control: Control<any>;
+  control: any;
   required?: boolean;
-  rules?: Record<string, any>; 
+  rules?: Record<string, any>;
+  onChange?: (value: string) => void; // <-- Added this
 }
+
 export const SelectFieldWrapper = ({
   name,
   label,
   options,
   control,
-  required = false,
-  rules = {},
+  rules,
+  onChange,
 }: SelectFieldWrapperProps) => {
   return (
-    <FormField
-      control={control}
-      
+    <Controller
       name={name}
-      rules={{
-        required: required ? `${label} is required` : false,
-        ...rules,
-      }}
+      control={control}
+      rules={rules}
       render={({ field }) => (
         <FormItem>
           <FormLabel>{label}</FormLabel>
-          <div className="flex justify-center items-start flex-col border p-[.35rem] rounded-md shadow-sm w-full relative">
-            <ChevronDown
-              strokeWidth={2}
-              size={16}
-              className="absolute right-2 top-2 text-gray-600"
-            />
-            <div className="w-full">
-              <FormControl className="w-full">
-                <Select
-                  onValueChange={field?.onChange}
-                  value={field?.value}
-                >
-                  <SelectTrigger className="w-full flex justify-start items-start ps-2">
-                    <SelectValue
-                      placeholder={`Select ${label?.toLowerCase()}`}
-                      className="text-[#dedede] w-full"
-                    />
-                  </SelectTrigger>
-                  <SelectContent className="bg-gray-50">
-                    {options?.map((item: Option) => (
-                      <SelectItem
-                        key={item?.value}
-                        value={item?.value}
-                        className="cursor-pointer hover:bg-gray-100"
-                      >
-                        {item?.name?.substring(0, 35)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormControl>
-            </div>
-          </div>
-          <FormMessage className="text-red-500 text-xs"/>
+          <Select
+            value={field.value}
+            onValueChange={(value) => {
+              field.onChange(value);      // update form state
+              onChange?.(value);          // external handler (like setting class)
+            }}
+          >
+            <FormControl>
+              <SelectTrigger>
+                <SelectValue placeholder={`Select ${label}`} />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent className="bg-white">
+              {options.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <FormDescription />
+          <FormMessage />
         </FormItem>
       )}
     />
   );
 };
-
