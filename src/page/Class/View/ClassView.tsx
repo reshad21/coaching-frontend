@@ -35,7 +35,7 @@ import toast from "react-hot-toast";
             if (result.isConfirmed) {
               const res = await deleteClass(id);
               if (res?.data?.statusCode) {
-                toast.success("Student deleted successfully");
+                toast.success("Class deleted successfully");
               }
             }
           });
