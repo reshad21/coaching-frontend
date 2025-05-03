@@ -30,9 +30,20 @@ const messageApi = baseApi.injectEndpoints({
         },
         invalidatesTags: ["message"],
       }),
+    sendSingleMessage: builder.mutation({
+        query: (data) => {
+          return {
+            url: `/bulk/single-student`,
+            method: "POST",
+            body:data
+          };
+        },
+        invalidatesTags: ["message"],
+      }),
   }),
 });
 
 export const {
- useSendMessageMutation
+ useSendMessageMutation,
+ useSendSingleMessageMutation
 } = messageApi;
