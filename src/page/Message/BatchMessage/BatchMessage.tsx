@@ -2,6 +2,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
+import { useSendMessageMutation } from "@/redux/api/auth/message/message";
 import { useGetAllBatchQuery } from "@/redux/api/batch/batchApi";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -9,6 +10,7 @@ import Swal from "sweetalert2";
 
 const BatchMessage = () => {
   const { data: batchData } = useGetAllBatchQuery(undefined);
+  const [sendMessage]  = useSendMessageMutation()
   const form = useForm();
   const selectedBatch = form.watch("batch");
   const message = form.watch("message");
@@ -22,6 +24,8 @@ const BatchMessage = () => {
     if (!selectedBatch || !message) {
       return toast.error("please select batch and write message");
     }
+
+    
     Swal.fire({
       title: "Are you sure?",
       text: "send message for this batch",
@@ -30,9 +34,19 @@ const BatchMessage = () => {
       confirmButtonColor: "#03A791",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, send message!",
-    }).then((result) => {
+    }).then(async(result) => {
       if (result.isConfirmed) {
-        toast.success("Message send successfully");
+        const res = await sendMessage({
+          id:selectedBatch,
+          message
+        }).unwrap()
+        if (res?.data?.response_code == 202) {
+          toast.success("Message send successfully");
+        }
+        if (res?.data?.error_message) {
+          toast.error(res?.data?.error_message)
+        }
+        
       }
     });
   };
