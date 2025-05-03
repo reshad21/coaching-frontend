@@ -1,4 +1,4 @@
-import { ArrowBigUp, CircleDollarSign, CircleSlash2Icon, CircleSlashIcon, CircleUser, DatabaseZapIcon, PcCase } from "lucide-react";
+import { ArrowBigUp, MessagesSquare, BadgeDollarSign, CircleUser, DatabaseZapIcon, School } from "lucide-react";
 
 const featureAccess = { admin: [1] };
 
@@ -61,9 +61,9 @@ export const navMain = [
   },
 
   {
-    title: "Pyment",
+    title: "Payment",
     url: "#",
-    icon: CircleSlashIcon,
+    icon: BadgeDollarSign,
     isActive: false,
     items: [
       featureAccess["admin"]?.includes(1) && {
@@ -87,7 +87,7 @@ export const navMain = [
   {
     title: "Class",
     url: "#",
-    icon: PcCase,
+    icon: School,
     isActive: false,
     items: [
       featureAccess["admin"]?.includes(1) && {
@@ -133,7 +133,7 @@ export const navMain = [
   {
     title: "Message",
     url: "#",
-    icon: DatabaseZapIcon,
+    icon: MessagesSquare,
     isActive: false,
     items: [
       featureAccess["admin"]?.includes(1) && {

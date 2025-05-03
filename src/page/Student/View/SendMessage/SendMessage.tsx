@@ -75,6 +75,7 @@ const SendMessage = ({ student }: any) => {
                 {...register("message", { required: "Message is required" })}
                 placeholder="Wright your message"
                 className="border p-2 rounded w-full shadow-sm mb-4"
+                defaultValue={`Dear ${student?.firstName},`}
               />
             </div>
             {errors.message && (

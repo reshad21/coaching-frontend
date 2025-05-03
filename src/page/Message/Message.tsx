@@ -19,13 +19,13 @@ const Message = () => {
             value="class"
             className="py-4 data-[state=active]:bg-[#03a79150] data-[state=active]:text-[#03A791] data-[state=active]:border-b-2 data-[state=active]:border-[#03A791]"
           >
-           Class
+           Class Message
           </TabsTrigger>
           <TabsTrigger
             value="shift"
             className="py-4 data-[state=active]:bg-[#03a79150]  data-[state=active]:text-[#03A791] data-[state=active]:border-b-2 data-[state=active]:border-[#03A791]"
           >
-            Shift
+            Shift Message
           </TabsTrigger>
           
         </TabsList>
