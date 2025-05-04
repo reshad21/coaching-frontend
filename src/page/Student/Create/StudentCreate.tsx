@@ -63,15 +63,9 @@ const StudentCreate = () => {
       formData.append("classId", data.classId);
 
       // 🔽 Add corresponding names manually
-      const batchName = batchData?.data?.find(
-        (item: any) => item.id === data.batchId
-      )?.batchName;
-      const shiftName = shiftData?.data?.find(
-        (item: any) => item.id === data.shiftId
-      )?.shiftName;
-      const className = classData?.data?.find(
-        (item: any) => item.id === data.classId
-      )?.className;
+      const batchName = batchData?.data?.find((item: any) => item.id === data.batchId)?.batchName;
+      const shiftName = shiftData?.data?.find((item: any) => item.id === data.shiftId)?.shiftName;
+      const className = classData?.data?.find((item: any) => item.id === data.classId)?.className;
 
       if (batchName) formData.append("batchName", batchName);
       if (shiftName) formData.append("shiftName", shiftName);
