@@ -1,7 +1,6 @@
 # Coaching management
 
-## Project Overview
-EduCare is a student management system designed to handle student admissions, track monthly fees, and automate notifications via phone messages when the coaching center is closed. This system streamlines administrative tasks, ensuring efficient communication and financial tracking.
+
 
 ## Features
 - **Student Admission**: Add new students with their personal and academic details.
@@ -32,7 +31,6 @@ EduCare is a student management system designed to handle student admissions, tr
 4. Configure environment variables in a `.env` file:
    ```env
    PORT=5000
-   MONGO_URI=your_mongodb_connection_string
    JWT_SECRET=your_secret_key
    TWILIO_SID=your_twilio_sid
    TWILIO_AUTH_TOKEN=your_twilio_auth_token

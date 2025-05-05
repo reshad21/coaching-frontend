@@ -3,10 +3,13 @@
 import MainLayout from "@/components/layouts/MainLayout";
 import { navMain } from "@/components/Routs/Routs";
 import BatchCreate from "@/page/Batch/Create/BatchCreate";
+import BatchUpdate from "@/page/Batch/update/BatchUpdate";
 import BatchView from "@/page/Batch/View/BatchView";
 import ClassCreate from "@/page/Class/Create/ClassCreate";
+import ClassUpdate from "@/page/Class/Update/ClassUpdate";
 import ClassView from "@/page/Class/View/ClassView";
 import Login from "@/page/Login/Login";
+import Message from "@/page/Message/Message";
 import AdmissionPayment from "@/page/Payment/AdmissionPayment/AdmissionPayment";
 import MonthlyPayment from "@/page/Payment/MonthlyPayment/MonthlyPayment";
 import PaymentStatus from "@/page/Payment/PaymentStatus/PaymentStatus";
@@ -29,7 +32,7 @@ const componentMapping: Record<string, React.ElementType> = {
   // shift routes
   "/shift": ShiftView,
   "/shift-create": ShiftCreate,
-  "/shift-update": ShiftUpdate,
+  "/shift-update/:id": ShiftUpdate,
   
   // student routes
   "/view-student": Student,
@@ -44,12 +47,18 @@ const componentMapping: Record<string, React.ElementType> = {
 
   //class routes
   "/class":ClassView,
-  "class-create":ClassCreate,
+  "/class-create":ClassCreate,
+  "class-update/:id":ClassUpdate,
 
 
   //Batch routes
   "/batch":BatchView,
-  "batch-create":BatchCreate,
+  "/batch-create":BatchCreate,
+  "/batch-update/:id":BatchUpdate,
+
+  
+  //message routes
+  "/message":Message,
 
   
 };

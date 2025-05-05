@@ -12,23 +12,34 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+import { useForm } from "react-hook-form";
 import { useState } from "react";
 import toast from "react-hot-toast";
 
+type FormValues = {
+  shiftName: string;
+};
+
 const ShiftCreate = () => {
   const [addShift] = useAddShiftMutation();
-  const [shiftName, setShiftName] = useState("");
   const [open, setOpen] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<FormValues>();
+
+  const onSubmit = async (data: FormValues) => {
     try {
-      await addShift({ shiftName });
-      setShiftName("");
+      await addShift(data).unwrap();
       toast.success("Shift added successfully");
+      reset();
       setOpen(false);
     } catch (error) {
       console.error("Failed to add shift:", error);
+      toast.error("Failed to add shift");
     }
   };
 
@@ -41,7 +52,7 @@ const ShiftCreate = () => {
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
             <DialogTitle>Add New Shift</DialogTitle>
             <DialogDescription>
@@ -57,11 +68,14 @@ const ShiftCreate = () => {
                 id="shiftName"
                 placeholder="Morning Shift"
                 className="col-span-3"
-                value={shiftName}
-                onChange={(e) => setShiftName(e.target.value)}
-                required
+                {...register("shiftName", { required: "Shift name is required" })}
               />
             </div>
+            {errors.shiftName && (
+              <p className="text-red-500 text-sm ml-[33%] -mt-2">
+                {errors.shiftName.message}
+              </p>
+            )}
           </div>
           <DialogFooter>
             <Button type="submit">Save Shift</Button>

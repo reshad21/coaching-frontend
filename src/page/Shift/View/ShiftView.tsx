@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import ShiftCreate from "../Create/ShiftCreate";
 import Swal from "sweetalert2";
 import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
 
 
 const ShiftView = () => {
@@ -81,6 +82,7 @@ const ShiftView = () => {
                     {shiftItem.shiftName}
                   </TableCell>
                   <TableCell className="flex justify-end gap-2">
+                   <Link to={`/update-shift/${shiftItem.id}`}>
                     <Button
                       variant="outline"
                       size="icon"
@@ -88,6 +90,8 @@ const ShiftView = () => {
                     >
                       <Edit className="h-4 w-4" />
                     </Button>
+                    </Link>
+
                     <Button
                       variant="outline"
                       size="icon"

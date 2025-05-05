@@ -20,6 +20,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import SendMessage from "./SendMessage/SendMessage";
 
 const Student = () => {
   // * Pagination, search and filter state
@@ -63,7 +64,7 @@ const Student = () => {
       toast.error("Failed to delete Teacher.");
     }
   };
-
+ 
   return (
     <div>
       <div className="flex items-center mb-4">
@@ -185,13 +186,14 @@ const Student = () => {
                     >
                       <Trash />
                     </Button>
-                    <Button
+                    {/* <Button
                       variant="outline"
                       size="icon"
-                      className="h-8 w-8 text-yellow-600 hover:text-yellow-700 border-blue-100 hover:border-blue-200"
+                      
                     >
-                      <Mail />
-                    </Button>
+                      
+                    </Button> */}
+                    <SendMessage student={student}/>
                   </TableCell>
                 </TableRow>
               ))}
