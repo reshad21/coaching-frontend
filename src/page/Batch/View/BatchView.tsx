@@ -35,7 +35,8 @@ const BatchView = () => {
     ...(selectedBatch ? [{ name: "batchName", value: selectedBatch }] : []),
   ]);
 
-  console.log("Total batch ==>",batchData, isLoading);
+  console.log("Total batch ==>",batchData?.data?.data);
+  console.log(isLoading);
 
   const [deleteBatch] = useDeleteBatchMutation();
   const handleDelete = (id?: string) => {
@@ -88,7 +89,7 @@ const BatchView = () => {
           Clear Filter
         </Button>
       </div>
-      {batchData?.data?.length > 0 ? (
+      {batchData?.data?.data?.length > 0 ? (
         <div className="border rounded-lg">
           <Table>
             <TableHeader>
@@ -104,7 +105,7 @@ const BatchView = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {batchData?.data?.map((batchItem: any, index: number) => (
+              {batchData?.data?.data?.map((batchItem: any, index: number) => (
                 <TableRow key={batchItem?.id} className="hover:bg-gray-50">
                   <TableCell className="font-medium text-gray-700">
                     {index + 1}

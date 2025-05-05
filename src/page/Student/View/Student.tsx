@@ -211,6 +211,12 @@ const Student = () => {
           className="mt-4 flex justify-end"
         />
       )}
+      {/* <EduCPagination
+          page={page}
+          setPage={setPage}
+          totalPages={students?.meta?.totalPages}
+          className="mt-4 flex justify-end"
+        /> */}
     </div>
   );
 };

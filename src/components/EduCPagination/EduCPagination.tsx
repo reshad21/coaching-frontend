@@ -1,53 +1,46 @@
+type TGmPagination = {
+  page: number
+  setPage: (page: number) => void
+  totalPages?: number
+  className?: string
+}
 
-
-type TEduCPagination = {
-  page: number;
-  setPage: (page: number) => void;
-  totalPages?: number;
-  className?: string;
-};
-
-const EduCPagination = ({
-  page,
-  setPage,
-  totalPages = 100,
-  className,
-}: TEduCPagination) => {
+const EduCPagination = ({ page, setPage, totalPages = 100, className }: TGmPagination) => {
   // Ensure page is within valid range
-  const currentPage = Math.max(1, Math.min(page, totalPages));
+  const currentPage = Math.max(1, Math.min(page, totalPages))
 
   // Generate page numbers to display
   const getPageNumbers = () => {
     // For small number of pages, show all
     if (totalPages <= 5) {
-      return Array.from({ length: totalPages }, (_, i) => i + 1);
+      return Array.from({ length: totalPages }, (_, i) => i + 1)
     }
 
     // For many pages, show current page with neighbors and ellipsis
-    const pages = [1];
+    const pages = [1]
 
     if (currentPage > 3) {
-      pages.push(-1); // -1 represents ellipsis
+      pages.push(-1) // -1 represents ellipsis
     }
 
     // Add the current page and its neighbors
-    const start = Math.max(2, currentPage - 1);
-    const end = Math.min(totalPages - 1, currentPage + 1);
+    const start = Math.max(2, currentPage - 1)
+    const end = Math.min(totalPages - 1, currentPage + 1)
 
     for (let i = start; i <= end; i++) {
-      pages.push(i);
+      pages.push(i)
     }
 
     if (currentPage < totalPages - 2) {
-      pages.push(-2); // -2 represents ellipsis
+      pages.push(-2) // -2 represents ellipsis
     }
 
     if (totalPages > 1) {
-      pages.push(totalPages);
+      pages.push(totalPages)
     }
 
-    return pages;
-  };
+    return pages
+  }
 
   return (
     <div className={`flex items-center ${className || ""}`}>
@@ -60,10 +53,7 @@ const EduCPagination = ({
       </button>
       {getPageNumbers().map((pageNum, index) =>
         pageNum < 0 ? (
-          <span
-            key={`ellipsis-${index}`}
-            className="px-3 py-1 text-sm border-t border-b border-r"
-          >
+          <span key={`ellipsis-${index}`} className="px-3 py-1 text-sm border-t border-b border-r">
             ...
           </span>
         ) : (
@@ -71,14 +61,12 @@ const EduCPagination = ({
             key={pageNum}
             onClick={() => setPage(pageNum)}
             className={`px-3 py-1 text-sm border-t border-b border-r ${
-              currentPage === pageNum
-                ? "bg-primary text-white"
-                : "bg-white hover:bg-gray-100"
+              currentPage === pageNum ? "bg-primary text-white" : "bg-white hover:bg-gray-100"
             }`}
           >
             {pageNum}
           </button>
-        )
+        ),
       )}
       <button
         onClick={() => currentPage < totalPages && setPage(currentPage + 1)}
@@ -88,7 +76,7 @@ const EduCPagination = ({
         Next
       </button>
     </div>
-  );
-};
+  )
+}
 
-export default EduCPagination;
+export default EduCPagination
