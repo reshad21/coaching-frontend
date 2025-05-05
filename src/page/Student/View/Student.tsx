@@ -15,7 +15,7 @@ import {
   useDeleteStudentMutation,
   useGetAllStudentQuery,
 } from "@/redux/api/studentApi/studentApi";
-import { ChevronsRight, Eye, Mail, SquarePen, Trash } from "lucide-react";
+import { ChevronsRight, Eye, SquarePen, Trash } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
@@ -64,7 +64,7 @@ const Student = () => {
       toast.error("Failed to delete Teacher.");
     }
   };
- 
+
   return (
     <div>
       <div className="flex items-center mb-4">
@@ -193,7 +193,7 @@ const Student = () => {
                     >
                       
                     </Button> */}
-                    <SendMessage student={student}/>
+                    <SendMessage student={student} />
                   </TableCell>
                 </TableRow>
               ))}
