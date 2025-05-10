@@ -2,20 +2,21 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
-import { useGetAllBatchQuery } from "@/redux/api/batch/batchApi";
+import { useSendClassMessageMutation } from "@/redux/api/auth/message/message";
+import { useGetAllClassQuery } from "@/redux/api/class/classApi";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 
 const ClassMessage = () => {
-  const { data: batchData } = useGetAllBatchQuery(undefined);
-//   const [sendMessage] = useSendMessageMutation();
+  const { data: classData } = useGetAllClassQuery(undefined);
+  const [sendMessage] = useSendClassMessageMutation();
   const form = useForm();
   const selectedClass = form.watch("class");
   const message = form.watch("message");
-  const batches = batchData?.data?.map((item: any) => ({
+  const batches = classData?.data?.map((item: any) => ({
     value: item?.id,
-    name: item?.batchName,
+    name: item?.className,
   }));
 
   const handelSendMessage = async (e: any) => {
@@ -37,16 +38,16 @@ const ClassMessage = () => {
       confirmButtonText: "Yes, send message!",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        // const res = await sendMessage({
-        //   id: selectedClass,
-        //   message,
-        // }).unwrap();
-        // if (res?.data?.response_code == 202) {
-        //   toast.success("Message send successfully");
-        // }
-        // if (res?.data?.error_message) {
-        //   toast.error(res?.data?.error_message);
-        // }
+        const res = await sendMessage({
+          classId: selectedClass,
+          message,
+        }).unwrap();
+        if (res?.data?.response_code == 202) {
+          toast.success("Message send successfully");
+        }
+        if (res?.data?.error_message) {
+          toast.error(res?.data?.error_message);
+        }
         console.log(selectedClass);
         console.log(message);
         

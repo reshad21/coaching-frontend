@@ -2,22 +2,22 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
-import { useGetAllBatchQuery } from "@/redux/api/batch/batchApi";
+import { useSendShiftMessageMutation } from "@/redux/api/auth/message/message";
+import { useGetAllShiftQuery } from "@/redux/api/shiftApi/shiftApi";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 
 const Shift = () => {
-  const { data: batchData } = useGetAllBatchQuery(undefined);
-//   const [sendMessage] = useSendMessageMutation();
+  const { data: shiftData } = useGetAllShiftQuery(undefined);
+  const [sendMessage] = useSendShiftMessageMutation();
   const form = useForm();
   const selectedShift = form.watch("shift");
   const message = form.watch("message");
-  const batches = batchData?.data?.map((item: any) => ({
+  const shifts = shiftData?.data?.map((item: any) => ({
     value: item?.id,
-    name: item?.batchName,
+    name: item?.shiftName,
   }));
-
   const handelSendMessage = async (e: any) => {
     e.preventDefault();
     if (!message) {
@@ -26,7 +26,6 @@ const Shift = () => {
     if (!selectedShift ) {
       return toast.error("please Select Shift");
     }
-
     Swal.fire({
       title: "Are you sure?",
       text: "Send message for this Shift",
@@ -37,19 +36,18 @@ const Shift = () => {
       confirmButtonText: "Yes, send message!",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        // const res = await sendMessage({
-        //   id: selectedClass,
-        //   message,
-        // }).unwrap();
-        // if (res?.data?.response_code == 202) {
-        //   toast.success("Message send successfully");
-        // }
-        // if (res?.data?.error_message) {
-        //   toast.error(res?.data?.error_message);
-        // }
-        console.log(selectedShift);
-        console.log(message);
+        const res = await sendMessage({
+          shiftId: selectedShift,
+          message,
+        }).unwrap();
+        console.log(res);
         
+        if (res?.data?.response_code == 202) {
+          toast.success("Message send successfully");
+        }
+        if (res?.data?.error_message) {
+          toast.error(res?.data?.error_message);
+        }
       }
     });
   };
@@ -70,7 +68,7 @@ const Shift = () => {
               }`}
             >
               <option value="">Select Shift</option>
-              {batches?.map((item: any) => (
+              {shifts?.map((item: any) => (
                 <option key={item.value} value={item.value}>
                   {item.name}
                 </option>

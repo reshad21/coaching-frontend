@@ -38,6 +38,7 @@ const SendMessage = ({ student }: any) => {
         message: data?.message,
         number: student?.phone,
       }).unwrap();
+      console.log("===>",res);
       if (res?.data?.response_code == 202) {
         toast.success(`Message send to ${student?.firstName} successfully`);
         reset();

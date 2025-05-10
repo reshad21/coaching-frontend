@@ -5,6 +5,8 @@ import { SelectFieldWrapper } from "@/components/common/SelectFieldWrapper";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useGetAllBatchQuery } from "@/redux/api/batch/batchApi";
+import { useGetAllClassQuery } from "@/redux/api/class/classApi";
+import { useGetAllShiftQuery } from "@/redux/api/shiftApi/shiftApi";
 import { useAddStudentMutation } from "@/redux/api/studentApi/studentApi";
 import { ChevronsRight, Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
@@ -13,8 +15,9 @@ import { useNavigate } from "react-router-dom";
 
 const StudentCreate = () => {
   const navigate = useNavigate();
-  //*fetch batch data from and student mutation redux store
   const { data: batchData } = useGetAllBatchQuery(undefined);
+  const { data: classData } = useGetAllClassQuery(undefined);
+  const { data: shiftData } = useGetAllShiftQuery(undefined);
   const [addStudent] = useAddStudentMutation();
 
   const form = useForm({
@@ -29,15 +32,16 @@ const StudentCreate = () => {
       phone: "",
       email: "",
       address: "",
-      image: "",
+      image: null,
       gender: "",
-      class: "",
+      classId: "",
+      shiftId: "",
       batchId: "",
     },
   });
 
-  //handle form submission
   const onSubmit = async (data: any) => {
+    console.log("form adta-->",data);
     try {
       const isoDateOfBirth = new Date(data.dateOfBirth).toISOString();
       const formData = new FormData();
@@ -45,8 +49,6 @@ const StudentCreate = () => {
       formData.append("firstName", data.firstName);
       formData.append("lastName", data.lastName);
       formData.append("dateOfBirth", isoDateOfBirth);
-      formData.append("idNumber", data.idNumber);
-      formData.append("regNumber", data.regNumber);
       formData.append("email", data.email);
       formData.append("phone", data.phone);
       formData.append("fatherName", data.fatherName);
@@ -54,12 +56,20 @@ const StudentCreate = () => {
       formData.append("religion", data.religion);
       formData.append("schoolName", data.schoolName);
       formData.append("address", data.address);
-      formData.append("image", data.image);
       formData.append("gender", data.gender);
-      formData.append("class", data.class);
+      formData.append("image", data.image);
       formData.append("batchId", data.batchId);
+      formData.append("shiftId", data.shiftId);
+      formData.append("classId", data.classId);
 
-      // console.log("student data", Object.fromEntries(formData));
+      // 🔽 Add corresponding names manually
+      const batchName = batchData?.data?.find((item: any) => item.id === data.batchId)?.batchName;
+      const shiftName = shiftData?.data?.find((item: any) => item.id === data.shiftId)?.shiftName;
+      const className = classData?.data?.find((item: any) => item.id === data.classId)?.className;
+
+      if (batchName) formData.append("batchName", batchName);
+      if (shiftName) formData.append("shiftName", shiftName);
+      if (className) formData.append("className", className);
 
       const res = await addStudent(formData);
       console.log("response", res);
@@ -94,6 +104,7 @@ const StudentCreate = () => {
               name="image"
               fileTypes="image/jpeg,image/png,image/gif"
             />
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <FormFieldWrapper
                 name="firstName"
@@ -109,17 +120,6 @@ const StudentCreate = () => {
                 name="dateOfBirth"
                 label="Date of Birth"
                 type="date"
-                placeholder="Enter your Date of Birth"
-              />
-              <FormFieldWrapper
-                name="idNumber"
-                label="ID Number"
-                placeholder="Enter your ID Number"
-              />
-              <FormFieldWrapper
-                name="regNumber"
-                label="Reg Number"
-                placeholder="Enter your Reg Number"
               />
               <FormFieldWrapper
                 name="email"
@@ -146,11 +146,11 @@ const StudentCreate = () => {
                 name="religion"
                 label="Religion"
                 options={[
-                  { value: "islam", name: "Islam" },
-                  { value: "hindu", name: "Hindu" },
-                  { value: "christian", name: "Christian" },
-                  { value: "buddhist", name: "Buddhist" },
-                  { value: "others", name: "Others" },
+                  { value: "Islam", name: "Islam" },
+                  { value: "Hinduism", name: "Hinduism" },
+                  { value: "Christianity", name: "Christianity" },
+                  { value: "Buddhism", name: "Buddhism" },
+                  { value: "Others", name: "Others" },
                 ]}
                 control={form.control}
               />
@@ -174,18 +174,38 @@ const StudentCreate = () => {
                 label="School Name"
                 placeholder="Enter your School Name"
               />
-              <FormFieldWrapper
-                name="class"
-                label="Enter Class"
-                placeholder="Enter your class"
-              />
+
               <SelectFieldWrapper
                 name="batchId"
-                label="Batch"
+                label="Select Batch"
                 options={
-                  batchData?.data?.map((batch: any) => ({
-                    value: batch?.id,
-                    name: batch?.batchName,
+                  batchData?.data?.map((item: any) => ({
+                    value: item.id,
+                    name: item.batchName,
+                  })) || []
+                }
+                control={form.control}
+              />
+
+              <SelectFieldWrapper
+                name="shiftId"
+                label="Select Shift"
+                options={
+                  shiftData?.data?.map((item: any) => ({
+                    value: item.id,
+                    name: item.shiftName,
+                  })) || []
+                }
+                control={form.control}
+              />
+
+              <SelectFieldWrapper
+                name="classId"
+                label="Select Class"
+                options={
+                  classData?.data?.map((item: any) => ({
+                    value: item.id,
+                    name: item.className,
                   })) || []
                 }
                 control={form.control}
@@ -194,8 +214,7 @@ const StudentCreate = () => {
 
             <Button
               type="submit"
-              // disabled={!passwordsMatch}
-              className="w-full bg-green-700 hover:bg-green-800 text-white flex items-center justify-center gap-2 py-2 px-4 rounded-md transition"
+              className="w-full bg-primary hover:bg-cyan-800 text-white flex items-center justify-center gap-2 py-2 px-4 rounded-md transition"
             >
               <Plus className="w-5 h-5" />
               Add Student

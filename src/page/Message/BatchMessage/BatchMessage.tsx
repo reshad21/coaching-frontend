@@ -42,6 +42,8 @@ const BatchMessage = () => {
           id: selectedBatch,
           message,
         }).unwrap();
+        console.log(res);
+        
         if (res?.data?.response_code == 202) {
           toast.success("Message send successfully");
         }

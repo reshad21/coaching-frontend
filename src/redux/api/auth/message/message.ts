@@ -30,6 +30,26 @@ const messageApi = baseApi.injectEndpoints({
         },
         invalidatesTags: ["message"],
       }),
+    sendClassMessage: builder.mutation({
+        query: (data) => {
+          return {
+            url: `/bulk/class`,
+            method: "POST",
+            body:data
+          };
+        },
+        invalidatesTags: ["message"],
+      }),
+    sendShiftMessage: builder.mutation({
+        query: (data) => {
+          return {
+            url: `/bulk/shift`,
+            method: "POST",
+            body:data
+          };
+        },
+        invalidatesTags: ["message"],
+      }),
     sendSingleMessage: builder.mutation({
         query: (data) => {
           return {
@@ -45,5 +65,7 @@ const messageApi = baseApi.injectEndpoints({
 
 export const {
  useSendMessageMutation,
- useSendSingleMessageMutation
+ useSendSingleMessageMutation,
+ useSendClassMessageMutation,
+ useSendShiftMessageMutation
 } = messageApi;

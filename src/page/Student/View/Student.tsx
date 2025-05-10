@@ -15,7 +15,7 @@ import {
   useDeleteStudentMutation,
   useGetAllStudentQuery,
 } from "@/redux/api/studentApi/studentApi";
-import { ChevronsRight, Eye, Mail, SquarePen, Trash } from "lucide-react";
+import { ChevronsRight, Eye, SquarePen, Trash } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
@@ -34,6 +34,9 @@ const Student = () => {
     { name: "search", value: search },
     ...(selectedBatch ? [{ name: "batchName", value: selectedBatch }] : []),
   ]);
+
+  console.log("isLoading=>", isLoading);
+  console.log("all students=>", students);
 
   const [deleteStudent] = useDeleteStudentMutation();
 
@@ -61,7 +64,7 @@ const Student = () => {
       toast.error("Failed to delete Teacher.");
     }
   };
- 
+
   return (
     <div>
       <div className="flex items-center mb-4">
@@ -190,7 +193,7 @@ const Student = () => {
                     >
                       
                     </Button> */}
-                    <SendMessage student={student}/>
+                    <SendMessage student={student} />
                   </TableCell>
                 </TableRow>
               ))}
@@ -201,15 +204,21 @@ const Student = () => {
         "No data found"
       )}
 
-      {/* pagination  */}
-      {/* {students?.meta?.total > students?.meta?.limit && (
-        
-      )} */}
-      <EduCPagination
-        page={page}
-        setPage={setPage}
-        className="mt-4 flex justify-end"
-      />
+      {/* pagination */}
+      {students?.meta?.total > students?.meta?.limit && (
+        <EduCPagination
+          page={page}
+          setPage={setPage}
+          totalPages={students?.meta?.totalPages}
+          className="mt-4 flex justify-end"
+        />
+      )}
+      {/* <EduCPagination
+          page={page}
+          setPage={setPage}
+          totalPages={students?.meta?.totalPages}
+          className="mt-4 flex justify-end"
+        /> */}
     </div>
   );
 };

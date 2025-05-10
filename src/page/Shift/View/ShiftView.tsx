@@ -20,7 +20,8 @@ import { Link } from "react-router-dom";
 
 const ShiftView = () => {
   const { data: shift, isLoading } = useGetAllShiftQuery(undefined);
-  const shiftData = shift?.data;
+  console.log("shift data==>",shift);
+  console.log("loading..",isLoading);
 
 
   const [deleteShift] =useDeleteShiftMutation();
@@ -72,7 +73,7 @@ const ShiftView = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {shiftData?.map((shiftItem: any, index: number) => (
+              {shift?.data?.map((shiftItem: any, index: number) => (
                 <TableRow key={shiftItem.id} className="hover:bg-gray-50">
                   <TableCell className="font-medium text-gray-700">
                     {index + 1}
