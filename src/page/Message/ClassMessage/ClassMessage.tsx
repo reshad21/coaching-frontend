@@ -2,17 +2,16 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
-import { useSendMessageMutation } from "@/redux/api/auth/message/message";
 import { useGetAllBatchQuery } from "@/redux/api/batch/batchApi";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 
-const BatchMessage = () => {
+const ClassMessage = () => {
   const { data: batchData } = useGetAllBatchQuery(undefined);
-  const [sendMessage] = useSendMessageMutation();
+//   const [sendMessage] = useSendMessageMutation();
   const form = useForm();
-  const selectedBatch = form.watch("batch");
+  const selectedClass = form.watch("class");
   const message = form.watch("message");
   const batches = batchData?.data?.map((item: any) => ({
     value: item?.id,
@@ -24,13 +23,13 @@ const BatchMessage = () => {
     if (!message) {
       return toast.error("please write Message");
     }
-    if (!selectedBatch ) {
-      return toast.error("please Select Batch");
+    if (!selectedClass ) {
+      return toast.error("please Select Class");
     }
 
     Swal.fire({
       title: "Are you sure?",
-      text: "send message for this batch",
+      text: "Send message for this Class",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#03A791",
@@ -38,16 +37,19 @@ const BatchMessage = () => {
       confirmButtonText: "Yes, send message!",
     }).then(async (result) => {
       if (result.isConfirmed) {
-        const res = await sendMessage({
-          id: selectedBatch,
-          message,
-        }).unwrap();
-        if (res?.data?.response_code == 202) {
-          toast.success("Message send successfully");
-        }
-        if (res?.data?.error_message) {
-          toast.error(res?.data?.error_message);
-        }
+        // const res = await sendMessage({
+        //   id: selectedClass,
+        //   message,
+        // }).unwrap();
+        // if (res?.data?.response_code == 202) {
+        //   toast.success("Message send successfully");
+        // }
+        // if (res?.data?.error_message) {
+        //   toast.error(res?.data?.error_message);
+        // }
+        console.log(selectedClass);
+        console.log(message);
+        
       }
     });
   };
@@ -62,12 +64,12 @@ const BatchMessage = () => {
               className="border p-2 rounded w-full shadow-sm mb-4"
             />
             <select
-              {...form.register("batch")}
+              {...form.register("class")}
               className={`border p-2 rounded w-full shadow-sm ${
-                selectedBatch ? "cursor-pointer border-gray-400" : ""
+                selectedClass ? "cursor-pointer border-gray-400" : ""
               }`}
             >
-              <option value="">Select Batch</option>
+              <option value="">Select Class</option>
               {batches?.map((item: any) => (
                 <option key={item.value} value={item.value}>
                   {item.name}
@@ -88,4 +90,4 @@ const BatchMessage = () => {
   );
 };
 
-export default BatchMessage;
+export default ClassMessage;
