@@ -23,6 +23,8 @@ import Swal from "sweetalert2";
 import BatchCreate from "../Create/BatchCreate";
 
 const BatchView = () => {
+  // const [openModal, setOpenModal] = useState(false);
+  // const [modalDataToUpdate, setModalDataToUpdate] = useState<any>(null);
   // * Pagination, search and filter state
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -35,8 +37,14 @@ const BatchView = () => {
     ...(selectedBatch ? [{ name: "batchName", value: selectedBatch }] : []),
   ]);
 
-  console.log("Total batch ==>",batchData?.data?.data);
+  console.log("Total batch ==>", batchData?.data?.data);
   console.log(isLoading);
+
+  const handleUpdateClick = (exam: any) => {
+    console.log(exam);
+    // setModalDataToUpdate(exam);
+    // setOpenModal(true);
+  };
 
   const [deleteBatch] = useDeleteBatchMutation();
   const handleDelete = (id?: string) => {
@@ -127,6 +135,7 @@ const BatchView = () => {
                       variant="outline"
                       size="icon"
                       className="h-8 w-8 text-blue-600 hover:text-blue-700 border-blue-100 hover:border-blue-200"
+                      onClick={() => handleUpdateClick(batchItem)}
                     >
                       <Edit className="h-4 w-4" />
                     </Button>
@@ -156,6 +165,12 @@ const BatchView = () => {
           className="mt-4 flex justify-end"
         />
       )}
+      {/* Modal */}
+      {/* <BatchModal
+        open={openModal}
+        setOpen={setOpenModal}
+        data={modalDataToUpdate}
+      /> */}
     </div>
   );
 };

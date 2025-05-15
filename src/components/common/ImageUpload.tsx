@@ -11,7 +11,7 @@ interface ImageUploadProps {
 
 export const ImageUpload = ({
   name,
-  fileTypes = "image/jpeg,image/png,image/gif",
+  fileTypes = "image/jpeg,image/png,image/gif,image/jpg,image/webp",
   defaultUrl,
 }: ImageUploadProps) => {
   const { setValue } = useFormContext();

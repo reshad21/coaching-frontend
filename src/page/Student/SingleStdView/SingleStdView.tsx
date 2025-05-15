@@ -39,7 +39,7 @@ const SingleStdView = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 justify-between">
           <Info label="Father's Name" value={studentData?.data?.fatherName} />
           <Info label="Mother's Name" value={studentData?.data?.motherName} />
-          <Info label="Class" value={studentData?.data?.class} />
+          <Info label="Class" value={studentData?.data?.className} />
           <Info label="Batch" value={studentData?.data?.batchName} />
           <Info label="Email" value={studentData?.data?.email} />
           <Info label="Phone" value={studentData?.data?.phone} />

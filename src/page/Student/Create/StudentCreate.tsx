@@ -41,7 +41,7 @@ const StudentCreate = () => {
   });
 
   const onSubmit = async (data: any) => {
-    console.log("form adta-->",data);
+    console.log("form onsubmit-->",data);
     try {
       const isoDateOfBirth = new Date(data.dateOfBirth).toISOString();
       const formData = new FormData();
@@ -72,7 +72,7 @@ const StudentCreate = () => {
       if (className) formData.append("className", className);
 
       const res = await addStudent(formData);
-      console.log("response", res);
+      console.log("create response==>", res);
       if ("data" in res && res.data?.success) {
         toast.success(res.data.message || "Student added successfully!");
         form.reset();

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FormFieldWrapper } from "@/components/common/FormFieldWrapper";
 import { ImageUpload } from "@/components/common/ImageUpload";
 import { SelectFieldWrapper } from "@/components/common/SelectFieldWrapper";
@@ -11,37 +10,43 @@ import {
 } from "@/redux/api/studentApi/studentApi";
 import { ChevronsRight, Plus } from "lucide-react";
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
+
+// --- Define types
+type TStudentFormData = {
+  firstName: string;
+  lastName: string;
+  fatherName: string;
+  motherName: string;
+  dateOfBirth: string;
+  religion: string;
+  schoolName: string;
+  studentId: string;
+  phone: string;
+  email: string;
+  address: string;
+  image: File | string;
+  gender: string;
+  className: string;
+  batchId: string;
+};
+
+type TBatch = {
+  id: string;
+  batchName: string;
+};
 
 const StudentUpdate = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const { data: student, isLoading } = useGetStudentByIdQuery(id as string);
+  const { data: student, isLoading } = useGetStudentByIdQuery(id!); // Non-null assertion to ensure id is present
   const { data: batchData } = useGetAllBatchQuery(undefined);
   const [updateStudent] = useUpdateStudentMutation();
 
-  const form = useForm({
-    defaultValues: {
-      firstName: "",
-      lastName: "",
-      fatherName: "",
-      motherName: "",
-      dateOfBirth: "",
-      religion: "",
-      schoolName: "",
-      studentId: "",
-      phone: "",
-      email: "",
-      address: "",
-      image: "",
-      gender: "",
-      class: "",
-      batchId: "",
-    },
-  });
+  const form = useForm<TStudentFormData>();
 
   const { reset } = form;
 
@@ -63,9 +68,9 @@ const StudentUpdate = () => {
         phone: student.data.phone || "",
         email: student.data.email || "",
         address: student.data.address || "",
-        image: "", // ⚠️ Don't prefill with URL, keep empty for re-upload
+        image: student.data.image || "",
         gender: student.data.gender || "",
-        class: student.data.class || "",
+        className: student.data.className || "",
         batchId: student.data.batchId || "",
       });
     }
@@ -73,11 +78,13 @@ const StudentUpdate = () => {
 
   if (isLoading) return <p>Loading...</p>;
 
-  const onSubmit = async (data: any) => {
+  const onSubmit: SubmitHandler<TStudentFormData> = async (data) => {
+    console.log("from submit data-->", data);
     try {
       const isoDateOfBirth = new Date(data.dateOfBirth).toISOString();
       const formData = new FormData();
 
+      formData.append("image", data.image);
       formData.append("firstName", data.firstName);
       formData.append("lastName", data.lastName);
       formData.append("dateOfBirth", isoDateOfBirth);
@@ -90,29 +97,27 @@ const StudentUpdate = () => {
       formData.append("schoolName", data.schoolName);
       formData.append("address", data.address);
       formData.append("gender", data.gender);
-      formData.append("class", data.class);
+      formData.append("className", data.className);
       formData.append("batchId", data.batchId);
 
-      if (data.image instanceof File) {
-        formData.append("image", data.image);
-      }
-
-      // console.log("see actual data before update-->",Object.fromEntries(formData));
-
-      const res = await updateStudent({ data: Object.fromEntries(formData), id });
+      const res = await updateStudent({
+        data: Object.fromEntries(formData),
+        id: id!,
+      });
 
       if ("data" in res && res.data?.success) {
-        toast.success(res?.data?.message || "Student updated successfully!");
+        toast.success(res.data?.message || "Student updated successfully!");
         form.reset();
         navigate("/view-student");
       } else {
         toast.error("An error occurred while updating the student.");
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error submitting form:", error);
-      toast.error(
-        error?.data?.error || "An error occurred while updating the student."
-      );
+      const errorMessage =
+        (error as { data?: { error: string } })?.data?.error ||
+        "An error occurred while updating the student.";
+      toast.error(errorMessage);
     }
   };
 
@@ -132,18 +137,57 @@ const StudentUpdate = () => {
             <ImageUpload
               name="image"
               fileTypes="image/jpeg,image/png,image/gif"
+              defaultUrl={
+                typeof student?.data?.image === "string"
+                  ? student.data.image
+                  : undefined
+              }
             />
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <FormFieldWrapper name="firstName" label="First Name" placeholder="Enter your First Name" />
-              <FormFieldWrapper name="lastName" label="Last Name" placeholder="Enter your Last Name" />
-              <FormFieldWrapper name="dateOfBirth" label="Date of Birth" type="date" placeholder="Enter your Date of Birth" />
-              <FormFieldWrapper name="studentId" label="ID Number" placeholder="Enter your ID Number" />
-              <FormFieldWrapper name="email" label="Email" type="email" placeholder="Enter your Email" />
-              <FormFieldWrapper name="phone" label="Phone" placeholder="Enter your Phone Number" />
-              <FormFieldWrapper name="fatherName" label="Father's Name" placeholder="Enter your Father's Name" />
-              <FormFieldWrapper name="motherName" label="Mother's Name" placeholder="Enter your Mother's Name" />
-              
+              <FormFieldWrapper
+                name="firstName"
+                label="First Name"
+                placeholder="Enter your First Name"
+              />
+              <FormFieldWrapper
+                name="lastName"
+                label="Last Name"
+                placeholder="Enter your Last Name"
+              />
+              <FormFieldWrapper
+                name="dateOfBirth"
+                label="Date of Birth"
+                type="date"
+                placeholder="Enter your Date of Birth"
+              />
+              <FormFieldWrapper
+                name="studentId"
+                label="ID Number"
+                placeholder="Enter your ID Number"
+              />
+              <FormFieldWrapper
+                name="email"
+                label="Email"
+                type="email"
+                placeholder="Enter your Email"
+              />
+              <FormFieldWrapper
+                name="phone"
+                label="Phone"
+                placeholder="Enter your Phone Number"
+              />
+              <FormFieldWrapper
+                name="fatherName"
+                label="Father's Name"
+                placeholder="Enter your Father's Name"
+              />
+              <FormFieldWrapper
+                name="motherName"
+                label="Mother's Name"
+                placeholder="Enter your Mother's Name"
+              />
+
               <SelectFieldWrapper
                 name="religion"
                 label="Religion"
@@ -168,17 +212,29 @@ const StudentUpdate = () => {
                 control={form.control}
               />
 
-              <FormFieldWrapper name="address" label="Address" placeholder="Enter your Address" />
-              <FormFieldWrapper name="schoolName" label="School Name" placeholder="Enter your School Name" />
-              <FormFieldWrapper name="class" label="Enter Class" placeholder="Enter your class" />
+              <FormFieldWrapper
+                name="address"
+                label="Address"
+                placeholder="Enter your Address"
+              />
+              <FormFieldWrapper
+                name="schoolName"
+                label="School Name"
+                placeholder="Enter your School Name"
+              />
+              <FormFieldWrapper
+                name="className"
+                label="Enter Class"
+                placeholder="Enter your class"
+              />
 
               <SelectFieldWrapper
                 name="batchId"
                 label="Batch"
                 options={
-                  batchData?.data?.map((batch: any) => ({
-                    value: batch?.id,
-                    name: batch?.batchName,
+                  batchData?.data?.map((batch: TBatch) => ({
+                    value: batch.id,
+                    name: batch.batchName,
                   })) || []
                 }
                 control={form.control}
