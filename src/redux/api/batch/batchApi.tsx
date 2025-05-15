@@ -40,6 +40,15 @@ const batchApi = baseApi.injectEndpoints({
       },
       providesTags: ["batch"],
     }),
+    getBatchInfoById: builder.query({
+      query: (id) => {
+        return {
+          url: `/batch/batch-info/${id}`,
+          method: 'GET',
+        }
+      },
+      providesTags: ["batch"],
+    }),
     deleteBatch: builder.mutation({
       query: (id) => {
         return {
@@ -80,5 +89,6 @@ export const {
   useDeleteBatchMutation,
   useAddBatchMutation,
   useUpdateBatchMutation,
-  useGeBatchStatusQuery
+  useGeBatchStatusQuery,
+  useGetBatchInfoByIdQuery
 } = batchApi;

@@ -4,7 +4,10 @@ import { ImageUpload } from "@/components/common/ImageUpload";
 import { SelectFieldWrapper } from "@/components/common/SelectFieldWrapper";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { useGetAllBatchQuery } from "@/redux/api/batch/batchApi";
+import {
+  useGetAllBatchQuery,
+  useGetBatchInfoByIdQuery,
+} from "@/redux/api/batch/batchApi";
 import { useGetAllClassQuery } from "@/redux/api/class/classApi";
 import { useGetAllShiftQuery } from "@/redux/api/shiftApi/shiftApi";
 import { useAddStudentMutation } from "@/redux/api/studentApi/studentApi";
@@ -18,8 +21,6 @@ const StudentCreate = () => {
   const { data: batchData } = useGetAllBatchQuery(undefined);
   const { data: classData } = useGetAllClassQuery(undefined);
   const { data: shiftData } = useGetAllShiftQuery(undefined);
-  const [addStudent] = useAddStudentMutation();
-
   const form = useForm({
     defaultValues: {
       firstName: "",
@@ -40,8 +41,11 @@ const StudentCreate = () => {
     },
   });
 
+  const batchId = form.watch("batchId");
+  const { data: batchInfo } = useGetBatchInfoByIdQuery(batchId);
+  const [addStudent] = useAddStudentMutation();
+
   const onSubmit = async (data: any) => {
-    console.log("form onsubmit-->",data);
     try {
       const isoDateOfBirth = new Date(data.dateOfBirth).toISOString();
       const formData = new FormData();
@@ -59,13 +63,19 @@ const StudentCreate = () => {
       formData.append("gender", data.gender);
       formData.append("image", data.image);
       formData.append("batchId", data.batchId);
-      formData.append("shiftId", data.shiftId);
-      formData.append("classId", data.classId);
+      formData.append("shiftId", batchInfo?.data?.Shift?.id);
+      formData.append("classId", batchInfo?.data?.Class?.id);
 
       // 🔽 Add corresponding names manually
-      const batchName = batchData?.data?.find((item: any) => item.id === data.batchId)?.batchName;
-      const shiftName = shiftData?.data?.find((item: any) => item.id === data.shiftId)?.shiftName;
-      const className = classData?.data?.find((item: any) => item.id === data.classId)?.className;
+      const batchName = batchData?.data?.find(
+        (item: any) => item.id === data.batchId
+      )?.batchName;
+      const shiftName = shiftData?.data?.find(
+        (item: any) => item.id === data.shiftId
+      )?.shiftName;
+      const className = classData?.data?.find(
+        (item: any) => item.id === data.classId
+      )?.className;
 
       if (batchName) formData.append("batchName", batchName);
       if (shiftName) formData.append("shiftName", shiftName);
@@ -187,7 +197,7 @@ const StudentCreate = () => {
                 control={form.control}
               />
 
-              <SelectFieldWrapper
+              {/* <SelectFieldWrapper
                 name="shiftId"
                 label="Select Shift"
                 options={
@@ -197,9 +207,9 @@ const StudentCreate = () => {
                   })) || []
                 }
                 control={form.control}
-              />
+              /> */}
 
-              <SelectFieldWrapper
+              {/* <SelectFieldWrapper
                 name="classId"
                 label="Select Class"
                 options={
@@ -209,10 +219,13 @@ const StudentCreate = () => {
                   })) || []
                 }
                 control={form.control}
-              />
+              /> */}
             </div>
 
             <Button
+              disabled={
+                !batchInfo?.data?.Shift?.id || !batchInfo?.data?.Class?.id
+              }
               type="submit"
               className="w-full bg-primary hover:bg-cyan-800 text-white flex items-center justify-center gap-2 py-2 px-4 rounded-md transition"
             >

@@ -69,7 +69,7 @@ const Login = () => {
   };
   return (
    <div className="flex justify-center items-center h-screen w-full">
-    <Card className="p-5 w-[35%] ">
+    <Card className="p-5 sm:w-full md:w-[25%] ">
     <form onSubmit={handleSubmit(onSubmit)}>
       <CardContent className="space-y-2 px-0">
         <div className="space-y-1">
@@ -102,7 +102,7 @@ const Login = () => {
         </div>
       </CardContent>
       <CardFooter className="px-0 pb-0">
-        <Button type="submit" className="bg-[#09733D] text-white w-full px-0">
+        <Button type="submit" className=" text-white w-full px-0">
           Login
         </Button>
       </CardFooter>

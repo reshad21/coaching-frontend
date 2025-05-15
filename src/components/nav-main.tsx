@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronRight, type LucideIcon } from "lucide-react";
+import { ChevronRight, LogOut, type LucideIcon } from "lucide-react";
 
 import {
   Collapsible,
@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/collapsible";
 import {
   SidebarGroup,
+  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -16,7 +17,9 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAppDispatch } from "@/redux/hooks";
+import { HandelLogout } from "@/utils/handelLogOut";
 
 export function NavMain({
   items,
@@ -33,7 +36,9 @@ export function NavMain({
     }[];
   }[];
 }) {
-  // console.log(items[0]?.items?.isShow);
+  const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  // const location = useLocation();  
 
   return (
     <SidebarGroup>
@@ -74,6 +79,16 @@ export function NavMain({
           </Collapsible>
         ))}
       </SidebarMenu>
+      <SidebarGroupLabel
+        onClick={() => HandelLogout(navigate, dispatch)}
+        className="cursor-pointer text-xs"
+      >
+        <span>
+          {" "}
+          <LogOut className="pe-2" />{" "}
+        </span>
+        <span>Log out</span>
+      </SidebarGroupLabel>
     </SidebarGroup>
   );
 }
