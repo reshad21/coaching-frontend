@@ -1,11 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useAddBatchMutation } from "@/redux/api/batch/batchApi";
-import { useGetAllClassQuery } from "@/redux/api/class/classApi";
-import { useGetAllShiftQuery } from "@/redux/api/shiftApi/shiftApi"; // Adjust path if needed
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -13,33 +10,36 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
+import { useAddBatchMutation } from "@/redux/api/batch/batchApi";
+import { useGetAllClassQuery } from "@/redux/api/class/classApi";
+import { useGetAllShiftQuery } from "@/redux/api/shiftApi/shiftApi";
 import { Plus } from "lucide-react";
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
 const BatchCreate = () => {
-  const [addBatch] = useAddBatchMutation();
-  const [batchName, setBatchName] = useState("");
-  const [classId, setClassId] = useState("");
-  const [shiftId, setShiftId] = useState("");
   const [open, setOpen] = useState(false);
+  const [addBatch] = useAddBatchMutation();
 
   const { data: classData } = useGetAllClassQuery(undefined);
   const { data: shiftData } = useGetAllShiftQuery(undefined);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const { register, handleSubmit, reset } = useForm();
+
+  const onSubmit = async (data: any) => {
     try {
-      await addBatch({ batchName, classId, shiftId }).unwrap();
-      setBatchName("");
-      setClassId("");
-      setShiftId("");
-      toast.success("Batch added successfully");
-      setOpen(false);
-    } catch (error) {
+      const res: any = await addBatch(data).unwrap();
+      if (res.statusCode == 200) {
+        toast.success(res?.message || "Batch added successfully");
+        reset();
+        setOpen(false);
+      }
+    } catch (error: any) {
       console.error("Failed to add batch:", error);
-      toast.error("Failed to add batch");
+      toast.error(
+        error?.data?.message || error?.message || "Something went wrong..!"
+      );
     }
   };
 
@@ -52,38 +52,33 @@ const BatchCreate = () => {
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <DialogHeader>
-            <DialogTitle>Add New Batch</DialogTitle>
-            <DialogDescription>
-              Create a new batch by selecting class and shift.
-            </DialogDescription>
+            <DialogTitle className="text-center text-slate-800">Add New Batch</DialogTitle>
           </DialogHeader>
           <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="batchName" className="text-right">
-                Batch Name
+            <div className="flex flex-col gap-2 mb-3">
+              <Label htmlFor="batchName" className="text-slate-700">
+                BATCH NAME:
               </Label>
               <Input
                 id="batchName"
                 placeholder="Batch A"
                 className="col-span-3"
-                value={batchName}
-                onChange={(e) => setBatchName(e.target.value)}
-                required
+                {...register("batchName", {
+                  required: "Batch name is required",
+                })}
               />
             </div>
 
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="classId" className="text-right">
-                Class
+            <div className="flex flex-col gap-2 mb-3">
+              <Label htmlFor="classId" className="text-slate-700">
+                SELECT CLASS:
               </Label>
               <select
                 id="classId"
                 className="col-span-3 border rounded px-2 py-1"
-                value={classId}
-                onChange={(e) => setClassId(e.target.value)}
-                required
+                {...register("classId", { required: "Class is required" })}
               >
                 <option value="">Select Class</option>
                 {classData?.data?.map((cls: any) => (
@@ -94,16 +89,14 @@ const BatchCreate = () => {
               </select>
             </div>
 
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="shiftId" className="text-right">
-                Shift
+            <div className="flex flex-col gap-2 mb-3">
+              <Label htmlFor="shiftId" className="text-slate-700">
+                SELECT SHIFT:
               </Label>
               <select
                 id="shiftId"
                 className="col-span-3 border rounded px-2 py-1"
-                value={shiftId}
-                onChange={(e) => setShiftId(e.target.value)}
-                required
+                {...register("shiftId", { required: "Shift is required" })}
               >
                 <option value="">Select Shift</option>
                 {shiftData?.data?.map((shift: any) => (
@@ -115,7 +108,9 @@ const BatchCreate = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button type="submit">Save Batch</Button>
+            <Button className="text-white" type="submit">
+              CREATE BATCH
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

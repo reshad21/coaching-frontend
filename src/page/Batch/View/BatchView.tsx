@@ -21,10 +21,14 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 import BatchCreate from "../Create/BatchCreate";
+import { BatchModal } from "@/components/CommonModal/BatchModal";
 
 const BatchView = () => {
-  // const [openModal, setOpenModal] = useState(false);
-  // const [modalDataToUpdate, setModalDataToUpdate] = useState<any>(null);
+  
+  // * Modal state
+  const [openModal, setOpenModal] = useState(false);
+  const [modalDataToUpdate, setModalDataToUpdate] = useState<any>(null);
+
   // * Pagination, search and filter state
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -37,13 +41,12 @@ const BatchView = () => {
     ...(selectedBatch ? [{ name: "batchName", value: selectedBatch }] : []),
   ]);
 
-  console.log("Total batch ==>", batchData?.data?.data);
+  // console.log("Total batch ==>", batchData?.data?.data);
   console.log(isLoading);
 
   const handleUpdateClick = (exam: any) => {
-    console.log(exam);
-    // setModalDataToUpdate(exam);
-    // setOpenModal(true);
+    setModalDataToUpdate(exam);
+    setOpenModal(true);
   };
 
   const [deleteBatch] = useDeleteBatchMutation();
@@ -162,15 +165,15 @@ const BatchView = () => {
           page={page}
           setPage={setPage}
           totalPages={batchData?.meta?.totalPages}
-          className="mt-4 flex justify-end"
+          className="my-6 flex justify-end"
         />
       )}
       {/* Modal */}
-      {/* <BatchModal
+      <BatchModal
         open={openModal}
         setOpen={setOpenModal}
         data={modalDataToUpdate}
-      /> */}
+      />
     </div>
   );
 };

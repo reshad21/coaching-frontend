@@ -8,12 +8,12 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
-import { useUpdateBatchMutation } from "@/redux/api/batch/batchApi";
+import { useUpdateShiftMutation } from "@/redux/api/shiftApi/shiftApi";
 import * as React from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
-export const BatchModal = ({
+export const ShiftModal = ({
   open,
   setOpen,
   data,
@@ -27,45 +27,47 @@ export const BatchModal = ({
       <DialogContent className="max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="text-center text-slate-800 font-semibold">
-            UPDATE BATCH NAME
+            UPDATE SHIFT
           </DialogTitle>
         </DialogHeader>
-        <BatchFormModal data={data} setOpen={setOpen} />
+        <ShiftFormModal data={data} setOpen={setOpen} />
       </DialogContent>
     </Dialog>
   );
 };
 
 // This component is used to update the batch information
-function BatchFormModal({
+function ShiftFormModal({
   data,
   setOpen,
 }: {
   data: any;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  // console.log("pass data-->", data);
+  console.log("pass shift data-->", data);
+  // update hook for subject config
+  const [updateShift] = useUpdateShiftMutation();
 
-  const [updateBatch] = useUpdateBatchMutation();
-
+  // Initialize React Hook Form with default values from data
   const form = useForm({
     defaultValues: {
-      batchName: data?.batchName || "",
+      shiftName: data?.shiftName || "",
     },
   });
 
   // Handle form submission
   const onSubmit = async (submitData: any) => {
     try {
+      // Convert FormData to an object for API submission
       const updatedData = {
         id: data.id,
         data: {
-          batchName: submitData?.batchName,
+          shiftName: submitData?.shiftName,
         },
       };
 
       // Send the updated data to the API
-      const res: any = await updateBatch(updatedData);
+      const res: any = await updateShift(updatedData);
 
       if (res?.data?.success) {
         toast.success(res.data.message || "Batch updated successfully!");
@@ -84,15 +86,15 @@ function BatchFormModal({
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
         <FormFieldWrapper
-          name="batchName"
-          label="BATCH NAME"
-          placeholder="Enter Batch Number"
+          name="shiftName"
+          label="SHIFT NAME"
+          placeholder="Enter Shift Name"
         />
         <Button
           type="submit"
           className="w-full bg-green-700 hover:bg-green-800 text-white"
         >
-          UPDATE BATCH
+          UPDATE SHIFT
         </Button>
       </form>
     </Form>

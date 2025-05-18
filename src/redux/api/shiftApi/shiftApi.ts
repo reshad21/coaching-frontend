@@ -62,7 +62,7 @@ const ShiftApi = baseApi.injectEndpoints({
             },
             invalidatesTags: ["shift"]
         }),
-        
+
     }),
 });
 
@@ -72,6 +72,4 @@ export const {
     useDeleteShiftMutation,
     useAddShiftMutation,
     useUpdateShiftMutation,
-    useUpdateShiftCertificateMutation,
-    useDeleteShiftCertificateMutation
 } = ShiftApi;
