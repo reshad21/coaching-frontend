@@ -10,7 +10,7 @@ type Option = {
 
 interface SelectFieldWrapperProps {
   name: string;
-  label: string;
+  label?: string;
   options: Option[];
   control: any;
   required?: boolean;
