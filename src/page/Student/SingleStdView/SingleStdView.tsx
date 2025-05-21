@@ -8,7 +8,6 @@ const SingleStdView = () => {
   const navigate = useNavigate();
   const { data: studentData } = useGetStudentByIdQuery(id as string);
 
-  console.log("singleStudent =>", studentData?.data);
 
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
@@ -41,7 +40,6 @@ const SingleStdView = () => {
           <Info label="Mother's Name" value={studentData?.data?.motherName} />
           <Info label="Class" value={studentData?.data?.className} />
           <Info label="Batch" value={studentData?.data?.batchName} />
-          <Info label="Email" value={studentData?.data?.email} />
           <Info label="Phone" value={studentData?.data?.phone} />
           <Info label="Address" value={studentData?.data?.address} />
           <Info label="Religion" value={studentData?.data?.religion} />

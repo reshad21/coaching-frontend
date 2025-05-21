@@ -31,7 +31,7 @@ const StudentCreate = () => {
       religion: "",
       schoolName: "",
       phone: "",
-      email: "",
+      admissionFees: "",
       address: "",
       image: null,
       gender: "",
@@ -50,10 +50,11 @@ const StudentCreate = () => {
       const isoDateOfBirth = new Date(data.dateOfBirth).toISOString();
       const formData = new FormData();
 
+
       formData.append("firstName", data.firstName);
       formData.append("lastName", data.lastName);
       formData.append("dateOfBirth", isoDateOfBirth);
-      formData.append("email", data.email);
+      formData.append("admissionFees", data.admissionFees);
       formData.append("phone", data.phone);
       formData.append("fatherName", data.fatherName);
       formData.append("motherName", data.motherName);
@@ -132,10 +133,10 @@ const StudentCreate = () => {
                 type="date"
               />
               <FormFieldWrapper
-                name="email"
-                label="Email"
-                type="email"
-                placeholder="Enter your Email"
+                name="admissionFees"
+                label="AdmissionFees"
+                type="number"
+                placeholder="Enter your AdmissionFees"
               />
               <FormFieldWrapper
                 name="phone"

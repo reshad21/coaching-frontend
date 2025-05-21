@@ -10,7 +10,6 @@ import ClassUpdate from "@/page/Class/Update/ClassUpdate";
 import ClassView from "@/page/Class/View/ClassView";
 import Login from "@/page/Login/Login";
 import Message from "@/page/Message/Message";
-import AdmissionPayment from "@/page/Payment/AdmissionPayment/AdmissionPayment";
 import MonthlyPayment from "@/page/Payment/MonthlyPayment/MonthlyPayment";
 import PaymentStatus from "@/page/Payment/PaymentStatus/PaymentStatus";
 import ShiftCreate from "@/page/Shift/Create/ShiftCreate";
@@ -33,7 +32,7 @@ const componentMapping: Record<string, React.ElementType> = {
   "/shift": ShiftView,
   "/shift-create": ShiftCreate,
   "/shift-update/:id": ShiftUpdate,
-  
+
   // student routes
   "/view-student": Student,
   "/create-student": StudentCreate,
@@ -41,26 +40,22 @@ const componentMapping: Record<string, React.ElementType> = {
   "/view-student/:id": SingleStdView,
 
   // payment routes
-  "/admission-payment": AdmissionPayment,
+  // "/admission-payment": AdmissionPayment,
   "/monthly-payment": MonthlyPayment,
   "/payment-status": PaymentStatus,
 
   //class routes
-  "/class":ClassView,
-  "/class-create":ClassCreate,
-  "class-update/:id":ClassUpdate,
-
+  "/class": ClassView,
+  "/class-create": ClassCreate,
+  "class-update/:id": ClassUpdate,
 
   //Batch routes
-  "/batch":BatchView,
-  "/batch-create":BatchCreate,
-  "/batch-update/:id":BatchUpdate,
+  "/batch": BatchView,
+  "/batch-create": BatchCreate,
+  "/batch-update/:id": BatchUpdate,
 
-  
   //message routes
-  "/message":Message,
-
-  
+  "/message": Message,
 };
 
 const routs = createBrowserRouter([

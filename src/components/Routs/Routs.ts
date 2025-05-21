@@ -66,11 +66,11 @@ export const navMain = [
     icon: BadgeDollarSign,
     isActive: false,
     items: [
-      featureAccess["admin"]?.includes(1) && {
-        title: "Admission Fees",
-        url: "/admission-payment",
-        isShow: true,
-      },
+      // featureAccess["admin"]?.includes(1) && {
+      //   title: "Admission Fees",
+      //   url: "/admission-payment",
+      //   isShow: true,
+      // },
       featureAccess["admin"]?.includes(1) && {
         title: "Monthly Fees",
         url: "/monthly-payment",
