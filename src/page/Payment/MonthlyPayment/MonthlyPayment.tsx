@@ -15,17 +15,18 @@ import {
 } from "@/components/ui/table";
 import { useAddPaymentMutation } from "@/redux/api/payment/paymentApi";
 import { useGetAllStudentQuery } from "@/redux/api/studentApi/studentApi";
-import { ChevronsRight, Plus } from "lucide-react";
+import { ChevronsRight, DollarSign, Eye, Plus } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
 
 const MonthlyPayment = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [openFormFor, setOpenFormFor] = useState<string | null>(null);
 
-  const { data: students, isLoading } = useGetAllStudentQuery([
+  const { data: students } = useGetAllStudentQuery([
     { name: "limit", value: 10 },
     { name: "page", value: page },
     { name: "search", value: search },
@@ -50,8 +51,8 @@ const MonthlyPayment = () => {
       title: data.title,
     };
 
-    const res: any = await addPayment(payload);
-    if (res?.status === 200) {
+    const res: any = await addPayment(payload).unwrap();
+    if (res?.statusCode == 200) {
       form.reset();
       setOpenFormFor(null);
       toast.success(res?.message || "Payment added successfully");
@@ -122,19 +123,32 @@ const MonthlyPayment = () => {
                       <TableCell>{student.studentId}</TableCell>
                       <TableCell>{student.phone}</TableCell>
                       <TableCell>
-                        <Button
-                          variant="outline"
-                          onClick={() => {
-                            form.setValue("studentId", student.studentId);
-                            setOpenFormFor((prev) =>
-                              prev === student.studentId ? null : student.studentId
-                            );
-                          }}
-                        >
-                          {openFormFor === student.studentId
-                            ? "Cancel"
-                            : "Make Payment"}
-                        </Button>
+                        <div className="flex items-center gap-2">
+                          <Button
+                            variant="outline"
+                            className="bg-green-600 hover:bg-green-500 text-slate-100"
+                            onClick={() => {
+                              form.setValue("studentId", student.id); // store the real ID
+                              setOpenFormFor((prev) =>
+                                prev === student.studentId
+                                  ? null
+                                  : student.studentId
+                              );
+                            }}
+                          >
+                            {/* Icon */}
+                            <DollarSign className="w-5 h-5" />{" "}
+                            {/* Conditional rendering of button text */}
+                            {openFormFor === student.studentId
+                              ? "Cancel"
+                              : "Make Payment"}
+                          </Button>
+                          <Link to={`/payment/${student.id}`}>
+                            <Button variant="outline" className="bg-green-600 hover:bg-green-500 text-slate-100">
+                              <Eye className="w-5 h-5" /> View Payment
+                            </Button>
+                          </Link>
+                        </div>
                       </TableCell>
                     </TableRow>
 

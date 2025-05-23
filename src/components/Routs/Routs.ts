@@ -1,4 +1,4 @@
-import { ArrowBigUp, MessagesSquare, BadgeDollarSign, CircleUser, DatabaseZapIcon, School } from "lucide-react";
+import { ArrowBigUp, BadgeDollarSign, CircleUser, DatabaseZapIcon, MessagesSquare, School } from "lucide-react";
 
 const featureAccess = { admin: [1] };
 
@@ -66,20 +66,23 @@ export const navMain = [
     icon: BadgeDollarSign,
     isActive: false,
     items: [
-      // featureAccess["admin"]?.includes(1) && {
-      //   title: "Admission Fees",
-      //   url: "/admission-payment",
-      //   isShow: true,
-      // },
+      featureAccess["admin"]?.includes(1) && {
+        title: "Payment Details",
+        url: "/payment/:id",
+        isShow: false,
+        parent: "Payment",
+      },
       featureAccess["admin"]?.includes(1) && {
         title: "Monthly Fees",
         url: "/monthly-payment",
         isShow: true,
+        parent: "Payment",
       },
       featureAccess["admin"]?.includes(1) && {
         title: "Payment History",
         url: "/payment-status",
         isShow: true,
+        parent: "Payment",
       },
 
     ].filter(Boolean), // Remove false values

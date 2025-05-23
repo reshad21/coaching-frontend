@@ -11,6 +11,7 @@ import ClassView from "@/page/Class/View/ClassView";
 import Login from "@/page/Login/Login";
 import Message from "@/page/Message/Message";
 import MonthlyPayment from "@/page/Payment/MonthlyPayment/MonthlyPayment";
+import PaymentDetails from "@/page/Payment/PaymentDetails/PaymentDetails";
 import PaymentStatus from "@/page/Payment/PaymentStatus/PaymentStatus";
 import ShiftCreate from "@/page/Shift/Create/ShiftCreate";
 import ShiftUpdate from "@/page/Shift/Update/ShiftUpdate";
@@ -40,7 +41,7 @@ const componentMapping: Record<string, React.ElementType> = {
   "/view-student/:id": SingleStdView,
 
   // payment routes
-  // "/admission-payment": AdmissionPayment,
+  "/payment/:id": PaymentDetails,
   "/monthly-payment": MonthlyPayment,
   "/payment-status": PaymentStatus,
 
