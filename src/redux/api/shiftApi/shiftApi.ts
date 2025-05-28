@@ -30,7 +30,6 @@ const ShiftApi = baseApi.injectEndpoints({
 
         deleteShift: builder.mutation({
             query: (id) => {
-                console.log("inside base api=>", id);
                 return {
                     url: `/shift/${id}`,
                     method: "DELETE",
@@ -41,7 +40,6 @@ const ShiftApi = baseApi.injectEndpoints({
 
         addShift: builder.mutation({
             query: (data) => {
-                console.log("inside base api=>", data);
                 return {
                     url: "/shift",
                     method: "POST",
@@ -53,7 +51,6 @@ const ShiftApi = baseApi.injectEndpoints({
 
         updateShift: builder.mutation({
             query: ({ id, data }) => {
-                console.log("Updating teacher with id:", id, "and data:", data);
                 return {
                     url: `/shift/${id}`,
                     method: "PATCH",

@@ -27,7 +27,6 @@ const ShiftView = () => {
   const [modalDataToUpdate, setModalDataToUpdate] = useState<any>(null);
 
   const { data: shift, isLoading } = useGetAllShiftQuery(undefined);
-  console.log("shift data==>", shift);
   console.log("loading..", isLoading);
 
   const [deleteShift] = useDeleteShiftMutation();
@@ -68,7 +67,7 @@ const ShiftView = () => {
         <CardHeader className="px-6 pt-6 pb-4">
           <div className="flex justify-between items-center">
             <CardTitle className="text-2xl font-semibold text-gray-800">
-              Shift Management
+              SHIFT MANAGEMENT
             </CardTitle>
             <ShiftCreate />
           </div>
@@ -78,7 +77,7 @@ const ShiftView = () => {
             <TableHeader className="bg-gray-50">
               <TableRow>
                 <TableHead className="w-[60px] text-gray-600">S.N</TableHead>
-                <TableHead className="text-gray-600">Shift Name</TableHead>
+                <TableHead className="text-gray-600">SHIFT NAME</TableHead>
                 <TableHead className="text-gray-600 text-right">
                   Actions
                 </TableHead>

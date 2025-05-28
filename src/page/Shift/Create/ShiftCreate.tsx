@@ -1,4 +1,5 @@
-import { useAddShiftMutation } from "@/redux/api/shiftApi/shiftApi";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -10,14 +11,16 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { useAddShiftMutation } from "@/redux/api/shiftApi/shiftApi";
+import { formatTime12Hour } from "@/utils/formatTime12Hour";
+import { Clock, Plus } from "lucide-react";
 import { useState } from "react";
-import toast from "react-hot-toast";
+import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
 
 type FormValues = {
-  shiftName: string;
+  startTime: string;
+  endTime: string;
 };
 
 const ShiftCreate = () => {
@@ -29,17 +32,29 @@ const ShiftCreate = () => {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormValues>();
+  } = useForm<FormValues>({
+    defaultValues: {
+      startTime: "",
+      endTime: "",
+    },
+  });
 
   const onSubmit = async (data: FormValues) => {
-    try {
-      await addShift(data).unwrap();
-      toast.success("Shift added successfully");
+    const formattedStart = formatTime12Hour(data.startTime);
+    const formattedEnd = formatTime12Hour(data.endTime);
+
+    const shiftData = {
+      shiftName: `${formattedStart} - ${formattedEnd}`,
+    };
+
+    const res: any = await addShift(shiftData).unwrap();
+
+    if (res.statusCode === 200) {
+      toast.success(res?.message || "Shift Create Successfully..!");
       reset();
       setOpen(false);
-    } catch (error) {
-      console.error("Failed to add shift:", error);
-      toast.error("Failed to add shift");
+    } else {
+      toast.error(res?.message || "Something went wrong..!");
     }
   };
 
@@ -56,27 +71,54 @@ const ShiftCreate = () => {
           <DialogHeader>
             <DialogTitle>Add New Shift</DialogTitle>
             <DialogDescription>
-              Create a new shift here. Click save when you're done.
+              Create a shift with start and end times.
             </DialogDescription>
           </DialogHeader>
+
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="shiftName" className="text-right">
-                Shift Name
+              <Label htmlFor="startTime" className="text-right">
+                Start Time
               </Label>
-              <Input
-                id="shiftName"
-                placeholder="Morning Shift"
-                className="col-span-3"
-                {...register("shiftName", { required: "Shift name is required" })}
-              />
+              <div className="col-span-3 relative">
+                <Input
+                  id="startTime"
+                  type="time"
+                  className="pl-10"
+                  {...register("startTime", {
+                    required: "Start time is required",
+                  })}
+                />
+                <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              </div>
             </div>
-            {errors.shiftName && (
+            {errors.startTime && (
               <p className="text-red-500 text-sm ml-[33%] -mt-2">
-                {errors.shiftName.message}
+                {errors.startTime.message}
+              </p>
+            )}
+
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="endTime" className="text-right">
+                End Time
+              </Label>
+              <div className="col-span-3 relative">
+                <Input
+                  id="endTime"
+                  type="time"
+                  className="pl-10"
+                  {...register("endTime", { required: "End time is required" })}
+                />
+                <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+              </div>
+            </div>
+            {errors.endTime && (
+              <p className="text-red-500 text-sm ml-[33%] -mt-2">
+                {errors.endTime.message}
               </p>
             )}
           </div>
+
           <DialogFooter>
             <Button type="submit">Save Shift</Button>
           </DialogFooter>

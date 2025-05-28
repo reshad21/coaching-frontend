@@ -20,12 +20,10 @@ import StudentCreate from "@/page/Student/Create/StudentCreate";
 import SingleStdView from "@/page/Student/SingleStdView/SingleStdView";
 import StudentUpdate from "@/page/Student/Update/StudentUpdate";
 import Student from "@/page/Student/View/Student";
-import Test from "@/page/Test/Test";
 import PrivateRout from "@/PrivateRout/PrivateRout";
 import { createBrowserRouter } from "react-router-dom";
 
 const componentMapping: Record<string, React.ElementType> = {
-  "/test": Test,
   // login route
   "/login": Login,
 
