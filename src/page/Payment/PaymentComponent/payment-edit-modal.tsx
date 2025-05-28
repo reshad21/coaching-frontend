@@ -96,7 +96,7 @@ export function PaymentEditModal({ isOpen, onClose, month, payment, onSave }: Ed
             </div>
           </div>
 
-          {payment && (
+          {/* {payment && (
             <>
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label className="text-right text-sm text-muted-foreground">Payment ID</Label>
@@ -109,7 +109,7 @@ export function PaymentEditModal({ isOpen, onClose, month, payment, onSave }: Ed
                 </div>
               </div>
             </>
-          )}
+          )} */}
         </div>
 
         <DialogFooter>

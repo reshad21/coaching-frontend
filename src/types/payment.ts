@@ -25,5 +25,5 @@ export interface EditPaymentModalProps {
   onClose: () => void
   month: string
   payment?: Payment
-  onSave: (paymentId: string | null, month: string, amount: number) => void
+  onSave: (paymentId?: string | null, month?: string, amount?: number) => void
 }

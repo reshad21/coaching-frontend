@@ -30,7 +30,7 @@ const paymentApi = baseApi.injectEndpoints({
       },
       providesTags: ["payment"],
     }),
-    
+
 
     addPayment: builder.mutation({
       query: (data) => {
@@ -46,6 +46,7 @@ const paymentApi = baseApi.injectEndpoints({
 
     updatePayment: builder.mutation({
       query: ({ id, data }) => {
+        console.log("redux inside==>", id, data);
         return {
           url: `/payment/${id}`,
           method: "PATCH",
@@ -58,8 +59,8 @@ const paymentApi = baseApi.injectEndpoints({
 });
 
 export const {
-    useGetAllPaymentQuery,
-    useGetPaymentByIdQuery,
-    useAddPaymentMutation,
-    useUpdatePaymentMutation,
+  useGetAllPaymentQuery,
+  useGetPaymentByIdQuery,
+  useAddPaymentMutation,
+  useUpdatePaymentMutation,
 } = paymentApi;

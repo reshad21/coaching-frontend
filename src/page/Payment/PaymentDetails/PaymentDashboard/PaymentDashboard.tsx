@@ -1,31 +1,39 @@
-"use client"
+/* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
 
-import { useState } from "react"
-import { Skeleton } from "@/components/ui/skeleton"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useGetPaymentByIdQuery } from "@/redux/api/payment/paymentApi"
-import { useParams } from "react-router-dom"
-import { usePaymentCalculations } from "@/hooks/use-payment-calculations"
-import type { Payment } from "@/types/payment"
-import { StudentInfoCard } from "../../PaymentComponent/student-info-card"
-import { PaymentProgressCard } from "../../PaymentComponent/payment-progress-card"
-import { PaymentSummaryCard } from "../../PaymentComponent/payment-summary-card"
-import { MonthlyPaymentGrid } from "../../PaymentComponent/monthly-payment-grid"
-import { MonthlyPaymentList } from "../../PaymentComponent/monthly-payment-list"
-import { ModelTestPayments } from "../../PaymentComponent/model-test-payments"
-import { PaymentEditModal } from "../../PaymentComponent/payment-edit-modal"
+import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { usePaymentCalculations } from "@/hooks/use-payment-calculations";
+import {
+  useGetPaymentByIdQuery,
+  useUpdatePaymentMutation,
+} from "@/redux/api/payment/paymentApi";
+import type { Payment } from "@/types/payment";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { useParams } from "react-router-dom";
+import { ModelTestPayments } from "../../PaymentComponent/model-test-payments";
+import { MonthlyPaymentGrid } from "../../PaymentComponent/monthly-payment-grid";
+import { MonthlyPaymentList } from "../../PaymentComponent/monthly-payment-list";
+import { PaymentEditModal } from "../../PaymentComponent/payment-edit-modal";
+import { PaymentProgressCard } from "../../PaymentComponent/payment-progress-card";
+import { PaymentSummaryCard } from "../../PaymentComponent/payment-summary-card";
+import { StudentInfoCard } from "../../PaymentComponent/student-info-card";
 
 export function PaymentDashboard() {
-  const { id } = useParams()
-  const { data, isLoading } = useGetPaymentByIdQuery(id)
+  const { id } = useParams();
+  const { data, isLoading } = useGetPaymentByIdQuery(id);
+  const [updatePayment] = useUpdatePaymentMutation();
 
   // Modal state
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
-  const [selectedMonth, setSelectedMonth] = useState<string>("")
-  const [selectedPayment, setSelectedPayment] = useState<Payment | undefined>(undefined)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [selectedMonth, setSelectedMonth] = useState<string>("");
+  const [selectedPayment, setSelectedPayment] = useState<Payment | undefined>(
+    undefined
+  );
 
-  const payments = data?.data?.Payment || []
-  const studentInfo = data?.data
+  const payments = data?.data?.Payment || [];
+  const studentInfo = data?.data;
 
   const {
     paymentsByMonth,
@@ -36,67 +44,45 @@ export function PaymentDashboard() {
     currentMonth,
     nextUnpaidMonth,
     modelTestPayments,
-  } = usePaymentCalculations(payments)
+  } = usePaymentCalculations(payments);
 
   const handleEditPayment = (month: string, payment?: Payment) => {
-    console.log("Edit payment clicked:", { month, payment })
-    console.log("Payment ID:", payment?.id || "No payment ID (new payment)")
-
-    setSelectedMonth(month)
-    setSelectedPayment(payment)
-    setIsEditModalOpen(true)
-  }
+    setSelectedMonth(month);
+    setSelectedPayment(payment);
+    setIsEditModalOpen(true);
+  };
 
   const handleCloseModal = () => {
-    setIsEditModalOpen(false)
-    setSelectedMonth("")
-    setSelectedPayment(undefined)
-  }
+    setIsEditModalOpen(false);
+    setSelectedMonth("");
+    setSelectedPayment(undefined);
+  };
 
-  const handleSavePayment = async (paymentId: string | null, month: string, amount: number) => {
-    console.log("Saving payment with data:", {
-      paymentId,
-      month,
-      amount,
-      studentId: id,
-      isUpdate: !!paymentId,
-    })
-
+  const handleSavePayment = async (
+    paymentId?: string | null,
+    month?: string,
+    amount?: number
+  ) => {
     try {
-      if (paymentId) {
-        // Update existing payment using payment ID
-        console.log("Updating existing payment with ID:", paymentId)
+      if (paymentId && typeof amount === "number") {
+        const payload = {
+          id: paymentId,
+          data: { amount },
+        };
 
-        // TODO: Implement your update payment API call
-        // Example:
-        // await updatePaymentMutation({
-        //   id: paymentId,
-        //   amount,
-        //   month
-        // }).unwrap()
-      } else {
-        // Create new payment for the student
-        console.log("Creating new payment for student ID:", id)
-
-        // TODO: Implement your create payment API call
-        // Example:
-        // await createPaymentMutation({
-        //   studentId: id,
-        //   month,
-        //   amount
-        // }).unwrap()
+        const res: any = await updatePayment(payload);
+        if (res.statusCode === 200) {
+          toast.success(res?.data?.message || "payment updated successfully!");
+        } else {
+          console.log(res?.data?.message);
+        }
       }
 
-      // TODO: Refetch data or update cache after successful save
-      // refetch() or invalidate cache
-
-      console.log("Payment saved successfully!")
-      handleCloseModal()
+      handleCloseModal();
     } catch (error) {
-      console.error("Failed to save payment:", error)
-      throw error // Re-throw to let modal handle the error
+      console.error("Failed to save payment:", error);
     }
-  }
+  };
 
   if (isLoading) {
     return (
@@ -119,7 +105,7 @@ export function PaymentDashboard() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -127,7 +113,8 @@ export function PaymentDashboard() {
       <div className="flex flex-col gap-4">
         <h1 className="text-3xl font-bold tracking-tight">Payment Dashboard</h1>
         <p className="text-muted-foreground">
-          View and manage payment history for {studentInfo?.firstName} {studentInfo?.lastName}
+          View and manage payment history for {studentInfo?.firstName}{" "}
+          {studentInfo?.lastName}
         </p>
       </div>
 
@@ -139,7 +126,11 @@ export function PaymentDashboard() {
           paidPercentage={paidPercentage}
           nextUnpaidMonth={nextUnpaidMonth}
         />
-        <PaymentSummaryCard totalPaid={totalPaid} currentMonth={currentMonth} paymentsByMonth={paymentsByMonth} />
+        <PaymentSummaryCard
+          totalPaid={totalPaid}
+          currentMonth={currentMonth}
+          paymentsByMonth={paymentsByMonth}
+        />
       </div>
 
       <Tabs defaultValue="grid" className="w-full">
@@ -152,11 +143,17 @@ export function PaymentDashboard() {
         </div>
 
         <TabsContent value="grid">
-          <MonthlyPaymentGrid paymentsByMonth={paymentsByMonth} onEditPayment={handleEditPayment} />
+          <MonthlyPaymentGrid
+            paymentsByMonth={paymentsByMonth}
+            onEditPayment={handleEditPayment}
+          />
         </TabsContent>
 
         <TabsContent value="list">
-          <MonthlyPaymentList paymentsByMonth={paymentsByMonth} onEditPayment={handleEditPayment} />
+          <MonthlyPaymentList
+            paymentsByMonth={paymentsByMonth}
+            onEditPayment={handleEditPayment}
+          />
         </TabsContent>
       </Tabs>
 
@@ -170,5 +167,5 @@ export function PaymentDashboard() {
         onSave={handleSavePayment}
       />
     </div>
-  )
+  );
 }
