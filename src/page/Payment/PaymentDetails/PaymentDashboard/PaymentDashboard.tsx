@@ -1,20 +1,28 @@
+"use client"
 
-
+import { useState } from "react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useGetPaymentByIdQuery } from "@/redux/api/payment/paymentApi"
 import { useParams } from "react-router-dom"
 import { usePaymentCalculations } from "@/hooks/use-payment-calculations"
+import type { Payment } from "@/types/payment"
 import { StudentInfoCard } from "../../PaymentComponent/student-info-card"
 import { PaymentProgressCard } from "../../PaymentComponent/payment-progress-card"
 import { PaymentSummaryCard } from "../../PaymentComponent/payment-summary-card"
 import { MonthlyPaymentGrid } from "../../PaymentComponent/monthly-payment-grid"
 import { MonthlyPaymentList } from "../../PaymentComponent/monthly-payment-list"
 import { ModelTestPayments } from "../../PaymentComponent/model-test-payments"
+import { PaymentEditModal } from "../../PaymentComponent/payment-edit-modal"
 
 export function PaymentDashboard() {
   const { id } = useParams()
   const { data, isLoading } = useGetPaymentByIdQuery(id)
+
+  // Modal state
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [selectedMonth, setSelectedMonth] = useState<string>("")
+  const [selectedPayment, setSelectedPayment] = useState<Payment | undefined>(undefined)
 
   const payments = data?.data?.Payment || []
   const studentInfo = data?.data
@@ -29,6 +37,66 @@ export function PaymentDashboard() {
     nextUnpaidMonth,
     modelTestPayments,
   } = usePaymentCalculations(payments)
+
+  const handleEditPayment = (month: string, payment?: Payment) => {
+    console.log("Edit payment clicked:", { month, payment })
+    console.log("Payment ID:", payment?.id || "No payment ID (new payment)")
+
+    setSelectedMonth(month)
+    setSelectedPayment(payment)
+    setIsEditModalOpen(true)
+  }
+
+  const handleCloseModal = () => {
+    setIsEditModalOpen(false)
+    setSelectedMonth("")
+    setSelectedPayment(undefined)
+  }
+
+  const handleSavePayment = async (paymentId: string | null, month: string, amount: number) => {
+    console.log("Saving payment with data:", {
+      paymentId,
+      month,
+      amount,
+      studentId: id,
+      isUpdate: !!paymentId,
+    })
+
+    try {
+      if (paymentId) {
+        // Update existing payment using payment ID
+        console.log("Updating existing payment with ID:", paymentId)
+
+        // TODO: Implement your update payment API call
+        // Example:
+        // await updatePaymentMutation({
+        //   id: paymentId,
+        //   amount,
+        //   month
+        // }).unwrap()
+      } else {
+        // Create new payment for the student
+        console.log("Creating new payment for student ID:", id)
+
+        // TODO: Implement your create payment API call
+        // Example:
+        // await createPaymentMutation({
+        //   studentId: id,
+        //   month,
+        //   amount
+        // }).unwrap()
+      }
+
+      // TODO: Refetch data or update cache after successful save
+      // refetch() or invalidate cache
+
+      console.log("Payment saved successfully!")
+      handleCloseModal()
+    } catch (error) {
+      console.error("Failed to save payment:", error)
+      throw error // Re-throw to let modal handle the error
+    }
+  }
 
   if (isLoading) {
     return (
@@ -84,15 +152,23 @@ export function PaymentDashboard() {
         </div>
 
         <TabsContent value="grid">
-          <MonthlyPaymentGrid paymentsByMonth={paymentsByMonth} />
+          <MonthlyPaymentGrid paymentsByMonth={paymentsByMonth} onEditPayment={handleEditPayment} />
         </TabsContent>
 
         <TabsContent value="list">
-          <MonthlyPaymentList paymentsByMonth={paymentsByMonth} />
+          <MonthlyPaymentList paymentsByMonth={paymentsByMonth} onEditPayment={handleEditPayment} />
         </TabsContent>
       </Tabs>
 
       <ModelTestPayments modelTestPayments={modelTestPayments} />
+
+      <PaymentEditModal
+        isOpen={isEditModalOpen}
+        onClose={handleCloseModal}
+        month={selectedMonth}
+        payment={selectedPayment}
+        onSave={handleSavePayment}
+      />
     </div>
   )
 }

@@ -19,3 +19,11 @@ export type PaymentData = {
     Payment: Payment[]
   } & StudentInfo
 }
+
+export interface EditPaymentModalProps {
+  isOpen: boolean
+  onClose: () => void
+  month: string
+  payment?: Payment
+  onSave: (paymentId: string | null, month: string, amount: number) => void
+}
