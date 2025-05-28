@@ -1,89 +1,102 @@
-import { useAddShiftMutation } from "@/redux/api/shiftApi/shiftApi";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { FormFieldWrapper } from "@/components/common/FormFieldWrapper";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Form } from "@/components/ui/form";
+import { useUpdateShiftMutation } from "@/redux/api/shiftApi/shiftApi";
+import * as React from "react";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
 import toast from "react-hot-toast";
 
-type FormValues = {
-  shiftName: string;
-};
-
-const ShiftCreate = () => {
-  const [addShift] = useAddShiftMutation();
-  const [open, setOpen] = useState(false);
-
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<FormValues>();
-
-  const onSubmit = async (data: FormValues) => {
-    try {
-      await addShift(data).unwrap();
-      toast.success("Shift added successfully");
-      reset();
-      setOpen(false);
-    } catch (error) {
-      console.error("Failed to add shift:", error);
-      toast.error("Failed to add shift");
-    }
-  };
-
+export const ShiftModal = ({
+  open,
+  setOpen,
+  data,
+}: {
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  data: any;
+}) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button className="gap-2 text-white">
-          <Plus className="h-4 w-4" />
-          Add New Shift
-        </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <DialogHeader>
-            <DialogTitle>Add New Shift</DialogTitle>
-            <DialogDescription>
-              Create a new shift here. Click save when you're done.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="grid gap-4 py-4">
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="shiftName" className="text-right">
-                Shift Name
-              </Label>
-              <Input
-                id="shiftName"
-                placeholder="Morning Shift"
-                className="col-span-3"
-                {...register("shiftName", { required: "Shift name is required" })}
-              />
-            </div>
-            {errors.shiftName && (
-              <p className="text-red-500 text-sm ml-[33%] -mt-2">
-                {errors.shiftName.message}
-              </p>
-            )}
-          </div>
-          <DialogFooter>
-            <Button type="submit">Save Shift</Button>
-          </DialogFooter>
-        </form>
+      <DialogContent className="max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle className="text-center text-slate-800 font-semibold">
+            UPDATE SHIFT
+          </DialogTitle>
+        </DialogHeader>
+        <ShiftFormModal data={data} setOpen={setOpen} />
       </DialogContent>
     </Dialog>
   );
 };
 
-export default ShiftCreate;
+// This component is used to update the batch information
+function ShiftFormModal({
+  data,
+  setOpen,
+}: {
+  data: any;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
+  console.log("pass shift data-->", data);
+  // update hook for subject config
+  const [updateShift] = useUpdateShiftMutation();
+
+  // Initialize React Hook Form with default values from data
+  const form = useForm({
+    defaultValues: {
+      shiftName: data?.shiftName || "",
+    },
+  });
+
+  // Handle form submission
+  const onSubmit = async (submitData: any) => {
+    try {
+      // Convert FormData to an object for API submission
+      const updatedData = {
+        id: data.id,
+        data: {
+          shiftName: submitData?.shiftName,
+        },
+      };
+
+      // Send the updated data to the API
+      const res: any = await updateShift(updatedData);
+
+      if (res?.data?.success) {
+        toast.success(res.data.message || "Batch updated successfully!");
+        form.reset();
+        setOpen(false);
+      }
+    } catch (error: any) {
+      console.error("Error submitting form:", error);
+      toast.error(
+        error?.data?.error || "An error occurred while updating the Batch."
+      );
+    }
+  };
+
+  return (
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <FormFieldWrapper
+          name="shiftName"
+          label="SHIFT NAME"
+          placeholder="Enter Shift Name"
+        />
+        <Button
+          type="submit"
+          className="w-full bg-green-700 hover:bg-green-800 text-white"
+        >
+          UPDATE SHIFT
+        </Button>
+      </form>
+    </Form>
+  );
+}
