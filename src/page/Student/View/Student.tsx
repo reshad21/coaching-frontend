@@ -2,6 +2,7 @@
 import SelectBatch from "@/components/Batch/SelectBatch";
 import SearchInputField from "@/components/CommonSearch/SearchInputField";
 import EduCPagination from "@/components/EduCPagination/EduCPagination";
+import SelectStudentClass from "@/components/studentClass/SelectStudentClass";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -27,12 +28,14 @@ const Student = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [selectedBatch, setSelectedBatch] = useState("");
+  const [selectClass, setSelectedClass] = useState("");
 
   const { data: students, isLoading } = useGetAllStudentQuery([
     { name: "limit", value: 10 },
     { name: "page", value: page },
     { name: "search", value: search },
     ...(selectedBatch ? [{ name: "batchName", value: selectedBatch }] : []),
+    ...(selectClass ? [{ name: "className", value: selectClass }] : []),
   ]);
 
   console.log("isLoading=>", isLoading);
@@ -74,17 +77,20 @@ const Student = () => {
         </span>
         <h1 className="text-2xl font-bold text-slate-600">All Student</h1>
       </div>
-      <div className="filter-section grid grid-cols-1 md:grid-cols-3 gap-3 mb-5">
+      {/* Filtering section */}
+      <div className="filter-section grid grid-cols-1 md:grid-cols-4 gap-3 mb-5">
         <SearchInputField
           value={search}
           onChange={setSearch}
           onSearch={setSearch}
         />
         <SelectBatch value={selectedBatch} onChange={setSelectedBatch} />
+        <SelectStudentClass value={selectClass} onChange={setSelectedClass} />
         <Button
           onClick={() => {
             setSearch("");
             setSelectedBatch("");
+            setSelectedClass("");
           }}
           className="text-slate-500 w-1/4 bg-gray-50 hover:bg-gray-100"
         >

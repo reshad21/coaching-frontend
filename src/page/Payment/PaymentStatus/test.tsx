@@ -1,8 +1,8 @@
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import SelectBatch from "@/components/Batch/SelectBatch";
 import SearchInputField from "@/components/CommonSearch/SearchInputField";
 import EduCPagination from "@/components/EduCPagination/EduCPagination";
-import SelectStudentClass from "@/components/studentClass/SelectStudentClass";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -28,7 +28,6 @@ const PaymentStatus = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [selectedBatch, setSelectedBatch] = useState("");
-  const [selectClass, setSelectedClass] = useState("");
 
   const { data: payments } = useGetAllPaymentQuery(undefined);
   console.log("line39==>", payments);
@@ -38,10 +37,9 @@ const PaymentStatus = () => {
     { name: "page", value: page },
     { name: "search", value: search },
     ...(selectedBatch ? [{ name: "batchName", value: selectedBatch }] : []),
-    ...(selectClass ? [{ name: "className", value: selectClass }] : []),
   ]);
 
-  console.log("line 172==>", students);
+  console.log("line 172==>",students);
 
   console.log("isLoading=>", isLoading);
   // console.log("all students=>", students);
@@ -82,19 +80,17 @@ const PaymentStatus = () => {
         </span>
         <h1 className="text-2xl font-bold text-slate-600">Payment Overview</h1>
       </div>
-      <div className="filter-section grid grid-cols-1 md:grid-cols-4 gap-3 mb-5">
+      <div className="filter-section grid grid-cols-1 md:grid-cols-3 gap-3 mb-5">
         <SearchInputField
           value={search}
           onChange={setSearch}
           onSearch={setSearch}
         />
         <SelectBatch value={selectedBatch} onChange={setSelectedBatch} />
-        <SelectStudentClass value={selectClass} onChange={setSelectedClass} />
         <Button
           onClick={() => {
             setSearch("");
             setSelectedBatch("");
-            setSelectedClass("");
           }}
           className="text-slate-500 w-1/4 bg-gray-50 hover:bg-gray-100"
         >
@@ -123,9 +119,6 @@ const PaymentStatus = () => {
                 </TableHead>
                 <TableHead>
                   <span className="text-slate-600 font-bold">Payment</span>
-                </TableHead>
-                <TableHead>
-                  <span className="text-slate-600 font-bold">Model Test</span>
                 </TableHead>
                 <TableHead>
                   <span className="text-slate-600 font-bold">Action</span>
@@ -169,50 +162,9 @@ const PaymentStatus = () => {
                   </TableCell>
                   <TableCell>
                     <span className="text-slate-500 font-medium">
-                      {(() => {
-                        const currentMonth = new Date().toLocaleString(
-                          "default",
-                          { month: "long" }
-                        );
-                        const hasPaid = student?.Payment?.some(
-                          (p: any) => p.month === currentMonth
-                        );
-                        return hasPaid ? (
-                          <span className="text-green-600">Yes</span>
-                        ) : (
-                          <span className="text-red-600">No</span>
-                        );
-                      })()}
+                      {student.Batch?.batchName}
                     </span>
                   </TableCell>
-
-                  <TableCell>
-                    <span className="text-slate-500 font-medium">
-                      {(() => {
-                        const modelTests = student?.Payment?.filter(
-                          (p: any) => p.title === "ModelTest"
-                        );
-
-                        if (!modelTests || modelTests.length === 0) {
-                          return <span className="text-red-600">No</span>;
-                        }
-
-                        // Sort by createdAt descending to get the latest
-                        const latestModelTest = modelTests.sort(
-                          (a: any, b: any) =>
-                            new Date(b.createdAt).getTime() -
-                            new Date(a.createdAt).getTime()
-                        )[0];
-
-                        return latestModelTest ? (
-                          <span className="text-green-600">Yes</span>
-                        ) : (
-                          <span className="text-red-600">No</span>
-                        );
-                      })()}
-                    </span>
-                  </TableCell>
-
                   <TableCell className="flex items-center gap-2">
                     <Link to={`/view-student/${student.id}`}>
                       <Button

@@ -13,7 +13,13 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useGetPaymentByIdQuery } from "@/redux/api/payment/paymentApi";
-import { CalendarIcon, CheckCircle, DollarSign, XCircle } from "lucide-react";
+import {
+  CalendarIcon,
+  CheckCircle,
+  DollarSign,
+  SquarePen,
+  XCircle,
+} from "lucide-react";
 import { useParams } from "react-router-dom";
 
 type Payment = {
@@ -218,15 +224,16 @@ const PaymentDetails = () => {
                   return (
                     <Card
                       key={month}
-                      className={`transition-all hover:shadow-md ${
+                      className={`relative transition-all hover:shadow-md ${
                         paid ? "border-green-200" : ""
                       }`}
                     >
                       <CardHeader
                         className={`py-3 ${
                           paid ? "bg-green-50" : "bg-muted/50"
-                        }`}
+                        } relative`}
                       >
+                        <SquarePen className="absolute top-2 right-2 h-5 w-5 text-muted-foreground cursor-pointer hover:text-primary transition" />
                         <CardTitle className="text-base font-medium text-center">
                           {month}
                         </CardTitle>
