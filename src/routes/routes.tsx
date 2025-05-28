@@ -8,6 +8,7 @@ import BatchView from "@/page/Batch/View/BatchView";
 import ClassCreate from "@/page/Class/Create/ClassCreate";
 import ClassUpdate from "@/page/Class/Update/ClassUpdate";
 import ClassView from "@/page/Class/View/ClassView";
+import DashboardView from "@/page/DashboardView/DashboardView";
 import Login from "@/page/Login/Login";
 import Message from "@/page/Message/Message";
 import MonthlyPayment from "@/page/Payment/MonthlyPayment/MonthlyPayment";
@@ -26,6 +27,9 @@ import { createBrowserRouter } from "react-router-dom";
 const componentMapping: Record<string, React.ElementType> = {
   // login route
   "/login": Login,
+
+  // Dashborad overview
+  "/": DashboardView,
 
   // shift routes
   "/shift": ShiftView,
@@ -65,20 +69,27 @@ const routs = createBrowserRouter([
         <MainLayout />
       </PrivateRout>
     ),
-    children: navMain.flatMap((section) =>
-      section.items?.map((item: any) => {
-        const Component = componentMapping[item?.url] as React.ElementType;
-        return {
-          path: item?.url,
-          element: Component ? <Component /> : "not found",
-        };
-      })
-    ),
+    children: [
+      {
+        index: true,
+        element: <DashboardView />,
+      },
+      ...navMain.flatMap((section) =>
+        section.items?.map((item: any) => {
+          const Component = componentMapping[item?.url] as React.ElementType;
+          return {
+            path: item?.url,
+            element: Component ? <Component /> : "not found",
+          };
+        })
+      ),
+    ],
   },
   {
     path: "/login",
     element: <Login />,
   },
 ]);
+
 
 export default routs;
