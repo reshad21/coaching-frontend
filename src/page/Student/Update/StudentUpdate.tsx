@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FormFieldWrapper } from "@/components/common/FormFieldWrapper";
 import { ImageUpload } from "@/components/common/ImageUpload";
 import { SelectFieldWrapper } from "@/components/common/SelectFieldWrapper";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useGetAllBatchQuery } from "@/redux/api/batch/batchApi";
+import { useGetAllShiftQuery } from "@/redux/api/shiftApi/shiftApi";
 import {
   useGetStudentByIdQuery,
   useUpdateStudentMutation,
@@ -25,12 +27,12 @@ type TStudentFormData = {
   schoolName: string;
   studentId: string;
   phone: string;
-  email: string;
   address: string;
   image: File | string;
   gender: string;
   className: string;
   batchId: string;
+  shiftId: string;
 };
 
 type TBatch = {
@@ -44,6 +46,7 @@ const StudentUpdate = () => {
 
   const { data: student, isLoading } = useGetStudentByIdQuery(id!); // Non-null assertion to ensure id is present
   const { data: batchData } = useGetAllBatchQuery(undefined);
+  const { data: shiftData } = useGetAllShiftQuery(undefined);
   const [updateStudent] = useUpdateStudentMutation();
 
   const form = useForm<TStudentFormData>();
@@ -66,11 +69,11 @@ const StudentUpdate = () => {
         schoolName: student.data.schoolName || "",
         studentId: student.data.studentId || "",
         phone: student.data.phone || "",
-        email: student.data.email || "",
         address: student.data.address || "",
         image: student.data.image || "",
         gender: student.data.gender || "",
         className: student.data.className || "",
+        shiftId: student.data.shiftId || "",
         batchId: student.data.batchId || "",
       });
     }
@@ -89,7 +92,6 @@ const StudentUpdate = () => {
       formData.append("lastName", data.lastName);
       formData.append("dateOfBirth", isoDateOfBirth);
       formData.append("studentId", data.studentId);
-      formData.append("email", data.email);
       formData.append("phone", data.phone);
       formData.append("fatherName", data.fatherName);
       formData.append("motherName", data.motherName);
@@ -98,6 +100,7 @@ const StudentUpdate = () => {
       formData.append("address", data.address);
       formData.append("gender", data.gender);
       formData.append("className", data.className);
+      formData.append("shiftId", data.shiftId);
       formData.append("batchId", data.batchId);
 
       const res = await updateStudent({
@@ -166,12 +169,7 @@ const StudentUpdate = () => {
                 label="ID Number"
                 placeholder="Enter your ID Number"
               />
-              <FormFieldWrapper
-                name="email"
-                label="Email"
-                type="email"
-                placeholder="Enter your Email"
-              />
+
               <FormFieldWrapper
                 name="phone"
                 label="Phone"
@@ -235,6 +233,18 @@ const StudentUpdate = () => {
                   batchData?.data?.map((batch: TBatch) => ({
                     value: batch.id,
                     name: batch.batchName,
+                  })) || []
+                }
+                control={form.control}
+              />
+
+              <SelectFieldWrapper
+                name="shiftId"
+                label="Shift"
+                options={
+                  shiftData?.data?.map((shift: any) => ({
+                    value: shift.id,
+                    name: shift.shiftName,
                   })) || []
                 }
                 control={form.control}

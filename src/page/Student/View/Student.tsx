@@ -39,7 +39,7 @@ const Student = () => {
   ]);
 
   console.log("isLoading=>", isLoading);
-  // console.log("all students=>", students);
+  console.log("all students=>", students);
 
   const [deleteStudent] = useDeleteStudentMutation();
 
@@ -115,6 +115,9 @@ const Student = () => {
                   <span className="text-slate-600 font-bold">Class</span>
                 </TableHead>
                 <TableHead>
+                  <span className="text-slate-600 font-bold">Shift</span>
+                </TableHead>
+                <TableHead>
                   <span className="text-slate-600 font-bold">Phone</span>
                 </TableHead>
                 <TableHead>
@@ -152,7 +155,12 @@ const Student = () => {
                   </TableCell>
                   <TableCell>
                     <span className="text-slate-500 font-medium">
-                      {student.class}
+                      {student.Class.className}
+                    </span>
+                  </TableCell>
+                  <TableCell>
+                    <span className="text-slate-500 font-medium">
+                      {student.shiftName}
                     </span>
                   </TableCell>
                   <TableCell>
