@@ -41,7 +41,6 @@ const studentApi = baseApi.injectEndpoints({
 
         addStudent: builder.mutation({
             query: (data) => {
-                console.log("inside base api=>", data);
                 return {
                     url: "/student",
                     method: "POST",

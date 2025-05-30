@@ -46,6 +46,7 @@ const StudentCreate = () => {
   const [addStudent] = useAddStudentMutation();
 
   const onSubmit = async (data: any) => {
+    console.log("submit create student data-->",data);
     try {
       const isoDateOfBirth = new Date(data.dateOfBirth).toISOString();
       const formData = new FormData();

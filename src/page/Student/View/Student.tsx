@@ -39,7 +39,6 @@ const Student = () => {
   ]);
 
   console.log("isLoading=>", isLoading);
-  console.log("all students=>", students);
 
   const [deleteStudent] = useDeleteStudentMutation();
 
