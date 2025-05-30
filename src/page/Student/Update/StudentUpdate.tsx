@@ -151,45 +151,45 @@ const StudentUpdate = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <FormFieldWrapper
                 name="firstName"
-                label="First Name"
+                label="FIRST NAME"
                 placeholder="Enter your First Name"
               />
               <FormFieldWrapper
                 name="lastName"
-                label="Last Name"
+                label="LAST NAME"
                 placeholder="Enter your Last Name"
               />
               <FormFieldWrapper
                 name="dateOfBirth"
-                label="Date of Birth"
+                label="DATE OF BIRTH"
                 type="date"
                 placeholder="Enter your Date of Birth"
               />
               <FormFieldWrapper
                 name="studentId"
-                label="ID Number"
+                label="ID NUMBER"
                 placeholder="Enter your ID Number"
               />
 
               <FormFieldWrapper
                 name="phone"
-                label="Phone"
+                label="PHONE"
                 placeholder="Enter your Phone Number"
               />
               <FormFieldWrapper
                 name="fatherName"
-                label="Father's Name"
+                label="FATHER NAME"
                 placeholder="Enter your Father's Name"
               />
               <FormFieldWrapper
                 name="motherName"
-                label="Mother's Name"
+                label="MOTHER NAME"
                 placeholder="Enter your Mother's Name"
               />
 
               <SelectFieldWrapper
                 name="religion"
-                label="Religion"
+                label="RELIGION"
                 options={[
                   { value: "islam", name: "Islam" },
                   { value: "hindu", name: "Hindu" },
@@ -202,7 +202,7 @@ const StudentUpdate = () => {
 
               <SelectFieldWrapper
                 name="gender"
-                label="Gender"
+                label="GENDER"
                 options={[
                   { value: "male", name: "Male" },
                   { value: "female", name: "Female" },
@@ -213,12 +213,12 @@ const StudentUpdate = () => {
 
               <FormFieldWrapper
                 name="address"
-                label="Address"
+                label="ADDRESS"
                 placeholder="Enter your Address"
               />
               <FormFieldWrapper
                 name="schoolName"
-                label="School Name"
+                label="SCHOOL NAME"
                 placeholder="Enter your School Name"
               />
               <SelectFieldWrapper
@@ -235,7 +235,7 @@ const StudentUpdate = () => {
 
               <SelectFieldWrapper
                 name="batchId"
-                label="Batch"
+                label="BATCH"
                 options={
                   batchData?.data?.map((batch: TBatch) => ({
                     value: batch.id,
@@ -247,7 +247,7 @@ const StudentUpdate = () => {
 
               <SelectFieldWrapper
                 name="shiftId"
-                label="Shift"
+                label="SHIFT"
                 options={
                   shiftData?.data?.map((shift: any) => ({
                     value: shift.id,
