@@ -5,8 +5,6 @@ import { SelectFieldWrapper } from "@/components/common/SelectFieldWrapper";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useGetAllBatchQuery } from "@/redux/api/batch/batchApi";
-import { useGetAllClassQuery } from "@/redux/api/class/classApi";
-import { useGetAllShiftQuery } from "@/redux/api/shiftApi/shiftApi";
 import {
   useGetStudentByIdQuery,
   useUpdateStudentMutation,
@@ -29,11 +27,9 @@ type TStudentFormData = {
   studentId: string;
   phone: string;
   address: string;
-  image: File | string,
+  image: File | string;
   gender: string;
-  classId: string;
   batchId: string;
-  shiftId: string;
 };
 
 type TBatch = {
@@ -47,8 +43,6 @@ const StudentUpdate = () => {
 
   const { data: student, isLoading } = useGetStudentByIdQuery(id!); // Non-null assertion to ensure id is present
   const { data: batchData } = useGetAllBatchQuery(undefined);
-  const { data: classData } = useGetAllClassQuery(undefined);
-  const { data: shiftData } = useGetAllShiftQuery(undefined);
   const [updateStudent] = useUpdateStudentMutation();
 
   const form = useForm<TStudentFormData>();
@@ -74,8 +68,6 @@ const StudentUpdate = () => {
         address: student?.data?.address || "",
         image: student?.data?.image || "",
         gender: student?.data?.gender || "",
-        classId: student?.data?.classId || "",
-        shiftId: student?.data?.shiftId || "",
         batchId: student?.data?.batchId || "",
       });
     }
@@ -101,18 +93,16 @@ const StudentUpdate = () => {
     formData.append("schoolName", data.schoolName);
     formData.append("address", data.address);
     formData.append("gender", data.gender);
-    formData.append("classId", data.classId);
-    formData.append("shiftId", data.shiftId);
     formData.append("batchId", data.batchId);
 
     const payload = Object.fromEntries(formData);
 
-    const res:any = await updateStudent({
+    const res: any = await updateStudent({
       data: payload,
       id: id,
     });
 
-    console.log("see response==>",res);
+    console.log("see response==>", res);
 
     if ("data" in res && res?.data?.success) {
       toast.success(res?.data?.message || "Student updated successfully!");
@@ -221,17 +211,6 @@ const StudentUpdate = () => {
                 label="SCHOOL NAME"
                 placeholder="Enter your School Name"
               />
-              <SelectFieldWrapper
-                name="classId"
-                label="CLASS NAME"
-                options={
-                  classData?.data?.map((cls: any) => ({
-                    value: cls.id,
-                    name: cls.className,
-                  })) || []
-                }
-                control={form.control}
-              />
 
               <SelectFieldWrapper
                 name="batchId"
@@ -240,18 +219,6 @@ const StudentUpdate = () => {
                   batchData?.data?.map((batch: TBatch) => ({
                     value: batch.id,
                     name: batch.batchName,
-                  })) || []
-                }
-                control={form.control}
-              />
-
-              <SelectFieldWrapper
-                name="shiftId"
-                label="SHIFT"
-                options={
-                  shiftData?.data?.map((shift: any) => ({
-                    value: shift.id,
-                    name: shift.shiftName,
                   })) || []
                 }
                 control={form.control}
