@@ -87,6 +87,35 @@ export const navMain = [
 
     ].filter(Boolean), // Remove false values
   },
+
+  {
+    title: "Expense",
+    url: "#",
+    icon: BadgeDollarSign,
+    isActive: false,
+    items: [
+      featureAccess["admin"]?.includes(1) && {
+        title: "Expense Details",
+        url: "/expense/:id",
+        isShow: false,
+        parent: "Expense",
+      },
+      featureAccess["admin"]?.includes(1) && {
+        title: "Create Expense",
+        url: "/create-expense",
+        isShow: true,
+        parent: "Expense",
+      },
+      featureAccess["admin"]?.includes(1) && {
+        title: "Show Expense",
+        url: "/show-expense",
+        isShow: true,
+        parent: "Expense",
+      },
+
+    ].filter(Boolean), // Remove false values
+  },
+
   {
     title: "Class",
     url: "#",

@@ -9,6 +9,7 @@ import ClassCreate from "@/page/Class/Create/ClassCreate";
 import ClassUpdate from "@/page/Class/Update/ClassUpdate";
 import ClassView from "@/page/Class/View/ClassView";
 import DashboardView from "@/page/DashboardView/DashboardView";
+import { CreateExpense } from "@/page/Expense/CreateExpense/CreateExpense";
 import Login from "@/page/Login/Login";
 import Message from "@/page/Message/Message";
 import MonthlyPayment from "@/page/Payment/MonthlyPayment/MonthlyPayment";
@@ -46,6 +47,9 @@ const componentMapping: Record<string, React.ElementType> = {
   "/payment/:id": PaymentDetails,
   "/monthly-payment": MonthlyPayment,
   "/payment-status": PaymentStatus,
+
+  // coachingcost routes
+  "/create-expense":CreateExpense,
 
   //class routes
   "/class": ClassView,
