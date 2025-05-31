@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import ShowExpenseSkleton from "@/components/Skleton/ShowExpenseSkleton";
 import { useGetAllExpenseQuery } from "@/redux/api/expense/expenseApi";
 import {
   Bar,
@@ -13,7 +14,7 @@ import {
   YAxis,
 } from "recharts";
 
-const ShowExpense = () => {
+export const ShowExpense = () => {
   const { data, isLoading: loadCosting } = useGetAllExpenseQuery(undefined);
   const costing = data?.data || [];
 
@@ -23,13 +24,18 @@ const ShowExpense = () => {
       month: "short",
       year: "numeric",
     }),
+    totalRevenue: Number(item.totalRevenue),
+    totalCost: Number(item.totalCost),
+    profit: Number(item.profit),
   }));
 
   return (
-    <div className="p-5">
+    <div className="p-5 min-h-[500px]">
       <h1 className="text-xl font-semibold mb-4">Monthly Expense Report</h1>
       {loadCosting ? (
-        <p>Loading...</p>
+        <ShowExpenseSkleton />
+      ) : formattedData.length === 0 ? (
+        <p>No data available to display.</p>
       ) : (
         <ResponsiveContainer width="100%" height={450}>
           <BarChart
@@ -42,17 +48,12 @@ const ShowExpense = () => {
             <Tooltip />
             <Legend />
 
-            {/* Revenue Bar */}
             <Bar dataKey="totalRevenue" fill="#4ade80" name="Total Revenue">
               <LabelList dataKey="totalRevenue" position="top" />
             </Bar>
-
-            {/* Cost Bar */}
             <Bar dataKey="totalCost" fill="#facc15" name="Total Cost">
               <LabelList dataKey="totalCost" position="top" />
             </Bar>
-
-            {/* Profit Bar */}
             <Bar dataKey="profit" fill="#f87171" name="Profit">
               <LabelList dataKey="profit" position="top" />
             </Bar>
@@ -62,5 +63,3 @@ const ShowExpense = () => {
     </div>
   );
 };
-
-export default ShowExpense;
