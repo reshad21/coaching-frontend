@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import TableSkeleton from "@/components/Skleton/TableSkeleton";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -19,7 +19,7 @@ import Swal from "sweetalert2";
 import ClassCreate from "../Create/ClassCreate";
 
 const ClassView = () => {
-  const { data: classResponse } = useGetAllClassQuery(undefined);
+  const { data: classResponse, isLoading } = useGetAllClassQuery(undefined);
   const classData = classResponse?.data;
 
   const [deleteClass] = useDeleteClassMutation();
@@ -48,38 +48,37 @@ const ClassView = () => {
     }
   };
   return (
-    <div className="container mx-auto">
-      <Card>
-        <CardHeader className="px-6 pt-6 pb-4">
-          <div className="flex justify-between items-center">
-            <CardTitle className="text-2xl font-semibold text-gray-800">
-              Class Management
-            </CardTitle>
-            <ClassCreate />
-          </div>
-        </CardHeader>
-        <CardContent className="px-6 pb-6">
-          <Table>
-            <TableHeader className="bg-gray-50">
-              <TableRow>
-                <TableHead className="w-[60px] text-gray-600">S.N</TableHead>
-                <TableHead className="text-gray-600">Class Name</TableHead>
-                <TableHead className="text-gray-600 text-right">
-                  Actions
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {classData?.map((classItem: any, index: number) => (
-                <TableRow key={classItem.id} className="hover:bg-gray-50">
-                  <TableCell className="font-medium text-gray-700">
-                    {index + 1}
-                  </TableCell>
-                  <TableCell className="text-gray-600">
-                    {classItem.className}
-                  </TableCell>
-                  <TableCell className="flex justify-end gap-2">
-                    {/* <Link to={`/update-class/${classItem.id}`}>
+    <>
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-2xl font-bold text-slate-600">CLASS MANAGEMENT</h1>
+          <ClassCreate />
+        </div>
+        {isLoading ? (
+          <TableSkeleton />
+        ) : classData.length > 0 ? (
+          <div className="border rounded-lg">
+            <Table>
+              <TableHeader className="bg-gray-50">
+                <TableRow>
+                  <TableHead className="w-[60px] text-gray-600">S.N</TableHead>
+                  <TableHead className="text-gray-600">CLASS NAME</TableHead>
+                  <TableHead className="text-gray-600 text-right">
+                    Actions
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {classData?.map((classItem: any, index: number) => (
+                  <TableRow key={classItem.id} className="hover:bg-gray-50">
+                    <TableCell className="font-medium text-gray-700">
+                      {index + 1}
+                    </TableCell>
+                    <TableCell className="text-gray-600">
+                      {classItem.className}
+                    </TableCell>
+                    <TableCell className="flex justify-end gap-2">
+                      {/* <Link to={`/update-class/${classItem.id}`}>
                       <Button
                         variant="outline"
                         size="icon"
@@ -89,22 +88,25 @@ const ClassView = () => {
                       </Button>
                       </Link> */}
 
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="h-8 w-8 text-red-600 hover:text-red-700 border-red-100 hover:border-red-200"
-                      onClick={() => handleDelete(classItem.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
-    </div>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8 text-red-600 hover:text-red-700 border-red-100 hover:border-red-200"
+                        onClick={() => handleDelete(classItem.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        ) : (
+          <p className="text-center text-gray-500 mt-10">No data found</p>
+        )}
+      </div>
+    </>
   );
 };
 

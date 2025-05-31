@@ -49,7 +49,7 @@ const ClassCreate = () => {
       <DialogTrigger asChild>
         <Button className="gap-2 text-white">
           <Plus className="h-4 w-4" />
-          Add New Class
+          CREATE CLASS
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">

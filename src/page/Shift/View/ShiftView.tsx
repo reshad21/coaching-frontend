@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { ShiftModal } from "@/components/CommonModal/ShiftModal";
+import TableSkeleton from "@/components/Skleton/TableSkeleton";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -27,7 +27,6 @@ const ShiftView = () => {
   const [modalDataToUpdate, setModalDataToUpdate] = useState<any>(null);
 
   const { data: shift, isLoading } = useGetAllShiftQuery(undefined);
-  console.log("loading..", isLoading);
 
   const [deleteShift] = useDeleteShiftMutation();
 
@@ -35,7 +34,7 @@ const ShiftView = () => {
     setModalDataToUpdate(exam);
     setOpenModal(true);
   };
-  
+
   const handleDelete = (id?: string) => {
     if (!id) return;
     try {
@@ -62,61 +61,66 @@ const ShiftView = () => {
   };
 
   return (
-    <div className="container mx-auto">
-      <Card>
-        <CardHeader className="px-6 pt-6 pb-4">
-          <div className="flex justify-between items-center">
-            <CardTitle className="text-2xl font-semibold text-gray-800">
-              SHIFT MANAGEMENT
-            </CardTitle>
-            <ShiftCreate />
-          </div>
-        </CardHeader>
-        <CardContent className="px-6 pb-6">
-          <Table>
-            <TableHeader className="bg-gray-50">
-              <TableRow>
-                <TableHead className="w-[60px] text-gray-600">S.N</TableHead>
-                <TableHead className="text-gray-600">SHIFT NAME</TableHead>
-                <TableHead className="text-gray-600 text-right">
-                  Actions
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {shift?.data?.map((shiftItem: any, index: number) => (
-                <TableRow key={shiftItem.id} className="hover:bg-gray-50">
-                  <TableCell className="font-medium text-gray-700">
-                    {index + 1}
-                  </TableCell>
-                  <TableCell className="text-gray-600">
-                    {shiftItem.shiftName}
-                  </TableCell>
-                  <TableCell className="flex justify-end gap-2">
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="h-8 w-8 text-blue-600 hover:text-blue-700 border-blue-100 hover:border-blue-200"
-                      onClick={() => handleUpdateClick(shiftItem)}
-                    >
-                      <Edit className="h-4 w-4" />
-                    </Button>
+    <>
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <h1 className="text-2xl font-bold text-gray-600">
+            SHIFT MANAGEMENT
+          </h1>
+          <ShiftCreate />
+        </div>
 
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="h-8 w-8 text-red-600 hover:text-red-700 border-red-100 hover:border-red-200"
-                      onClick={() => handleDelete(shiftItem.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </TableCell>
+        {isLoading ? (
+          <TableSkeleton />
+        ) : shift?.data?.length > 0 ? (
+          <div className="border rounded-lg">
+            <Table>
+              <TableHeader className="bg-gray-50">
+                <TableRow>
+                  <TableHead className="w-[60px] text-gray-600">S.N</TableHead>
+                  <TableHead className="text-gray-600">SHIFT NAME</TableHead>
+                  <TableHead className="text-gray-600 text-right">
+                    Actions
+                  </TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </CardContent>
-      </Card>
+              </TableHeader>
+              <TableBody>
+                {shift?.data?.map((shiftItem: any, index: number) => (
+                  <TableRow key={shiftItem.id} className="hover:bg-gray-50">
+                    <TableCell className="font-medium text-gray-700">
+                      {index + 1}
+                    </TableCell>
+                    <TableCell className="text-gray-600">
+                      {shiftItem.shiftName}
+                    </TableCell>
+                    <TableCell className="flex justify-end gap-2">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8 text-blue-600 hover:text-blue-700 border-blue-100 hover:border-blue-200"
+                        onClick={() => handleUpdateClick(shiftItem)}
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-8 w-8 text-red-600 hover:text-red-700 border-red-100 hover:border-red-200"
+                        onClick={() => handleDelete(shiftItem.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
+        ) : (
+          <p className="text-center text-gray-500 mt-10">No data found</p>
+        )}
+      </div>
 
       {/* Modal */}
       <ShiftModal
@@ -124,7 +128,7 @@ const ShiftView = () => {
         setOpen={setOpenModal}
         data={modalDataToUpdate}
       />
-    </div>
+    </>
   );
 };
 

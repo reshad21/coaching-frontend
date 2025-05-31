@@ -2,6 +2,7 @@
 import SelectBatch from "@/components/Batch/SelectBatch";
 import SearchInputField from "@/components/CommonSearch/SearchInputField";
 import EduCPagination from "@/components/EduCPagination/EduCPagination";
+import TableSkeleton from "@/components/Skleton/TableSkeleton";
 import SelectStudentClass from "@/components/studentClass/SelectStudentClass";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,8 +38,6 @@ const Student = () => {
     ...(selectedBatch ? [{ name: "batchName", value: selectedBatch }] : []),
     ...(selectClass ? [{ name: "className", value: selectClass }] : []),
   ]);
-
-  console.log("isLoading=>", isLoading);
 
   const [deleteStudent] = useDeleteStudentMutation();
 
@@ -96,7 +95,11 @@ const Student = () => {
           Clear Filter
         </Button>
       </div>
-      {students?.data?.length > 0 ? (
+
+      {/* conditional redenring  */}
+      {isLoading ? (
+        <TableSkeleton />
+      ) : students?.data?.length > 0 ? (
         <div className="border rounded-lg">
           <Table>
             <TableHeader>
@@ -199,13 +202,6 @@ const Student = () => {
                     >
                       <Trash />
                     </Button>
-                    {/* <Button
-                      variant="outline"
-                      size="icon"
-                      
-                    >
-                      
-                    </Button> */}
                     <SendMessage student={student} />
                   </TableCell>
                 </TableRow>
@@ -214,7 +210,7 @@ const Student = () => {
           </Table>
         </div>
       ) : (
-        "No data found"
+        <p className="text-center text-gray-500 mt-10">No data found</p>
       )}
 
       {/* pagination */}
@@ -226,12 +222,6 @@ const Student = () => {
           className="mt-4 flex justify-end"
         />
       )}
-      {/* <EduCPagination
-          page={page}
-          setPage={setPage}
-          totalPages={students?.meta?.totalPages}
-          className="mt-4 flex justify-end"
-        /> */}
     </div>
   );
 };
