@@ -1,4 +1,4 @@
-import { ArrowBigUp, BadgeDollarSign, CircleUser, DatabaseZapIcon, MessagesSquare, School } from "lucide-react";
+import { BadgeDollarSign, CircleUser, Coins, DatabaseZapIcon, MessagesSquare, School, TimerIcon } from "lucide-react";
 
 const featureAccess = { admin: [1] };
 
@@ -39,7 +39,7 @@ export const navMain = [
   {
     title: "Shift",
     url: "#",
-    icon: ArrowBigUp,
+    icon: TimerIcon,
     isActive: false,
     items: [
       featureAccess["admin"]?.includes(1) && {
@@ -91,7 +91,7 @@ export const navMain = [
   {
     title: "Expense",
     url: "#",
-    icon: BadgeDollarSign,
+    icon: Coins,
     isActive: false,
     items: [
       featureAccess["admin"]?.includes(1) && {

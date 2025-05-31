@@ -1,4 +1,4 @@
-const generateMonthOptions = (startYear = new Date().getFullYear(), years = 2) => {
+const generateMonthOptions = (startYear = new Date().getFullYear(), years = 1) => {
   const options = [];
   for (let y = 0; y < years; y++) {
     for (let m = 1; m <= 12; m++) {

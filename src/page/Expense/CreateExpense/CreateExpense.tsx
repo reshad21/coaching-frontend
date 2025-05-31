@@ -1,15 +1,18 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FormFieldWrapper } from "@/components/common/FormFieldWrapper";
 import { SelectFieldWrapper } from "@/components/common/SelectFieldWrapper";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import { useAddExpenseMutation } from "@/redux/api/expense/expenseApi";
 import generateMonthOptions from "@/utils/generateMonthOptions";
 import { ChevronsRight } from "lucide-react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
 const monthOptions = generateMonthOptions();
 
 export const CreateExpense = () => {
+  const [adExpense] = useAddExpenseMutation();
   const form = useForm({
     defaultValues: {
       month: "", // Make sure it's empty or a valid 2025-XX
@@ -22,7 +25,20 @@ export const CreateExpense = () => {
   });
 
   const onSubmit = async (data: any) => {
-    console.log("Form Submitted:", data);
+    const payload = {
+      ...data,
+      instructorSalary: parseFloat(data.instructorSalary),
+      materialCost: parseFloat(data.materialCost),
+      rentAndUtilities: parseFloat(data.rentAndUtilities),
+      marketingCost: parseFloat(data.marketingCost),
+      otherExpenses: parseFloat(data.otherExpenses),
+    };
+    const res: any = await adExpense(payload).unwrap();
+    if (res?.statusCode === 200) {
+      toast.success(res?.message || "Expense added successfully!");
+    } else {
+      toast.error(res?.message || "something went wrong");
+    }
   };
 
   return (
@@ -37,31 +53,36 @@ export const CreateExpense = () => {
       <div className="border-2 border-slate-200 rounded-lg  p-5">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <FormFieldWrapper
                 name="instructorSalary"
                 label="Instructor Salary"
                 placeholder="Enter amount"
+                type="number"
               />
               <FormFieldWrapper
                 name="materialCost"
                 label="Material Cost"
                 placeholder="Enter amount"
+                type="number"
               />
               <FormFieldWrapper
                 name="rentAndUtilities"
                 label="Rent & Utilities"
                 placeholder="Enter amount"
+                type="number"
               />
               <FormFieldWrapper
                 name="marketingCost"
                 label="Marketing Cost"
                 placeholder="Enter amount"
+                type="number"
               />
               <FormFieldWrapper
                 name="otherExpenses"
                 label="Other Expenses"
                 placeholder="Enter amount"
+                type="number"
               />
               <SelectFieldWrapper
                 name="month"

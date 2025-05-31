@@ -10,6 +10,7 @@ import ClassUpdate from "@/page/Class/Update/ClassUpdate";
 import ClassView from "@/page/Class/View/ClassView";
 import DashboardView from "@/page/DashboardView/DashboardView";
 import { CreateExpense } from "@/page/Expense/CreateExpense/CreateExpense";
+import ShowExpense from "@/page/Expense/ShowExpense/ShowExpense";
 import Login from "@/page/Login/Login";
 import Message from "@/page/Message/Message";
 import MonthlyPayment from "@/page/Payment/MonthlyPayment/MonthlyPayment";
@@ -50,6 +51,7 @@ const componentMapping: Record<string, React.ElementType> = {
 
   // coachingcost routes
   "/create-expense":CreateExpense,
+  "/show-expense":ShowExpense,
 
   //class routes
   "/class": ClassView,
