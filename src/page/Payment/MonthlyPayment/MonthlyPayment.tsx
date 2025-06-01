@@ -3,6 +3,7 @@ import { FormFieldWrapper } from "@/components/common/FormFieldWrapper";
 import { SelectFieldWrapper } from "@/components/common/SelectFieldWrapper";
 import SearchInputField from "@/components/CommonSearch/SearchInputField";
 import EduCPagination from "@/components/EduCPagination/EduCPagination";
+import TableSkeleton from "@/components/Skleton/TableSkeleton";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import {
@@ -26,7 +27,7 @@ const MonthlyPayment = () => {
   const [search, setSearch] = useState("");
   const [openFormFor, setOpenFormFor] = useState<string | null>(null);
 
-  const { data: students } = useGetAllStudentQuery([
+  const { data: students, isLoading } = useGetAllStudentQuery([
     { name: "limit", value: 10 },
     { name: "page", value: page },
     { name: "search", value: search },
@@ -90,136 +91,143 @@ const MonthlyPayment = () => {
       </div>
 
       {/* Table */}
-      <div className="border-1 border-slate-500 rounded-lg shadow-md p-5">
-        {students?.data?.length > 0 ? (
-          <div className="border rounded-lg">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>SL No.</TableHead>
-                  <TableHead>Full Name</TableHead>
-                  <TableHead>Std Id</TableHead>
-                  <TableHead>Phone</TableHead>
-                  <TableHead>Action</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {students?.data?.map((student: any, index: number) => (
-                  <>
-                    <TableRow key={student.id}>
-                      <TableCell>{index + 1}</TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <img
-                            src={`http://localhost:3000${student.image}`}
-                            alt={`${student.firstName} ${student.lastName}`}
-                            className="size-10 rounded-md object-cover"
-                          />
-                          <span>
-                            {student.firstName} {student.lastName}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell>{student.studentId}</TableCell>
-                      <TableCell>{student.phone}</TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          <Button
-                            variant="outline"
-                            className="bg-green-600 hover:bg-green-500 text-slate-100"
-                            onClick={() => {
-                              form.setValue("studentId", student.id); // store the real ID
-                              setOpenFormFor((prev) =>
-                                prev === student.studentId
-                                  ? null
-                                  : student.studentId
-                              );
-                            }}
-                          >
-                            {/* Icon */}
-                            <DollarSign className="w-5 h-5" />{" "}
-                            {/* Conditional rendering of button text */}
-                            {openFormFor === student.studentId
-                              ? "Cancel"
-                              : "Make Payment"}
-                          </Button>
-                          <Link to={`/payment/${student.id}`}>
-                            <Button variant="outline" className="bg-green-600 hover:bg-green-500 text-slate-100">
-                              <Eye className="w-5 h-5" /> View Payment
-                            </Button>
-                          </Link>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-
-                    {/* Collapsible Form Row */}
-                    {openFormFor === student.studentId && (
-                      <TableRow>
-                        <TableCell colSpan={5}>
-                          <Form {...form}>
-                            <form
-                              onSubmit={form.handleSubmit(onSubmit)}
-                              className="p-4 bg-gray-100 rounded-md"
+      {isLoading ? (
+        <TableSkeleton />
+      ) : (
+        <div className="">
+          {students?.data?.length > 0 ? (
+            <div className="border rounded-lg">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>SL No.</TableHead>
+                    <TableHead>Full Name</TableHead>
+                    <TableHead>Std Id</TableHead>
+                    <TableHead>Phone</TableHead>
+                    <TableHead>Action</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {students?.data?.map((student: any, index: number) => (
+                    <>
+                      <TableRow key={student.id}>
+                        <TableCell>{index + 1}</TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <img
+                              src={`http://localhost:3000${student.image}`}
+                              alt={`${student.firstName} ${student.lastName}`}
+                              className="size-10 rounded-md object-cover"
+                            />
+                            <span>
+                              {student.firstName} {student.lastName}
+                            </span>
+                          </div>
+                        </TableCell>
+                        <TableCell>{student.studentId}</TableCell>
+                        <TableCell>{student.phone}</TableCell>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            <Button
+                              variant="outline"
+                              className="bg-green-600 hover:bg-green-500 text-slate-100"
+                              onClick={() => {
+                                form.setValue("studentId", student.id); // store the real ID
+                                setOpenFormFor((prev) =>
+                                  prev === student.studentId
+                                    ? null
+                                    : student.studentId
+                                );
+                              }}
                             >
-                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                                <SelectFieldWrapper
-                                  name="title"
-                                  label="Payment Title"
-                                  options={[
-                                    { value: "Monthly", name: "Monthly" },
-                                    { value: "ModelTest", name: "ModelTest" },
-                                    { value: "Others", name: "Others" },
-                                  ]}
-                                  control={form.control}
-                                />
-                                <FormFieldWrapper
-                                  name="amount"
-                                  label="Amount"
-                                  placeholder="Enter amount"
-                                  type="number"
-                                />
-                                <SelectFieldWrapper
-                                  name="month"
-                                  label="Select Month"
-                                  options={[
-                                    { value: "January", name: "January" },
-                                    { value: "February", name: "February" },
-                                    { value: "March", name: "March" },
-                                    { value: "April", name: "April" },
-                                    { value: "May", name: "May" },
-                                    { value: "June", name: "June" },
-                                    { value: "July", name: "July" },
-                                    { value: "August", name: "August" },
-                                    { value: "September", name: "September" },
-                                    { value: "October", name: "October" },
-                                    { value: "November", name: "November" },
-                                    { value: "December", name: "December" },
-                                  ]}
-                                  control={form.control}
-                                />
-                              </div>
-
+                              {/* Icon */}
+                              <DollarSign className="w-5 h-5" />{" "}
+                              {/* Conditional rendering of button text */}
+                              {openFormFor === student.studentId
+                                ? "Cancel"
+                                : "Make Payment"}
+                            </Button>
+                            <Link to={`/payment/${student.id}`}>
                               <Button
-                                type="submit"
-                                className="bg-primary hover:bg-cyan-800 text-white flex items-center gap-2 py-2 px-4 rounded-md transition"
+                                variant="outline"
+                                className="bg-green-600 hover:bg-green-500 text-slate-100"
                               >
-                                <Plus className="w-5 h-5" />
-                                Submit Payment
+                                <Eye className="w-5 h-5" /> View Payment
                               </Button>
-                            </form>
-                          </Form>
+                            </Link>
+                          </div>
                         </TableCell>
                       </TableRow>
-                    )}
-                  </>
-                ))}
-              </TableBody>
-            </Table>
-          </div>
-        ) : (
-          "No data found"
-        )}
-      </div>
+
+                      {/* Collapsible Form Row */}
+                      {openFormFor === student.studentId && (
+                        <TableRow>
+                          <TableCell colSpan={5}>
+                            <Form {...form}>
+                              <form
+                                onSubmit={form.handleSubmit(onSubmit)}
+                                className="p-4 bg-gray-100 rounded-md"
+                              >
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                  <SelectFieldWrapper
+                                    name="title"
+                                    label="Payment Title"
+                                    options={[
+                                      { value: "Monthly", name: "Monthly" },
+                                      { value: "ModelTest", name: "ModelTest" },
+                                      { value: "Others", name: "Others" },
+                                    ]}
+                                    control={form.control}
+                                  />
+                                  <FormFieldWrapper
+                                    name="amount"
+                                    label="Amount"
+                                    placeholder="Enter amount"
+                                    type="number"
+                                  />
+                                  <SelectFieldWrapper
+                                    name="month"
+                                    label="Select Month"
+                                    options={[
+                                      { value: "January", name: "January" },
+                                      { value: "February", name: "February" },
+                                      { value: "March", name: "March" },
+                                      { value: "April", name: "April" },
+                                      { value: "May", name: "May" },
+                                      { value: "June", name: "June" },
+                                      { value: "July", name: "July" },
+                                      { value: "August", name: "August" },
+                                      { value: "September", name: "September" },
+                                      { value: "October", name: "October" },
+                                      { value: "November", name: "November" },
+                                      { value: "December", name: "December" },
+                                    ]}
+                                    control={form.control}
+                                  />
+                                </div>
+
+                                <Button
+                                  type="submit"
+                                  className="bg-primary hover:bg-cyan-800 text-white flex items-center gap-2 py-2 px-4 rounded-md transition"
+                                >
+                                  <Plus className="w-5 h-5" />
+                                  Submit Payment
+                                </Button>
+                              </form>
+                            </Form>
+                          </TableCell>
+                        </TableRow>
+                      )}
+                    </>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+          ) : (
+            <p className="text-center text-gray-500 mt-10">No data found</p>
+          )}
+        </div>
+      )}
 
       {/* Pagination */}
       {students?.meta?.total > students?.meta?.limit && (

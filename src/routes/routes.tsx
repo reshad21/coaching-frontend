@@ -56,7 +56,7 @@ const componentMapping: Record<string, React.ElementType> = {
   //class routes
   "/class": ClassView,
   "/class-create": ClassCreate,
-  "class-update/:id": ClassUpdate,
+  "/class-update/:id": ClassUpdate,
 
   //Batch routes
   "/batch": BatchView,

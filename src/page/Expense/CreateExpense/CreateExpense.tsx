@@ -8,10 +8,12 @@ import generateMonthOptions from "@/utils/generateMonthOptions";
 import { ChevronsRight } from "lucide-react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const monthOptions = generateMonthOptions();
 
 export const CreateExpense = () => {
+  const navigate = useNavigate();
   const [adExpense] = useAddExpenseMutation();
   const form = useForm({
     defaultValues: {
@@ -36,6 +38,7 @@ export const CreateExpense = () => {
     const res: any = await adExpense(payload).unwrap();
     if (res?.statusCode === 200) {
       toast.success(res?.message || "Expense added successfully!");
+      navigate("/show-expense");
     } else {
       toast.error(res?.message || "something went wrong");
     }
@@ -53,7 +56,7 @@ export const CreateExpense = () => {
       <div className="border-2 border-slate-200 rounded-lg  p-5">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               <FormFieldWrapper
                 name="instructorSalary"
                 label="Instructor Salary"

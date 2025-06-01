@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { Skeleton } from "@/components/ui/skeleton";
+import PaymentDashboardSkeleton from "@/components/Skleton/PaymentDashboardSkeleton";
+import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { usePaymentCalculations } from "@/hooks/use-payment-calculations";
 import {
@@ -9,9 +10,10 @@ import {
   useUpdatePaymentMutation,
 } from "@/redux/api/payment/paymentApi";
 import type { Payment } from "@/types/payment";
+import { ArrowLeft } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { ModelTestPayments } from "../../PaymentComponent/model-test-payments";
 import { MonthlyPaymentGrid } from "../../PaymentComponent/monthly-payment-grid";
 import { MonthlyPaymentList } from "../../PaymentComponent/monthly-payment-list";
@@ -21,6 +23,7 @@ import { PaymentSummaryCard } from "../../PaymentComponent/payment-summary-card"
 import { StudentInfoCard } from "../../PaymentComponent/student-info-card";
 
 export function PaymentDashboard() {
+  const navigate = useNavigate();
   const { id } = useParams();
   const { data, isLoading } = useGetPaymentByIdQuery(id);
   const [updatePayment] = useUpdatePaymentMutation();
@@ -85,31 +88,20 @@ export function PaymentDashboard() {
   };
 
   if (isLoading) {
-    return (
-      <div className="container mx-auto py-6 space-y-8">
-        <div className="flex flex-col gap-4">
-          <Skeleton className="h-8 w-64" />
-          <Skeleton className="h-4 w-96" />
-        </div>
-        <div className="grid gap-6">
-          <Skeleton className="h-[200px] w-full" />
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Skeleton className="h-[120px]" />
-            <Skeleton className="h-[120px]" />
-            <Skeleton className="h-[120px]" />
-          </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
-            {Array.from({ length: 6 }).map((_, idx) => (
-              <Skeleton key={idx} className="h-[180px]" />
-            ))}
-          </div>
-        </div>
-      </div>
-    );
+    return <PaymentDashboardSkeleton />;
   }
 
   return (
-    <div className="container mx-auto py-6 space-y-8">
+    <div className="container mx-auto py-6 space-y-8 relative">
+      {/* Back Button */}
+      <Button
+        onClick={() => navigate(-1)}
+        className="absolute top-4 left-0 flex justify-center items-center text-blue-600 hover:text-blue-700 border-blue-100 hover:border-blue-200 transition rounded-full"
+        variant="outline"
+        size="icon"
+      >
+        <ArrowLeft className="w-5 h-5 font-bold" />
+      </Button>
       <div className="flex flex-col gap-4">
         <h1 className="text-3xl font-bold tracking-tight">Payment Dashboard</h1>
         <p className="text-muted-foreground">
