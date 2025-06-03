@@ -50,6 +50,16 @@ const messageApi = baseApi.injectEndpoints({
         },
         invalidatesTags: ["message"],
       }),
+    sendAllStudentsMessage: builder.mutation({
+        query: (data) => {
+          return {
+            url: `/bulk/all-student`,
+            method: "POST",
+            body:data
+          };
+        },
+        invalidatesTags: ["message"],
+      }),
     sendSingleMessage: builder.mutation({
         query: (data) => {
           return {
@@ -67,5 +77,6 @@ export const {
  useSendMessageMutation,
  useSendSingleMessageMutation,
  useSendClassMessageMutation,
- useSendShiftMessageMutation
+ useSendShiftMessageMutation,
+ useSendAllStudentsMessageMutation
 } = messageApi;
