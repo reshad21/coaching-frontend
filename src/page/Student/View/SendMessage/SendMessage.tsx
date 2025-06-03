@@ -33,12 +33,10 @@ const SendMessage = ({ student }: any) => {
 
   const onSubmit = async (data: FormValues) => {
     try {
-      console.log(student?.phone);
       const res = await sendMessage({
         message: data?.message,
         number: student?.phone,
       }).unwrap();
-      console.log("===>",res);
       if (res?.data?.response_code == 202) {
         toast.success(`Message send to ${student?.firstName} successfully`);
         reset();

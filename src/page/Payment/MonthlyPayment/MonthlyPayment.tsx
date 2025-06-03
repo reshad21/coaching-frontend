@@ -14,6 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { useSendSingleMessageMutation } from "@/redux/api/auth/message/message";
 import { useAddPaymentMutation } from "@/redux/api/payment/paymentApi";
 import { useGetAllStudentQuery } from "@/redux/api/studentApi/studentApi";
 import { ChevronsRight, DollarSign, Eye, Plus } from "lucide-react";
@@ -26,6 +27,7 @@ const MonthlyPayment = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [openFormFor, setOpenFormFor] = useState<string | null>(null);
+  const [sendMessage] = useSendSingleMessageMutation();
 
   const { data: students, isLoading } = useGetAllStudentQuery([
     { name: "limit", value: 10 },
@@ -38,6 +40,8 @@ const MonthlyPayment = () => {
   const form = useForm({
     defaultValues: {
       studentId: "",
+      firstName: "",
+      phone: "",
       month: "",
       amount: "",
       title: "",
@@ -52,11 +56,22 @@ const MonthlyPayment = () => {
       title: data.title,
     };
 
+
     const res: any = await addPayment(payload).unwrap();
     if (res?.statusCode == 200) {
       form.reset();
       setOpenFormFor(null);
       toast.success(res?.message || "Payment added successfully");
+      const response = await sendMessage({
+              message: `Dear ${data?.firstName}, your payment of ${data?.amount}-TK has been successfully received. Thank you!`,
+              number: data?.phone,
+            }).unwrap();
+            console.log(response);
+            
+            if (response?.data?.response_code == 202) {
+              toast.success(`Message send to ${data?.firstName} successfully`);
+              
+            }
     } else {
       toast.error("Failed to add payment");
     }
@@ -133,6 +148,8 @@ const MonthlyPayment = () => {
                               className="bg-green-600 hover:bg-green-500 text-slate-100"
                               onClick={() => {
                                 form.setValue("studentId", student.id); // store the real ID
+                                form.setValue("phone", student.phone); // store the phone number
+                                form.setValue("firstName", student.firstName); // store the first name
                                 setOpenFormFor((prev) =>
                                   prev === student.studentId
                                     ? null
