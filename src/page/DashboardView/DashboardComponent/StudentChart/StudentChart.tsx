@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   Card,
   CardContent,
@@ -10,6 +11,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { useGetAllStudentQuery } from "@/redux/api/studentApi/studentApi";
 import {
   Bar,
   BarChart,
@@ -19,61 +21,82 @@ import {
   YAxis,
 } from "recharts";
 
-// Sample data for demonstration with time-based shifts
-const studentDistributionData = [
-  { batch: "Batch A", "8:00-10:30": 25, "11:00-1:30": 15, class: "Grade 10" },
-  { batch: "Batch B", "8:00-10:30": 30, "11:00-1:30": 20, class: "Grade 11" },
-  { batch: "Batch C", "2:00-4:30": 20, "5:00-7:30": 25, class: "Grade 12" },
-  { batch: "Batch D", "2:00-4:30": 35, "5:00-7:30": 10, class: "Grade 9" },
+// A pool of colors to cycle through for dynamic shifts
+const colorPalette = [
+  "#0088FE", "#00C49F", "#FFBB28", "#FF8042",
+  "#A28EFF", "#FF7F50", "#87CEEB", "#FFA07A"
 ];
 
-const chartConfig = {
-  "8:00-10:30": {
-    label: "8:00 AM - 10:30 AM",
-    color: "#0088FE",
-  },
-  "11:00-1:30": {
-    label: "11:00 AM - 1:30 PM",
-    color: "#00C49F",
-  },
-  "2:00-4:30": {
-    label: "2:00 PM - 4:30 PM",
-    color: "#FFBB28",
-  },
-  "5:00-7:30": {
-    label: "5:00 PM - 7:30 PM",
-    color: "#FF8042",
-  },
-};
-
 const StudentChart = () => {
+  const { data: students } = useGetAllStudentQuery(undefined);
+  const studentdata = students?.data || [];
+
+  // Step 1: Collect unique shifts
+  const shiftSet = new Set<string>();
+  studentdata.forEach((student:any) => {
+    if (student.shiftName) shiftSet.add(student.shiftName);
+  });
+  const shiftList = Array.from(shiftSet);
+
+  // Step 2: Generate dynamic chartConfig with colors
+  const chartConfig: Record<string, { label: string; color: string }> = {};
+  shiftList.forEach((shift, index) => {
+    chartConfig[shift] = {
+      label: shift,
+      color: colorPalette[index % colorPalette.length], // Reuse colors if more shifts
+    };
+  });
+
+  // Step 3: Generate chart data by grouping students by batch
+  const studentDistributionData = studentdata.reduce((acc:any, student:any) => {
+    const batch = student.batchName;
+    const shift = student.shiftName;
+    const className = student.className;
+
+    if (!batch || !shift) return acc;
+
+    let batchGroup = acc.find((item:any) => item.batch === batch);
+    if (!batchGroup) {
+      batchGroup = { batch, class: className };
+      shiftList.forEach((s) => (batchGroup[s] = 0));
+      acc.push(batchGroup);
+    }
+
+    if (batchGroup[shift] !== undefined) {
+      batchGroup[shift]++;
+    }
+
+    return acc;
+  }, [] as any[]);
+
   return (
-    <>
-      <Card>
-        <CardHeader>
-          <CardTitle>Student Distribution by Batch and Shift</CardTitle>
-          <CardDescription>
-            Number of students in each batch across different time slots
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <ChartContainer config={chartConfig} className="h-[300px]">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={studentDistributionData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="batch" />
-                <YAxis />
-                <ChartTooltip content={<ChartTooltipContent />} />
-                <Bar dataKey="8:00-10:30" fill="var(--color-8\\:00-10\\:30)" />
-                <Bar dataKey="11:00-1:30" fill="var(--color-11\\:00-1\\:30)" />
-                <Bar dataKey="2:00-4:30" fill="var(--color-2\\:00-4\\:30)" />
-                <Bar dataKey="5:00-7:30" fill="var(--color-5\\:00-7\\:30)" />
-              </BarChart>
-            </ResponsiveContainer>
-          </ChartContainer>
-        </CardContent>
-      </Card>
-    </>
+    <Card>
+      <CardHeader>
+        <CardTitle>Student Distribution by Batch and Shift</CardTitle>
+        <CardDescription>
+          Number of students in each batch across dynamically detected shifts
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <ChartContainer config={chartConfig} className="h-[300px]">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={studentDistributionData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="batch" />
+              <YAxis allowDecimals={false} />
+              <ChartTooltip content={<ChartTooltipContent />} />
+              {shiftList.map((shift) => (
+                <Bar
+                  key={shift}
+                  dataKey={shift}
+                  fill={chartConfig[shift].color}
+                />
+              ))}
+            </BarChart>
+          </ResponsiveContainer>
+        </ChartContainer>
+      </CardContent>
+    </Card>
   );
 };
 

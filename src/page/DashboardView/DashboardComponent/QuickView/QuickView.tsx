@@ -4,6 +4,7 @@ import { useGetAllClassQuery } from "@/redux/api/class/classApi";
 import { useGetAllShiftQuery } from "@/redux/api/shiftApi/shiftApi";
 import { useGetAllStudentQuery } from "@/redux/api/studentApi/studentApi";
 import { BookOpen, Clock, GraduationCap, Users } from "lucide-react";
+import QuickViewSkeleton from "./QuickViewSkeleton";
 
 const QuickView = () => {
   const { data: students, isLoading: stdLoading } =
@@ -17,7 +18,7 @@ const QuickView = () => {
   return (
     <>
       {stdLoading || clsLoading || batchLoading || shiftLoading ? (
-        "Is Loading..."
+        <QuickViewSkeleton />
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
           <Card>
