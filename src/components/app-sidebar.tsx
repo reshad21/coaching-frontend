@@ -10,9 +10,10 @@ const data = {
   navMain: navMain.map(item => ({
     ...item,
     items: Array.isArray(item.items)
-      ? item.items.filter(Boolean)
-      : item.items,
-  })),};
+      ? item.items.filter(Boolean) as { title: string; url: string; isShow: boolean; }[]
+      : undefined,
+  })),
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const navigate = useNavigate();

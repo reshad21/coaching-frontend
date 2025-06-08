@@ -8,7 +8,6 @@ import BatchView from "@/page/Batch/View/BatchView";
 import ClassCreate from "@/page/Class/Create/ClassCreate";
 import ClassUpdate from "@/page/Class/Update/ClassUpdate";
 import ClassView from "@/page/Class/View/ClassView";
-import DashboardView from "@/page/DashboardView/DashboardView";
 import { CreateExpense } from "@/page/Expense/CreateExpense/CreateExpense";
 import { ShowExpense } from "@/page/Expense/ShowExpense/ShowExpense";
 import Login from "@/page/Login/Login";
@@ -25,13 +24,14 @@ import StudentUpdate from "@/page/Student/Update/StudentUpdate";
 import Student from "@/page/Student/View/Student";
 import PrivateRout from "@/PrivateRout/PrivateRout";
 import { createBrowserRouter } from "react-router-dom";
+import { DashboardOverview } from '@/page/DashboardView/DashboardView';
 
 const componentMapping: Record<string, React.ElementType> = {
   // login route
   "/login": Login,
 
   // Dashborad overview
-  "/": DashboardView,
+  "/": DashboardOverview,
 
   // shift routes
   "/shift": ShiftView,
@@ -78,7 +78,7 @@ const routs = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <DashboardView />,
+        element: <DashboardOverview />,
       },
       ...navMain.flatMap((section) =>
         section.items?.map((item: any) => {
