@@ -23,6 +23,7 @@ import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import SendMessage from "./SendMessage/SendMessage";
+import SelectShift from "@/components/Shift/SelectShift";
 
 const Student = () => {
   // * Pagination, search and filter state
@@ -30,6 +31,7 @@ const Student = () => {
   const [search, setSearch] = useState("");
   const [selectedBatch, setSelectedBatch] = useState("");
   const [selectClass, setSelectedClass] = useState("");
+  const [shift, setShift] = useState("");
 
   const { data: students, isLoading } = useGetAllStudentQuery([
     { name: "limit", value: 10 },
@@ -37,6 +39,7 @@ const Student = () => {
     { name: "search", value: search },
     ...(selectedBatch ? [{ name: "batchName", value: selectedBatch }] : []),
     ...(selectClass ? [{ name: "className", value: selectClass }] : []),
+    ...(shift ? [{ name: "shiftName", value: shift }] : []),
   ]);
 
   const [deleteStudent] = useDeleteStudentMutation();
@@ -76,7 +79,7 @@ const Student = () => {
         <h1 className="text-2xl font-bold text-slate-600">All Student</h1>
       </div>
       {/* Filtering section */}
-      <div className="filter-section grid grid-cols-1 md:grid-cols-4 gap-3 mb-5">
+      <div className="filter-section grid grid-cols-1 md:grid-cols-5 gap-3 mb-5">
         <SearchInputField
           value={search}
           onChange={setSearch}
@@ -84,13 +87,15 @@ const Student = () => {
         />
         <SelectBatch value={selectedBatch} onChange={setSelectedBatch} />
         <SelectStudentClass value={selectClass} onChange={setSelectedClass} />
+        <SelectShift value={shift} onChange={setShift} />
         <Button
           onClick={() => {
             setSearch("");
             setSelectedBatch("");
             setSelectedClass("");
+            setShift("");
           }}
-          className="text-slate-500 w-1/4 bg-gray-50 hover:bg-gray-100"
+          className="text-slate-500 bg-gray-50 hover:bg-gray-100"
         >
           Clear Filter
         </Button>
