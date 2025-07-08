@@ -20,7 +20,7 @@ import { useLoginAdminMutation } from "@/redux/api/auth/auth";
 import { setUserToken } from "@/redux/features/authSlice/authSlice";
 import { useAppDispatch } from "@/redux/hooks";
 import { AppDispatch } from "@/redux/store";
-import { jwtDecode, JwtPayload } from "jwt-decode";
+// import { jwtDecode, JwtPayload } from "jwt-decode";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -37,10 +37,10 @@ type LoginFormInputs = {
   email: string;
   password: string;
 };
-interface CustomJwtPayload extends JwtPayload {
-  roleId: string;
-  designation?:string;
-}
+// interface CustomJwtPayload extends JwtPayload {
+//   roleId: string;
+//   designation?:string;
+// }
 const Login = () => {
   const [isShow,setShow] = useState(false)
   const [login] = useLoginAdminMutation();

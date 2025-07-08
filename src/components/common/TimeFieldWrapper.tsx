@@ -7,7 +7,6 @@ export const TimeFieldWrapper = ({
   label,
   control,
   placeholder,
-  defaultValue,
   isDisabled = false,
 }: any) => {
   return (

@@ -78,6 +78,7 @@ export function PaymentDashboard() {
           toast.success(res?.data?.message || "payment updated successfully!");
         } else {
           console.log(res?.data?.message);
+          console.log(month);
         }
       }
 

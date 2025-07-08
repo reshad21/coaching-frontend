@@ -76,7 +76,7 @@ export default function PaymentDashboardSkeleton() {
 
         {/* Monthly Cards Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-          {["January", "February", "March", "April", "May", "June"].map((month, index) => (
+          {["January", "February", "March", "April", "May", "June"].map((month) => (
             <div key={month} className="border border-gray-200 rounded-lg p-4 text-center">
               <div className="h-5 bg-gray-200 rounded w-16 mx-auto mb-4 animate-pulse"></div>
               <div className="flex justify-center mb-3">
