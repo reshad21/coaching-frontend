@@ -56,22 +56,20 @@ const MonthlyPayment = () => {
       title: data.title,
     };
 
-
     const res: any = await addPayment(payload).unwrap();
     if (res?.statusCode == 200) {
       form.reset();
       setOpenFormFor(null);
       toast.success(res?.message || "Payment added successfully");
       const response = await sendMessage({
-              message: `Dear ${data?.firstName}, your payment of ${data?.amount}-TK has been successfully received. Thank you!`,
-              number: data?.phone,
-            }).unwrap();
-            console.log(response);
-            
-            if (response?.data?.response_code == 202) {
-              toast.success(`Message send to ${data?.firstName} successfully`);
-              
-            }
+        message: `Dear ${data?.firstName}, your payment of ${data?.amount}-TK has been successfully received. Thank you!`,
+        number: data?.phone,
+      }).unwrap();
+      console.log(response);
+
+      if (response?.data?.response_code == 202) {
+        toast.success(`Message send to ${data?.firstName} successfully`);
+      }
     } else {
       toast.error("Failed to add payment");
     }
@@ -130,7 +128,7 @@ const MonthlyPayment = () => {
                         <TableCell>
                           <div className="flex items-center gap-2">
                             <img
-                              src={`http://localhost:3000${student.image}`}
+                              src={`${student.image}`}
                               alt={`${student.firstName} ${student.lastName}`}
                               className="size-10 rounded-md object-cover"
                             />

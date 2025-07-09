@@ -11,6 +11,7 @@ import {
 import { useGetAllClassQuery } from "@/redux/api/class/classApi";
 import { useGetAllShiftQuery } from "@/redux/api/shiftApi/shiftApi";
 import { useAddStudentMutation } from "@/redux/api/studentApi/studentApi";
+import { uploadImageToImgbb } from "@/utils/uploadImageToImgbb";
 import { ChevronsRight, Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -46,11 +47,14 @@ const StudentCreate = () => {
   const [addStudent] = useAddStudentMutation();
 
   const onSubmit = async (data: any) => {
-    console.log("submit create student data-->",data);
+    console.log(data.image);
+    
+    const image = await uploadImageToImgbb(data.image);
+    console.log(image);
+    
     try {
       const isoDateOfBirth = new Date(data.dateOfBirth).toISOString();
       const formData = new FormData();
-
 
       formData.append("firstName", data.firstName);
       formData.append("lastName", data.lastName);
@@ -63,7 +67,7 @@ const StudentCreate = () => {
       formData.append("schoolName", data.schoolName);
       formData.append("address", data.address);
       formData.append("gender", data.gender);
-      formData.append("image", data.image);
+      formData.append("image", image);
       formData.append("batchId", data.batchId);
       formData.append("shiftId", batchInfo?.data?.Shift?.id);
       formData.append("classId", batchInfo?.data?.Class?.id);

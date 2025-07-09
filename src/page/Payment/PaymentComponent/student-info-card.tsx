@@ -18,7 +18,7 @@ export function StudentInfoCard({ studentInfo }: StudentInfoCardProps) {
         <Avatar>
           <div className="flex h-full w-full items-center justify-center bg-muted text-xl font-semibold">
             <img
-              src={`http://localhost:3000${studentInfo.image}`}
+              src={`${studentInfo.image}`}
               alt={`${studentInfo.firstName} ${studentInfo.lastName}`}
               className="size-10 rounded-sm object-cover"
             />

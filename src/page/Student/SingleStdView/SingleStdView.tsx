@@ -1,6 +1,6 @@
 import { useGetStudentByIdQuery } from "@/redux/api/studentApi/studentApi";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft } from "lucide-react"; // make sure you have lucide-react installed
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const SingleStdView = () => {
@@ -25,7 +25,7 @@ const SingleStdView = () => {
 
         <div className="flex flex-col items-center mt-8">
           <img
-            src={`http://localhost:3000${studentData?.data?.image}`}
+            src={studentData?.data?.image || "/default"}
             alt={`${studentData?.data?.firstName} ${studentData?.data?.lastName}`}
             className="w-32 h-32 object-cover rounded-full mb-6"
           />

@@ -141,7 +141,7 @@ const Student = () => {
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <img
-                        src={`http://localhost:3000${student.image}`}
+                        src={`${student.image}`}
                         alt={`${student.firstName} ${student.lastName}`}
                         className="size-10 rounded-md object-cover"
                       />

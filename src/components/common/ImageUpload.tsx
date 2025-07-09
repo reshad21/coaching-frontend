@@ -18,7 +18,7 @@ export const ImageUpload = ({
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [fileName, setFileName] = useState("No file chosen");
 
-  const defaultImage = defaultUrl ? `http://localhost:3000${defaultUrl}` : profileImg;
+  const defaultImage = defaultUrl ? `${defaultUrl}` : profileImg;
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
