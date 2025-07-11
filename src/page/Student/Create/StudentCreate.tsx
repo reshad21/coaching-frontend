@@ -50,7 +50,6 @@ const StudentCreate = () => {
     console.log(data.image);
     
     const image = await uploadImageToImgbb(data.image);
-    console.log(image);
     
     try {
       const isoDateOfBirth = new Date(data.dateOfBirth).toISOString();
@@ -72,7 +71,6 @@ const StudentCreate = () => {
       formData.append("shiftId", batchInfo?.data?.Shift?.id);
       formData.append("classId", batchInfo?.data?.Class?.id);
 
-      // 🔽 Add corresponding names manually
       const batchName = batchData?.data?.find(
         (item: any) => item.id === data.batchId
       )?.batchName;
