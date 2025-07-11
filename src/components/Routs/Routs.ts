@@ -3,8 +3,80 @@ import { BadgeDollarSign, CircleUser, Coins, DatabaseZapIcon, MessagesSquare, Sc
 const featureAccess = { admin: [1] };
 
 export const navMain = [
+
   {
-    title: "User",
+    title: "Shift",
+    url: "#",
+    icon: TimerIcon,
+    isActive: false,
+    items: [
+      featureAccess["admin"]?.includes(1) && {
+        title: "Shift",
+        url: "/shift",
+        isShow: true,
+      },
+      featureAccess["admin"]?.includes(1) && {
+        title: "Create Shift",
+        url: "/shift-create",
+        isShow: false,
+      },
+      featureAccess["admin"]?.includes(1) && {
+        title: "Update Shift",
+        url: "/shift",
+        isShow: false,
+      },
+    ].filter(Boolean), // Remove false values
+  },
+  {
+    title: "Class",
+    url: "#",
+    icon: School,
+    isActive: false,
+    items: [
+      featureAccess["admin"]?.includes(1) && {
+        title: "Class",
+        url: "/class",
+        isShow: true,
+      },
+      featureAccess["admin"]?.includes(1) && {
+        title: "Create Class",
+        url: "/class-create",
+        isShow: false,
+      },
+      featureAccess["admin"]?.includes(1) && {
+        title: "Update Class",
+        url: "/update-class/:id",
+        isShow: false,
+      },
+    ].filter(Boolean), // Remove false values
+  },
+
+  {
+    title: "Batch",
+    url: "#",
+    icon: DatabaseZapIcon,
+    isActive: false,
+    items: [
+      featureAccess["admin"]?.includes(1) && {
+        title: "Batch",
+        url: "/batch",
+        isShow: true,
+      },
+      featureAccess["admin"]?.includes(1) && {
+        title: "Create Batch",
+        url: "/class-batch",
+        isShow: false,
+      },
+      featureAccess["admin"]?.includes(1) && {
+        title: "Update Batch",
+        url: "/update-batch/:id",
+        isShow: false,
+      },
+    ].filter(Boolean), // Remove false values
+  },
+
+  {
+    title: "Student",
     url: "#",
     icon: CircleUser,
     isActive: false,
@@ -34,30 +106,6 @@ export const navMain = [
         parent: "User",
       },
     ].filter(Boolean),
-  },
-
-  {
-    title: "Shift",
-    url: "#",
-    icon: TimerIcon,
-    isActive: false,
-    items: [
-      featureAccess["admin"]?.includes(1) && {
-        title: "Shift",
-        url: "/shift",
-        isShow: true,
-      },
-      featureAccess["admin"]?.includes(1) && {
-        title: "Create Shift",
-        url: "/shift-create",
-        isShow: false,
-      },
-      featureAccess["admin"]?.includes(1) && {
-        title: "Update Shift",
-        url: "/shift",
-        isShow: false,
-      },
-    ].filter(Boolean), // Remove false values
   },
 
   {
@@ -116,52 +164,7 @@ export const navMain = [
     ].filter(Boolean), // Remove false values
   },
 
-  {
-    title: "Class",
-    url: "#",
-    icon: School,
-    isActive: false,
-    items: [
-      featureAccess["admin"]?.includes(1) && {
-        title: "Class",
-        url: "/class",
-        isShow: true,
-      },
-      featureAccess["admin"]?.includes(1) && {
-        title: "Create Class",
-        url: "/class-create",
-        isShow: false,
-      },
-      featureAccess["admin"]?.includes(1) && {
-        title: "Update Class",
-        url: "/update-class/:id",
-        isShow: false,
-      },
-    ].filter(Boolean), // Remove false values
-  },
-  {
-    title: "Batch",
-    url: "#",
-    icon: DatabaseZapIcon,
-    isActive: false,
-    items: [
-      featureAccess["admin"]?.includes(1) && {
-        title: "Batch",
-        url: "/batch",
-        isShow: true,
-      },
-      featureAccess["admin"]?.includes(1) && {
-        title: "Create Batch",
-        url: "/class-batch",
-        isShow: false,
-      },
-      featureAccess["admin"]?.includes(1) && {
-        title: "Update Batch",
-        url: "/update-batch/:id",
-        isShow: false,
-      },
-    ].filter(Boolean), // Remove false values
-  },
+
   {
     title: "Message",
     url: "#",

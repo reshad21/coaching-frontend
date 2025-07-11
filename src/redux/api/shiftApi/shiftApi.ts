@@ -20,6 +20,23 @@ const ShiftApi = baseApi.injectEndpoints({
             providesTags: ["shift"],
         }),
 
+        getAllShiftWithStdPercentage: builder.query({
+            query: (args) => {
+                const params = new URLSearchParams();
+                if (args) {
+                    args.forEach((item: TQueryParam) => {
+                        params.append(item.name, item.value as string);
+                    });
+                }
+                return {
+                    url: '/shift/data',
+                    method: 'GET',
+                    params: params
+                }
+            },
+            providesTags: ["shift"],
+        }),
+
         getShiftById: builder.query({
             query: (id) => ({
                 url: `/Shift/${id}`,
@@ -69,4 +86,5 @@ export const {
     useDeleteShiftMutation,
     useAddShiftMutation,
     useUpdateShiftMutation,
+    useGetAllShiftWithStdPercentageQuery
 } = ShiftApi;
