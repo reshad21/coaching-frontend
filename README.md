@@ -11,7 +11,7 @@
 ## Technologies Used
 - **Frontend**: React (or any preferred framework)
 - **Backend**: Node.js with Express
-- **Database**: MongoDB
+- **Database**: Mysql
 - **Messaging Service**: Twilio (or any SMS API)
 - **Authentication**: JWT for secure access control
 
