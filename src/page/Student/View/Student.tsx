@@ -162,7 +162,7 @@ const Student = () => {
                   </TableCell>
                   <TableCell>
                     <span className="text-slate-500 font-medium">
-                      {student.Class.className}
+                      {student.Class?.className}
                     </span>
                   </TableCell>
                   <TableCell>
