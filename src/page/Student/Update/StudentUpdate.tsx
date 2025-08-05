@@ -13,7 +13,7 @@ import { ChevronsRight, Plus } from "lucide-react";
 import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 // --- Define types
 type TStudentFormData = {
@@ -21,7 +21,6 @@ type TStudentFormData = {
   lastName: string;
   fatherName: string;
   motherName: string;
-  dateOfBirth: string;
   religion: string;
   schoolName: string;
   studentId: string;
@@ -41,26 +40,20 @@ const StudentUpdate = () => {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  const { data: student, isLoading } = useGetStudentByIdQuery(id!); // Non-null assertion to ensure id is present
+  const { data: student, isLoading } = useGetStudentByIdQuery(id!);
   const { data: batchData } = useGetAllBatchQuery(undefined);
   const [updateStudent] = useUpdateStudentMutation();
 
   const form = useForm<TStudentFormData>();
-
   const { reset } = form;
 
   useEffect(() => {
     if (student?.data) {
-      const dateOfBirth = student?.data?.dateOfBirth
-        ? new Date(student.data.dateOfBirth).toISOString().split("T")[0]
-        : "";
-
       reset({
         firstName: student?.data?.firstName || "",
         lastName: student?.data?.lastName || "",
         fatherName: student?.data?.fatherName || "",
         motherName: student?.data?.motherName || "",
-        dateOfBirth: dateOfBirth || "",
         religion: student?.data?.religion || "",
         schoolName: student?.data?.schoolName || "",
         studentId: student?.data?.studentId || "",
@@ -76,15 +69,11 @@ const StudentUpdate = () => {
   if (isLoading) return <p>Loading...</p>;
 
   const onSubmit: SubmitHandler<TStudentFormData> = async (data) => {
-    // console.log("from submit data-->", data); plain object
-
-    const isoDateOfBirth = new Date(data.dateOfBirth).toISOString();
     const formData = new FormData();
 
     formData.append("image", data?.image);
     formData.append("firstName", data.firstName);
     formData.append("lastName", data.lastName);
-    formData.append("dateOfBirth", isoDateOfBirth);
     formData.append("studentId", data.studentId);
     formData.append("phone", data.phone);
     formData.append("fatherName", data.fatherName);
@@ -96,13 +85,10 @@ const StudentUpdate = () => {
     formData.append("batchId", data.batchId);
 
     const payload = Object.fromEntries(formData);
-
     const res: any = await updateStudent({
       data: payload,
       id: id,
     });
-
-    console.log("see response==>", res);
 
     if ("data" in res && res?.data?.success) {
       toast.success(res?.data?.message || "Student updated successfully!");
@@ -118,7 +104,9 @@ const StudentUpdate = () => {
   return (
     <div>
       <div className="flex items-center mb-4">
-        <h1 className="text-2xl font-bold text-slate-700">Student</h1>
+        <h1 className="text-2xl font-bold text-blue-700">
+          <Link to="/view-student">Student</Link>
+        </h1>
         <span>
           <ChevronsRight />
         </span>
@@ -148,12 +136,6 @@ const StudentUpdate = () => {
                 name="lastName"
                 label="LAST NAME"
                 placeholder="Enter your Last Name"
-              />
-              <FormFieldWrapper
-                name="dateOfBirth"
-                label="DATE OF BIRTH"
-                type="date"
-                placeholder="Enter your Date of Birth"
               />
               <FormFieldWrapper
                 name="studentId"

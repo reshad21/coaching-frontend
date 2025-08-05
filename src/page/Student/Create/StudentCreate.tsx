@@ -15,7 +15,7 @@ import { uploadImageToImgbb } from "@/utils/uploadImageToImgbb";
 import { ChevronsRight, Plus } from "lucide-react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const StudentCreate = () => {
   const navigate = useNavigate();
@@ -55,7 +55,7 @@ const StudentCreate = () => {
       let isoDateOfBirth;
       if (!data.dateOfBirth) {
         isoDateOfBirth = "";
-      }else{
+      } else {
         isoDateOfBirth = new Date(data.dateOfBirth).toISOString();
       }
 
@@ -64,7 +64,7 @@ const StudentCreate = () => {
       formData.append("firstName", data.firstName);
       formData.append("lastName", data.lastName);
       // formData.append("dateOfBirth", isoDateOfBirth);
-      if(isoDateOfBirth){
+      if (isoDateOfBirth) {
         formData.append("dateOfBirth", isoDateOfBirth);
       }
       formData.append("admissionFees", data.admissionFees);
@@ -114,7 +114,9 @@ const StudentCreate = () => {
   return (
     <div>
       <div className="flex items-center mb-4">
-        <h1 className="text-2xl font-bold text-slate-700">Student</h1>
+        <h1 className="text-2xl font-bold text-blue-700">
+          <Link to="/view-student">Student</Link>
+        </h1>
         <span>
           <ChevronsRight />
         </span>

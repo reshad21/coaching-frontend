@@ -95,7 +95,7 @@ const Student = () => {
             setSelectedClass("");
             setShift("");
           }}
-          className="text-slate-500 bg-gray-50 hover:bg-gray-100"
+          className="text-white bg-primary hover:bg-primary/90"
         >
           Clear Filter
         </Button>
