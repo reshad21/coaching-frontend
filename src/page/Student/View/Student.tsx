@@ -5,6 +5,7 @@ import EduCPagination from "@/components/EduCPagination/EduCPagination";
 import TableSkeleton from "@/components/Skleton/TableSkeleton";
 import SelectStudentClass from "@/components/studentClass/SelectStudentClass";
 import { Button } from "@/components/ui/button";
+import defaultImg from "@/assets/default.jpg"
 import {
   Table,
   TableBody,
@@ -145,19 +146,28 @@ const Student = () => {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      <img
-                        src={`${student.image}`}
-                        alt={`${student.firstName} ${student.lastName}`}
+                      {student?.image &&
+                        <img
+                        src={`${student?.image}`}
+                        alt={`${student?.firstName} ${student?.lastName}`}
                         className="size-10 rounded-md object-cover"
                       />
+                      }
+                      {
+                        !student?.image && <img
+                        src={defaultImg}
+                        alt={`${student?.firstName} ${student?.lastName}`}
+                        className="size-10 rounded-md object-cover"
+                      />
+                      }
                       <span className="text-slate-500 font-medium">
-                        {student.firstName} {student.lastName}
+                        {student?.firstName} {student?.lastName}
                       </span>
                     </div>
                   </TableCell>
                   <TableCell>
                     <span className="text-slate-500 font-medium">
-                      {student.studentId}
+                      {student?.studentId}
                     </span>
                   </TableCell>
                   <TableCell>
@@ -167,12 +177,12 @@ const Student = () => {
                   </TableCell>
                   <TableCell>
                     <span className="text-slate-500 font-medium">
-                      {student.shiftName}
+                      {student?.shiftName}
                     </span>
                   </TableCell>
                   <TableCell>
                     <span className="text-slate-500 font-medium">
-                      {student.phone}
+                      {student?.phone}
                     </span>
                   </TableCell>
                   <TableCell>
