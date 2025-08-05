@@ -89,7 +89,7 @@ const StudentUpdate = () => {
       data: payload,
       id: id,
     });
-
+    console.log("update response", res);
     if ("data" in res && res?.data?.success) {
       toast.success(res?.data?.message || "Student updated successfully!");
       form.reset();

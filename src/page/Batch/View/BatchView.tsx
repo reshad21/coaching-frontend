@@ -76,7 +76,7 @@ const BatchView = () => {
   };
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto pb-8">
       <div className="flex justify-between items-center mb-5">
         <CardTitle className="text-2xl font-semibold text-gray-800">
           Batch Management

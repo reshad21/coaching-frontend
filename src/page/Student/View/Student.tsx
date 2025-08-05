@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import defaultImg from "@/assets/default.jpg";
 import SelectBatch from "@/components/Batch/SelectBatch";
 import SearchInputField from "@/components/CommonSearch/SearchInputField";
-import EduCPagination from "@/components/EduCPagination/EduCPagination";
+import SelectShift from "@/components/Shift/SelectShift";
 import TableSkeleton from "@/components/Skleton/TableSkeleton";
 import SelectStudentClass from "@/components/studentClass/SelectStudentClass";
 import { Button } from "@/components/ui/button";
-import defaultImg from "@/assets/default.jpg"
 import {
   Table,
   TableBody,
@@ -24,19 +24,18 @@ import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import SendMessage from "./SendMessage/SendMessage";
-import SelectShift from "@/components/Shift/SelectShift";
 
 const Student = () => {
   // * Pagination, search and filter state
-  const [page, setPage] = useState(1);
+  // const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [selectedBatch, setSelectedBatch] = useState("");
   const [selectClass, setSelectedClass] = useState("");
   const [shift, setShift] = useState("");
 
   const { data: students, isLoading } = useGetAllStudentQuery([
-    { name: "limit", value: 10 },
-    { name: "page", value: page },
+    // { name: "limit", value: 10 },
+    // { name: "page", value: page },
     { name: "search", value: search },
     ...(selectedBatch ? [{ name: "batchName", value: selectedBatch }] : []),
     ...(selectClass ? [{ name: "className", value: selectClass }] : []),
@@ -71,7 +70,7 @@ const Student = () => {
   };
 
   return (
-    <div>
+    <div className="pb-8">
       <div className="flex items-center mb-4">
         <h1 className="text-2xl font-bold text-slate-700">Student</h1>
         <span>
@@ -146,20 +145,20 @@ const Student = () => {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      {student?.image &&
+                      {student?.image && (
                         <img
-                        src={`${student?.image}`}
-                        alt={`${student?.firstName} ${student?.lastName}`}
-                        className="size-10 rounded-md object-cover"
-                      />
-                      }
-                      {
-                        !student?.image && <img
-                        src={defaultImg}
-                        alt={`${student?.firstName} ${student?.lastName}`}
-                        className="size-10 rounded-md object-cover"
-                      />
-                      }
+                          src={`${student?.image}`}
+                          alt={`${student?.firstName} ${student?.lastName}`}
+                          className="size-10 rounded-md object-cover"
+                        />
+                      )}
+                      {!student?.image && (
+                        <img
+                          src={defaultImg}
+                          alt={`${student?.firstName} ${student?.lastName}`}
+                          className="size-10 rounded-md object-cover"
+                        />
+                      )}
                       <span className="text-slate-500 font-medium">
                         {student?.firstName} {student?.lastName}
                       </span>
@@ -229,14 +228,14 @@ const Student = () => {
       )}
 
       {/* pagination */}
-      {students?.meta?.total > students?.meta?.limit && (
+      {/* {students?.meta?.total > students?.meta?.limit && (
         <EduCPagination
           page={page}
           setPage={setPage}
           totalPages={students?.meta?.totalPages}
-          className="mt-4 flex justify-end"
+          className="my-4 flex justify-end"
         />
-      )}
+      )} */}
     </div>
   );
 };
