@@ -50,36 +50,6 @@ const StudentCreate = () => {
     const image = await uploadImageToImgbb(data.image);
 
     try {
-      console.log("on submit isoDateOfBirth==>", data.dateOfBirth);
-
-      let isoDateOfBirth;
-      if (!data.dateOfBirth) {
-        isoDateOfBirth = "";
-      }else{
-        isoDateOfBirth = new Date(data.dateOfBirth).toISOString();
-      }
-
-      const formData = new FormData();
-
-      formData.append("firstName", data.firstName);
-      formData.append("lastName", data.lastName);
-      // formData.append("dateOfBirth", isoDateOfBirth);
-      if(isoDateOfBirth){
-        formData.append("dateOfBirth", isoDateOfBirth);
-      }
-      formData.append("admissionFees", data.admissionFees);
-      formData.append("phone", data.phone);
-      formData.append("fatherName", data.fatherName);
-      formData.append("motherName", data.motherName);
-      formData.append("religion", data.religion);
-      formData.append("schoolName", data.schoolName);
-      formData.append("address", data.address);
-      formData.append("gender", data.gender);
-      formData.append("image", image);
-      formData.append("batchId", data.batchId);
-      formData.append("shiftId", batchInfo?.data?.Shift?.id);
-      formData.append("classId", batchInfo?.data?.Class?.id);
-
       const batchName = batchData?.data?.find(
         (item: any) => item.id === data.batchId
       )?.batchName;
@@ -90,12 +60,27 @@ const StudentCreate = () => {
         (item: any) => item.id === data.classId
       )?.className;
 
-      if (batchName) formData.append("batchName", batchName);
-      if (shiftName) formData.append("shiftName", shiftName);
-      if (className) formData.append("className", className);
+      const studentData = {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        admissionFees: data.admissionFees,
+        phone: data.phone,
+        fatherName: data.fatherName,
+        motherName: data.motherName,
+        religion: data.religion,
+        schoolName: data.schoolName,
+        address: data.address,
+        gender: data.gender,
+        image: image,
+        batchId: data.batchId,
+        shiftId: batchInfo?.data?.Shift?.id,
+        classId: batchInfo?.data?.Class?.id,
+        batchName: batchName,
+        shiftName: shiftName,
+        className: className,
+      };
 
-      const res = await addStudent(formData);
-      console.log("create response==>", res);
+      const res = await addStudent(studentData);
       if ("data" in res && res.data?.success) {
         toast.success(res.data.message || "Student added successfully!");
         form.reset();
@@ -141,11 +126,11 @@ const StudentCreate = () => {
                 placeholder="Enter your Last Name"
                 rules={{ required: "Last Name Required" }}
               />
-              <FormFieldWrapper
+              {/* <FormFieldWrapper
                 name="dateOfBirth"
                 label="Date of Birth"
                 type="date"
-              />
+              /> */}
               <FormFieldWrapper
                 name="admissionFees"
                 label="AdmissionFees"

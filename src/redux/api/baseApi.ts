@@ -11,6 +11,7 @@ export const baseApi = createApi({
   reducerPath: "baseApi",
   baseQuery: fetchBaseQuery({
     baseUrl: "https://coaching-management-backend.vercel.app/api",
+    // baseUrl: "http://localhost:3000/api",
     credentials: "include",
     prepareHeaders: (
       headers: Headers,
