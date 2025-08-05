@@ -141,6 +141,7 @@ const StudentUpdate = () => {
                 name="studentId"
                 label="ID NUMBER"
                 placeholder="Enter your ID Number"
+                isDisabled="true"
               />
 
               <FormFieldWrapper
