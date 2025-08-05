@@ -13,8 +13,14 @@ export const uploadImageToImgbb = async (file: File): Promise<string> => {
 
   const result = await response.json();
 
+  if (result?.status_code === 400) {
+   return "";
+  }
+
+  console.log("object==>", result);
+
   if (!response.ok || !result.success) {
-    throw new Error(result?.error?.message || "Image upload failed");
+    return "";
   }
 
   return result.data.url; 

@@ -47,17 +47,26 @@ const StudentCreate = () => {
   const [addStudent] = useAddStudentMutation();
 
   const onSubmit = async (data: any) => {
-    console.log(data.image);
-    
     const image = await uploadImageToImgbb(data.image);
-    
+
     try {
-      const isoDateOfBirth = new Date(data.dateOfBirth).toISOString();
+      console.log("on submit isoDateOfBirth==>", data.dateOfBirth);
+
+      let isoDateOfBirth;
+      if (!data.dateOfBirth) {
+        isoDateOfBirth = "";
+      }else{
+        isoDateOfBirth = new Date(data.dateOfBirth).toISOString();
+      }
+
       const formData = new FormData();
 
       formData.append("firstName", data.firstName);
       formData.append("lastName", data.lastName);
-      formData.append("dateOfBirth", isoDateOfBirth);
+      // formData.append("dateOfBirth", isoDateOfBirth);
+      if(isoDateOfBirth){
+        formData.append("dateOfBirth", isoDateOfBirth);
+      }
       formData.append("admissionFees", data.admissionFees);
       formData.append("phone", data.phone);
       formData.append("fatherName", data.fatherName);
@@ -124,11 +133,13 @@ const StudentCreate = () => {
                 name="firstName"
                 label="First Name"
                 placeholder="Enter your First Name"
+                rules={{ required: "First Name Required" }}
               />
               <FormFieldWrapper
                 name="lastName"
                 label="Last Name"
                 placeholder="Enter your Last Name"
+                rules={{ required: "Last Name Required" }}
               />
               <FormFieldWrapper
                 name="dateOfBirth"
@@ -145,6 +156,7 @@ const StudentCreate = () => {
                 name="phone"
                 label="Phone"
                 placeholder="Enter your Phone Number"
+                rules={{ required: "Phone Name Required" }}
               />
               <FormFieldWrapper
                 name="fatherName"
@@ -200,30 +212,6 @@ const StudentCreate = () => {
                 }
                 control={form.control}
               />
-
-              {/* <SelectFieldWrapper
-                name="shiftId"
-                label="Select Shift"
-                options={
-                  shiftData?.data?.map((item: any) => ({
-                    value: item.id,
-                    name: item.shiftName,
-                  })) || []
-                }
-                control={form.control}
-              /> */}
-
-              {/* <SelectFieldWrapper
-                name="classId"
-                label="Select Class"
-                options={
-                  classData?.data?.map((item: any) => ({
-                    value: item.id,
-                    name: item.className,
-                  })) || []
-                }
-                control={form.control}
-              /> */}
             </div>
 
             <Button
