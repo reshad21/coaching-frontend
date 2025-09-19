@@ -132,6 +132,12 @@ export const navMain = [
         isShow: true,
         parent: "Payment",
       },
+      featureAccess["admin"]?.includes(1) && {
+        title: "Balance Status",
+        url: "/balance-status",
+        isShow: true,
+        parent: "Payment",
+      },
 
     ].filter(Boolean), // Remove false values
   },

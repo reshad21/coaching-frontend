@@ -22,6 +22,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import studentImage from "../../../assets/default.jpg";
 
 const PaymentStatus = () => {
   // * Pagination, search and filter state
@@ -41,10 +42,10 @@ const PaymentStatus = () => {
     ...(selectClass ? [{ name: "className", value: selectClass }] : []),
   ]);
 
-  console.log("line 172==>", students);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
-  console.log("isLoading=>", isLoading);
-  // console.log("all students=>", students);
 
   const [deleteStudent] = useDeleteStudentMutation();
 
@@ -143,7 +144,7 @@ const PaymentStatus = () => {
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <img
-                        src={`${student.image}`}
+                        src={student?.image || studentImage}
                         alt={`${student.firstName} ${student.lastName}`}
                         className="size-10 rounded-md object-cover"
                       />

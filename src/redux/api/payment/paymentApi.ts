@@ -4,6 +4,16 @@ import { baseApi } from "../baseApi";
 const paymentApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
 
+    getTotalIncome: builder.query({
+      query: () => {
+        return {
+          url: '/payment/total-earning',
+          method: 'GET',
+        }
+      },
+      providesTags: ["payment"],
+    }),
+
     getAllPayment: builder.query({
       query: (args) => {
         const params = new URLSearchParams();
@@ -59,6 +69,7 @@ const paymentApi = baseApi.injectEndpoints({
 });
 
 export const {
+  useGetTotalIncomeQuery,
   useGetAllPaymentQuery,
   useGetPaymentByIdQuery,
   useAddPaymentMutation,

@@ -22,6 +22,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
+import studentImage from "../../../assets/default.jpg";
 
 const MonthlyPayment = () => {
   const [page, setPage] = useState(1);
@@ -57,12 +58,15 @@ const MonthlyPayment = () => {
     };
 
     const res: any = await addPayment(payload).unwrap();
+
     if (res?.statusCode == 200) {
       form.reset();
       setOpenFormFor(null);
       toast.success(res?.message || "Payment added successfully");
       const response = await sendMessage({
-        message: `Dear ${data?.firstName}, your payment of ${data?.amount}-TK has been successfully received. Thank you!`,
+        message: `Dear ${data?.firstName},
+We have successfully received your payment of ${data?.amount} TK for ${data?.month}.
+Thank you for staying with EDUCARE!`,
         number: data?.phone,
       }).unwrap();
       console.log(response);
@@ -128,8 +132,8 @@ const MonthlyPayment = () => {
                         <TableCell>
                           <div className="flex items-center gap-2">
                             <img
-                              src={`${student.image}`}
-                              alt={`${student.firstName} ${student.lastName}`}
+                              src={student?.image || studentImage}
+                              alt={`${student?.firstName ?? ""} ${student?.lastName ?? ""}`}
                               className="size-10 rounded-md object-cover"
                             />
                             <span>

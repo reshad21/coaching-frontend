@@ -25,6 +25,7 @@ import Student from "@/page/Student/View/Student";
 import PrivateRout from "@/PrivateRout/PrivateRout";
 import { createBrowserRouter } from "react-router-dom";
 import { DashboardOverview } from '@/page/DashboardView/DashboardView';
+import BalanceStatus from "@/page/Payment/Balance/BalanceStatus";
 
 const componentMapping: Record<string, React.ElementType> = {
   // login route
@@ -48,6 +49,7 @@ const componentMapping: Record<string, React.ElementType> = {
   "/payment/:id": PaymentDetails,
   "/monthly-payment": MonthlyPayment,
   "/payment-status": PaymentStatus,
+  "/balance-status": BalanceStatus,
 
   // coachingcost routes
   "/create-expense":CreateExpense,
