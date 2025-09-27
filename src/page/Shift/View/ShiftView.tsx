@@ -20,6 +20,7 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 import ShiftCreate from "../Create/ShiftCreate";
+import Loading from "@/components/Loading";
 
 const ShiftView = () => {
   // * Modal state
@@ -71,7 +72,7 @@ const ShiftView = () => {
         </div>
 
         {isLoading ? (
-          <TableSkeleton />
+          <Loading/>
         ) : shift?.data?.length > 0 ? (
           <div className="border rounded-lg">
             <Table>

@@ -24,6 +24,7 @@ import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import SendMessage from "./SendMessage/SendMessage";
+import Loading from "@/components/Loading";
 
 const Student = () => {
   // * Pagination, search and filter state
@@ -103,7 +104,7 @@ const Student = () => {
 
       {/* conditional redenring  */}
       {isLoading ? (
-        <TableSkeleton />
+        <Loading/>
       ) : students?.data?.length > 0 ? (
         <div className="border rounded-lg">
           <Table>

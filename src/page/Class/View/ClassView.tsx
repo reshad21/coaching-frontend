@@ -17,6 +17,7 @@ import { Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 import ClassCreate from "../Create/ClassCreate";
+import Loading from "@/components/Loading";
 
 const ClassView = () => {
   const { data: classResponse, isLoading } = useGetAllClassQuery(undefined);
@@ -55,13 +56,13 @@ const ClassView = () => {
           <ClassCreate />
         </div>
         {isLoading ? (
-          <TableSkeleton />
+          <Loading/>
         ) : classData.length > 0 ? (
           <div className="border rounded-lg">
             <Table>
               <TableHeader className="bg-gray-50">
                 <TableRow>
-                  <TableHead className="w-[60px] text-gray-600">S.N</TableHead>
+                  <TableHead className="w-[60px] text-gray-600">SL. No</TableHead>
                   <TableHead className="text-gray-600">CLASS NAME</TableHead>
                   <TableHead className="text-gray-600 text-right">
                     Actions

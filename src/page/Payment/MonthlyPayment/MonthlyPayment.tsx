@@ -23,6 +23,7 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import studentImage from "../../../assets/default.jpg";
+import Loading from "@/components/Loading";
 
 const MonthlyPayment = () => {
   const [page, setPage] = useState(1);
@@ -109,7 +110,7 @@ Thank you for staying with EDUCARE!`,
 
       {/* Table */}
       {isLoading ? (
-        <TableSkeleton />
+        <Loading/>
       ) : (
         <div className="">
           {students?.data?.length > 0 ? (

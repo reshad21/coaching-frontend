@@ -17,14 +17,14 @@ import {
   useGetAllBatchQuery,
 } from "@/redux/api/batch/batchApi";
 import { Edit, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import toast from "react-hot-toast";
 import Swal from "sweetalert2";
 import BatchCreate from "../Create/BatchCreate";
 import { BatchModal } from "@/components/CommonModal/BatchModal";
+import Loading from "@/components/Loading";
 
 const BatchView = () => {
-  
   // * Modal state
   const [openModal, setOpenModal] = useState(false);
   const [modalDataToUpdate, setModalDataToUpdate] = useState<any>(null);
@@ -34,45 +34,53 @@ const BatchView = () => {
   const [search, setSearch] = useState("");
   const [selectedBatch, setSelectedBatch] = useState("");
 
-  const { data: batchData, isLoading } = useGetAllBatchQuery([
-    { name: "limit", value: 10 },
-    { name: "page", value: page },
-    { name: "search", value: search },
-    ...(selectedBatch ? [{ name: "batchName", value: selectedBatch }] : []),
-  ]);
+  // * Memoize query params to prevent hook issues
+  const queryParams = useMemo(() => {
+    const params: { name: string; value: any }[] = [
+      { name: "limit", value: 10 },
+      { name: "page", value: page },
+      { name: "search", value: search },
+    ];
+    if (selectedBatch) {
+      params.push({ name: "batchName", value: selectedBatch });
+    }
+    return params;
+  }, [page, search, selectedBatch]);
 
-  // console.log("Total batch ==>", batchData?.data?.data);
-  console.log(isLoading);
+  // * Fetch batches
+  const { data: batchData, isLoading } = useGetAllBatchQuery(queryParams);
 
-  const handleUpdateClick = (exam: any) => {
-    setModalDataToUpdate(exam);
+  const [deleteBatch] = useDeleteBatchMutation();
+
+  if (isLoading) {
+    return <Loading />;
+  }
+
+  // * Handle update modal
+  const handleUpdateClick = (batch: any) => {
+    setModalDataToUpdate(batch);
     setOpenModal(true);
   };
 
-  const [deleteBatch] = useDeleteBatchMutation();
+  // * Handle delete
   const handleDelete = (id?: string) => {
     if (!id) return;
-    try {
-      Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#09733D",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
-      }).then(async (result: any) => {
-        if (result.isConfirmed) {
-          const res = await deleteBatch(id);
-          if (res?.data?.statusCode) {
-            toast.success("Batch deleted successfully");
-          }
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#09733D",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result: any) => {
+      if (result.isConfirmed) {
+        const res = await deleteBatch(id);
+        if (res?.data?.statusCode) {
+          toast.success("Batch deleted successfully");
         }
-      });
-    } catch (error) {
-      console.error("Error deleting Teacher:", error);
-      toast.error("Failed to delete Teacher.");
-    }
+      }
+    });
   };
 
   return (
@@ -83,6 +91,8 @@ const BatchView = () => {
         </CardTitle>
         <BatchCreate />
       </div>
+
+      {/* Filter Section */}
       <div className="filter-section grid grid-cols-1 md:grid-cols-3 gap-3 mb-5">
         <SearchInputField
           value={search}
@@ -100,6 +110,8 @@ const BatchView = () => {
           Clear Filter
         </Button>
       </div>
+
+      {/* Batch Table */}
       {batchData?.data?.data?.length > 0 ? (
         <div className="border rounded-lg">
           <Table>
@@ -116,7 +128,7 @@ const BatchView = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {batchData?.data?.data?.map((batchItem: any, index: number) => (
+              {batchData.data.data.map((batchItem: any, index: number) => (
                 <TableRow key={batchItem?.id} className="hover:bg-gray-50">
                   <TableCell className="font-medium text-gray-700">
                     {index + 1}
@@ -160,6 +172,7 @@ const BatchView = () => {
         "No data found"
       )}
 
+      {/* Pagination */}
       {batchData?.meta?.total > batchData?.meta?.limit && (
         <EduCPagination
           page={page}
@@ -168,6 +181,7 @@ const BatchView = () => {
           className="my-6 flex justify-end"
         />
       )}
+
       {/* Modal */}
       <BatchModal
         open={openModal}

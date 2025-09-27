@@ -1,8 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { useState, useMemo } from "react";
+import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
+import toast from "react-hot-toast";
+
 import SelectBatch from "@/components/Batch/SelectBatch";
+import SelectStudentClass from "@/components/studentClass/SelectStudentClass";
 import SearchInputField from "@/components/CommonSearch/SearchInputField";
 import EduCPagination from "@/components/EduCPagination/EduCPagination";
-import SelectStudentClass from "@/components/studentClass/SelectStudentClass";
+import Loading from "@/components/Loading";
+import studentImage from "../../../assets/default.jpg";
+
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -12,83 +20,67 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useGetAllPaymentQuery } from "@/redux/api/payment/paymentApi";
+
 import {
   useDeleteStudentMutation,
   useGetAllStudentQuery,
 } from "@/redux/api/studentApi/studentApi";
+
 import { ChevronsRight, Eye, SquarePen, Trash } from "lucide-react";
-import { useState } from "react";
-import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
-import Swal from "sweetalert2";
-import studentImage from "../../../assets/default.jpg";
 
 const PaymentStatus = () => {
-  // * Pagination, search and filter state
+  // Pagination, search, and filter state
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [selectedBatch, setSelectedBatch] = useState("");
   const [selectClass, setSelectedClass] = useState("");
 
-  const { data: payments } = useGetAllPaymentQuery(undefined);
-  console.log("line39==>", payments);
+  // Query params memoized
+  const queryParams = useMemo(() => {
+    const params: { name: string; value: any }[] = [
+      { name: "limit", value: 10 },
+      { name: "page", value: page },
+      { name: "search", value: search },
+    ];
+    if (selectedBatch) params.push({ name: "batchName", value: selectedBatch });
+    if (selectClass) params.push({ name: "className", value: selectClass });
+    return params;
+  }, [page, search, selectedBatch, selectClass]);
 
-  const { data: students, isLoading } = useGetAllStudentQuery([
-    { name: "limit", value: 10 },
-    { name: "page", value: page },
-    { name: "search", value: search },
-    ...(selectedBatch ? [{ name: "batchName", value: selectedBatch }] : []),
-    ...(selectClass ? [{ name: "className", value: selectClass }] : []),
-  ]);
-
-  if (isLoading) {
-    return <div>Loading...</div>;
-  }
-
-
+  const { data: students, isLoading } = useGetAllStudentQuery(queryParams);
   const [deleteStudent] = useDeleteStudentMutation();
 
-  const handleDelete = (id?: string) => {
+  const handleDelete = async (id?: string) => {
     if (!id) return;
-    try {
-      Swal.fire({
-        title: "Are you sure?",
-        text: "You won't be able to revert this!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#09733D",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
-      }).then(async (result: any) => {
-        if (result.isConfirmed) {
-          const res = await deleteStudent(id);
-          if (res?.data?.statusCode) {
-            toast.success("Student deleted successfully");
-          }
-        }
-      });
-    } catch (error) {
-      console.error("Error deleting Teacher:", error);
-      toast.error("Failed to delete Teacher.");
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#09733D",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    });
+    if (result.isConfirmed) {
+      const res = await deleteStudent(id);
+      if ('data' in res && res.data?.statusCode) {
+        toast.success("Student deleted successfully");
+      }
     }
   };
 
   return (
-    <div>
+    <div className="container mx-auto pb-8">
+      {/* Page Header */}
       <div className="flex items-center mb-4">
         <h1 className="text-2xl font-bold text-slate-700">Payment</h1>
-        <span>
-          <ChevronsRight />
-        </span>
+        <ChevronsRight className="mx-2" />
         <h1 className="text-2xl font-bold text-slate-600">Payment Overview</h1>
       </div>
+
+      {/* Filters */}
       <div className="filter-section grid grid-cols-1 md:grid-cols-4 gap-3 mb-5">
-        <SearchInputField
-          value={search}
-          onChange={setSearch}
-          onSearch={setSearch}
-        />
+        <SearchInputField value={search} onChange={setSearch} onSearch={setSearch} />
         <SelectBatch value={selectedBatch} onChange={setSelectedBatch} />
         <SelectStudentClass value={selectClass} onChange={setSelectedClass} />
         <Button
@@ -102,152 +94,68 @@ const PaymentStatus = () => {
           Clear Filter
         </Button>
       </div>
-      {students?.data?.length > 0 ? (
+
+      {/* Loading */}
+      {isLoading && <Loading />}
+
+      {/* Students Table */}
+      {!isLoading && students?.data?.length > 0 ? (
         <div className="border rounded-lg">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>
-                  <span className="text-slate-600 font-bold">SL No.</span>
-                </TableHead>
-                <TableHead>
-                  <span className="text-slate-600 font-bold">Full Name</span>
-                </TableHead>
-                <TableHead>
-                  <span className="text-slate-600 font-bold">Std Id</span>
-                </TableHead>
-                <TableHead>
-                  <span className="text-slate-600 font-bold">Phone</span>
-                </TableHead>
-                <TableHead>
-                  <span className="text-slate-600 font-bold">Batch</span>
-                </TableHead>
-                <TableHead>
-                  <span className="text-slate-600 font-bold">Payment</span>
-                </TableHead>
-                <TableHead>
-                  <span className="text-slate-600 font-bold">Model Test</span>
-                </TableHead>
-                <TableHead>
-                  <span className="text-slate-600 font-bold">Action</span>
-                </TableHead>
+                <TableHead>SL No.</TableHead>
+                <TableHead>Full Name</TableHead>
+                <TableHead>Std Id</TableHead>
+                <TableHead>Phone</TableHead>
+                <TableHead>Batch</TableHead>
+                <TableHead>Payment</TableHead>
+                <TableHead>Model Test</TableHead>
+                <TableHead>Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {students?.data?.map((student: any, index: number) => (
+              {students.data.map((student: any, index: number) => (
                 <TableRow key={student.id}>
-                  <TableCell>
-                    <span className="text-slate-500 font-medium">
-                      {index + 1}
-                    </span>
-                  </TableCell>
+                  <TableCell>{index + 1}</TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
                       <img
-                        src={student?.image || studentImage}
+                        src={student.image || studentImage}
                         alt={`${student.firstName} ${student.lastName}`}
-                        className="size-10 rounded-md object-cover"
+                        className="h-10 w-10 rounded-md object-cover"
                       />
-                      <span className="text-slate-500 font-medium">
-                        {student.firstName} {student.lastName}
-                      </span>
+                      <span>{student.firstName} {student.lastName}</span>
                     </div>
                   </TableCell>
+                  <TableCell>{student.studentId}</TableCell>
+                  <TableCell>{student.phone}</TableCell>
+                  <TableCell>{student.Batch?.batchName || "-"}</TableCell>
                   <TableCell>
-                    <span className="text-slate-500 font-medium">
-                      {student.studentId}
-                    </span>
+                    {(() => {
+                      const currentMonth = new Date().toLocaleString("default", { month: "long" });
+                      const hasPaid = student?.Payment?.some((p: any) => p.month === currentMonth);
+                      return hasPaid ? <span className="text-green-600">Yes</span> : <span className="text-red-600">No</span>;
+                    })()}
                   </TableCell>
                   <TableCell>
-                    <span className="text-slate-500 font-medium">
-                      {student.phone}
-                    </span>
+                    {(() => {
+                      const modelTests = student?.Payment?.filter((p: any) => p.title === "ModelTest");
+                      if (!modelTests || modelTests.length === 0) return <span className="text-red-600">No</span>;
+                      const latestModelTest = modelTests.sort((a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())[0];
+                      return latestModelTest ? <span className="text-green-600">Yes</span> : <span className="text-red-600">No</span>;
+                    })()}
                   </TableCell>
-                  <TableCell>
-                    <span className="text-slate-500 font-medium">
-                      {student.Batch?.batchName}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    <span className="text-slate-500 font-medium">
-                      {(() => {
-                        const currentMonth = new Date().toLocaleString(
-                          "default",
-                          { month: "long" }
-                        );
-                        const hasPaid = student?.Payment?.some(
-                          (p: any) => p.month === currentMonth
-                        );
-                        return hasPaid ? (
-                          <span className="text-green-600">Yes</span>
-                        ) : (
-                          <span className="text-red-600">No</span>
-                        );
-                      })()}
-                    </span>
-                  </TableCell>
-
-                  <TableCell>
-                    <span className="text-slate-500 font-medium">
-                      {(() => {
-                        const modelTests = student?.Payment?.filter(
-                          (p: any) => p.title === "ModelTest"
-                        );
-
-                        if (!modelTests || modelTests.length === 0) {
-                          return <span className="text-red-600">No</span>;
-                        }
-
-                        // Sort by createdAt descending to get the latest
-                        const latestModelTest = modelTests.sort(
-                          (a: any, b: any) =>
-                            new Date(b.createdAt).getTime() -
-                            new Date(a.createdAt).getTime()
-                        )[0];
-
-                        return latestModelTest ? (
-                          <span className="text-green-600">Yes</span>
-                        ) : (
-                          <span className="text-red-600">No</span>
-                        );
-                      })()}
-                    </span>
-                  </TableCell>
-
-                  <TableCell className="flex items-center gap-2">
+                  <TableCell className="flex gap-2">
                     <Link to={`/view-student/${student.id}`}>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-8 w-8 text-green-600 hover:text-green-700 border-blue-100 hover:border-blue-200"
-                      >
-                        <Eye />
-                      </Button>
+                      <Button variant="outline" size="icon" className="text-green-600 h-8 w-8"><Eye /></Button>
                     </Link>
                     <Link to={`/update-student/${student.id}`}>
-                      <Button
-                        variant="outline"
-                        size="icon"
-                        className="h-8 w-8 text-blue-600 hover:text-blue-700 border-blue-100 hover:border-blue-200"
-                      >
-                        <SquarePen />
-                      </Button>
+                      <Button variant="outline" size="icon" className="text-blue-600 h-8 w-8"><SquarePen /></Button>
                     </Link>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="h-8 w-8 text-red-600 hover:text-red-700 border-blue-100 hover:border-blue-200"
-                      onClick={() => handleDelete(student.id)}
-                    >
+                    <Button variant="outline" size="icon" className="text-red-600 h-8 w-8" onClick={() => handleDelete(student.id)}>
                       <Trash />
                     </Button>
-                    {/* <Button
-                      variant="outline"
-                      size="icon"
-                      
-                    >
-                      
-                    </Button> */}
                   </TableCell>
                 </TableRow>
               ))}
@@ -255,24 +163,18 @@ const PaymentStatus = () => {
           </Table>
         </div>
       ) : (
-        "No data found"
+        !isLoading && <p>No data found</p>
       )}
 
-      {/* pagination */}
+      {/* Pagination */}
       {students?.meta?.total > students?.meta?.limit && (
         <EduCPagination
           page={page}
           setPage={setPage}
-          totalPages={students?.meta?.totalPages}
+          totalPages={students.meta.totalPages}
           className="mt-4 flex justify-end"
         />
       )}
-      {/* <EduCPagination
-          page={page}
-          setPage={setPage}
-          totalPages={students?.meta?.totalPages}
-          className="mt-4 flex justify-end"
-        /> */}
     </div>
   );
 };
