@@ -2,8 +2,8 @@
 import defaultImg from "@/assets/default.jpg";
 import SelectBatch from "@/components/Batch/SelectBatch";
 import SearchInputField from "@/components/CommonSearch/SearchInputField";
+import Loading from "@/components/Loading";
 import SelectShift from "@/components/Shift/SelectShift";
-import TableSkeleton from "@/components/Skleton/TableSkeleton";
 import SelectStudentClass from "@/components/studentClass/SelectStudentClass";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,13 +18,12 @@ import {
   useDeleteStudentMutation,
   useGetAllStudentQuery,
 } from "@/redux/api/studentApi/studentApi";
-import { ChevronsRight, Eye, SquarePen, Trash } from "lucide-react";
+import { ChevronsRight, Eye, RotateCcw, SquarePen, Trash } from "lucide-react";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import SendMessage from "./SendMessage/SendMessage";
-import Loading from "@/components/Loading";
 
 const Student = () => {
   // * Pagination, search and filter state
@@ -98,13 +97,14 @@ const Student = () => {
           }}
           className="text-white bg-primary hover:bg-primary/90"
         >
+          <RotateCcw className="h-4 w-4" />
           Clear Filter
         </Button>
       </div>
 
       {/* conditional redenring  */}
       {isLoading ? (
-        <Loading/>
+        <Loading />
       ) : students?.data?.length > 0 ? (
         <div className="border rounded-lg">
           <Table>

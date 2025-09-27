@@ -3,7 +3,7 @@ import { FormFieldWrapper } from "@/components/common/FormFieldWrapper";
 import { SelectFieldWrapper } from "@/components/common/SelectFieldWrapper";
 import SearchInputField from "@/components/CommonSearch/SearchInputField";
 import EduCPagination from "@/components/EduCPagination/EduCPagination";
-import TableSkeleton from "@/components/Skleton/TableSkeleton";
+import Loading from "@/components/Loading";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import {
@@ -17,13 +17,12 @@ import {
 import { useSendSingleMessageMutation } from "@/redux/api/auth/message/message";
 import { useAddPaymentMutation } from "@/redux/api/payment/paymentApi";
 import { useGetAllStudentQuery } from "@/redux/api/studentApi/studentApi";
-import { ChevronsRight, DollarSign, Eye, Plus } from "lucide-react";
+import { ChevronsRight, DollarSign, Eye, Plus, RotateCcw } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import studentImage from "../../../assets/default.jpg";
-import Loading from "@/components/Loading";
 
 const MonthlyPayment = () => {
   const [page, setPage] = useState(1);
@@ -104,13 +103,14 @@ Thank you for staying with EDUCARE!`,
           onClick={() => setSearch("")}
           className="text-slate-500 w-1/4 bg-gray-50 hover:bg-gray-100"
         >
+          <RotateCcw className="h-4 w-4" />
           Clear Filter
         </Button>
       </div>
 
       {/* Table */}
       {isLoading ? (
-        <Loading/>
+        <Loading />
       ) : (
         <div className="">
           {students?.data?.length > 0 ? (
