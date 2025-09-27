@@ -22,7 +22,7 @@ import {
 } from "recharts";
 import StudentChartSkeleton from "./student-chart-skeleton";
 
-// A pool of colors to cycle through for dynamic shifts
+// Color palette for different shifts
 const colorPalette = [
   "#0088FE",
   "#00C49F",
@@ -36,48 +36,40 @@ const colorPalette = [
 
 const StudentChart = () => {
   const { data: students, isLoading } = useGetAllStudentQuery(undefined);
-  const studentdata = students?.data || [];
+  const studentData = students?.data || [];
 
-  // Step 1: Collect unique shifts
-  const shiftSet = new Set<string>();
-  studentdata.forEach((student: any) => {
-    if (student.shiftName) shiftSet.add(student.shiftName);
-  });
-  const shiftList = Array.from(shiftSet);
+  // Collect unique shifts
+  const shiftList: string[] = Array.from(
+    new Set(studentData.map((student: any) => student.shiftName).filter(Boolean))
+  );
 
-  // Step 2: Generate dynamic chartConfig with colors
+  // Assign color for each shift
   const chartConfig: Record<string, { label: string; color: string }> = {};
   shiftList.forEach((shift, index) => {
     chartConfig[shift] = {
       label: shift,
-      color: colorPalette[index % colorPalette.length], // Reuse colors if more shifts
+      color: colorPalette[index % colorPalette.length],
     };
   });
 
-  // Step 3: Generate chart data by grouping students by batch
-  const studentDistributionData = studentdata.reduce(
-    (acc: any, student: any) => {
-      const batch = student.batchName;
-      const shift = student.shiftName;
-      const className = student.className;
+  // Group students by batch
+  const studentDistributionData = studentData.reduce((acc: any[], student: any) => {
+    const batch = student.batchName;
+    const shift = student.shiftName;
+    const className = student.className;
 
-      if (!batch || !shift) return acc;
+    if (!batch || !shift) return acc;
 
-      let batchGroup = acc.find((item: any) => item.batch === batch);
-      if (!batchGroup) {
-        batchGroup = { batch, class: className };
-        shiftList.forEach((s) => (batchGroup[s] = 0));
-        acc.push(batchGroup);
-      }
+    let batchGroup = acc.find((item) => item.batch === batch);
+    if (!batchGroup) {
+      batchGroup = { batch, class: className };
+      shiftList.forEach((s) => (batchGroup[s] = 0));
+      acc.push(batchGroup);
+    }
 
-      if (batchGroup[shift] !== undefined) {
-        batchGroup[shift]++;
-      }
-
-      return acc;
-    },
-    [] as any[]
-  );
+    batchGroup[shift] = (batchGroup[shift] || 0) + 1;
+    return acc;
+  }, []);
 
   return (
     <>
@@ -88,8 +80,7 @@ const StudentChart = () => {
           <CardHeader>
             <CardTitle>Student Distribution by Batch and Shift</CardTitle>
             <CardDescription>
-              Number of students in each batch across dynamically detected
-              shifts
+              Number of students in each batch across dynamically detected shifts
             </CardDescription>
           </CardHeader>
           <CardContent>

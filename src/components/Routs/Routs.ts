@@ -121,7 +121,7 @@ export const navMain = [
         parent: "Payment",
       },
       featureAccess["admin"]?.includes(1) && {
-        title: "Monthly Fees",
+        title: "Received Payments",
         url: "/monthly-payment",
         isShow: true,
         parent: "Payment",

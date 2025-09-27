@@ -17,7 +17,7 @@ import {
 import { useSendSingleMessageMutation } from "@/redux/api/auth/message/message";
 import { useAddPaymentMutation } from "@/redux/api/payment/paymentApi";
 import { useGetAllStudentQuery } from "@/redux/api/studentApi/studentApi";
-import { ChevronsRight, DollarSign, Eye, Plus, RotateCcw } from "lucide-react";
+import { ChevronRight, DollarSign, Eye, Plus, RotateCcw } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -82,14 +82,13 @@ Thank you for staying with EDUCARE!`,
   return (
     <div>
       {/* Header */}
-      <div className="flex items-center mb-4">
-        <h1 className="text-2xl font-bold text-slate-700">Payment</h1>
-        <span>
-          <ChevronsRight />
-        </span>
-        <h1 className="text-2xl font-bold text-slate-600">
-          Student Monthly Fees
-        </h1>
+      <div className="mb-6">
+        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+          <span>Payment</span>
+          <ChevronRight className="h-4 w-4" />
+          <span>Student Monthly Fees</span>
+        </div>
+        <h1 className="text-3xl font-semibold text-foreground">Student Monthly Fees</h1>
       </div>
 
       {/* Search & Filter */}
@@ -101,7 +100,7 @@ Thank you for staying with EDUCARE!`,
         />
         <Button
           onClick={() => setSearch("")}
-          className="text-slate-500 w-1/4 bg-gray-50 hover:bg-gray-100"
+          className="w-2/4 bg-primary text-white"
         >
           <RotateCcw className="h-4 w-4" />
           Clear Filter

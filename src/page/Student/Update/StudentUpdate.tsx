@@ -2,6 +2,7 @@
 import { FormFieldWrapper } from "@/components/common/FormFieldWrapper";
 import { ImageUpload } from "@/components/common/ImageUpload";
 import { SelectFieldWrapper } from "@/components/common/SelectFieldWrapper";
+import Loading from "@/components/Loading";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useGetAllBatchQuery } from "@/redux/api/batch/batchApi";
@@ -9,11 +10,12 @@ import {
   useGetStudentByIdQuery,
   useUpdateStudentMutation,
 } from "@/redux/api/studentApi/studentApi";
-import { ChevronsRight, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { StudentHeader } from "../component/student-header";
 
 // --- Define types
 type TStudentFormData = {
@@ -66,7 +68,7 @@ const StudentUpdate = () => {
     }
   }, [student?.data, reset]);
 
-  if (isLoading) return <p>Loading...</p>;
+  if (isLoading) return <Loading />;
 
   const onSubmit: SubmitHandler<TStudentFormData> = async (data) => {
     const formData = new FormData();
@@ -103,15 +105,15 @@ const StudentUpdate = () => {
 
   return (
     <div>
-      <div className="flex items-center mb-4">
-        <h1 className="text-2xl font-bold text-blue-700">
-          <Link to="/view-student">Student</Link>
-        </h1>
-        <span>
-          <ChevronsRight />
-        </span>
-        <h1 className="text-2xl font-bold text-slate-600">Update Student</h1>
-      </div>
+      <StudentHeader
+        title="Update Student"
+        description="Modify student information and academic records"
+        breadcrumbItems={[
+          { label: "Dashboard", href: "/" },
+          { label: "Student Management", href: "/view-student" },
+          { label: "Update Student" },
+        ]}
+      />
 
       <div className="border-1 border-slate-500 rounded-lg shadow-md p-5">
         <Form {...form}>

@@ -2,19 +2,19 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import SelectBatch from "@/components/Batch/SelectBatch"
+import { BatchModal } from "@/components/CommonModal/BatchModal"
 import SearchInputField from "@/components/CommonSearch/SearchInputField"
 import EduCPagination from "@/components/EduCPagination/EduCPagination"
+import Loading from "@/components/Loading"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { useDeleteBatchMutation, useGetAllBatchQuery } from "@/redux/api/batch/batchApi"
-import { Edit, Trash2, Users, GraduationCap, Clock, Plus, Search, Filter, RotateCcw } from "lucide-react"
-import { useState, useMemo } from "react"
+import { Clock, Edit, Filter, GraduationCap, Plus, RotateCcw, Trash2, Users } from "lucide-react"
+import { useMemo, useState } from "react"
 import toast from "react-hot-toast"
 import Swal from "sweetalert2"
 import BatchCreate from "../Create/BatchCreate"
-import { BatchModal } from "@/components/CommonModal/BatchModal"
-import Loading from "@/components/Loading"
 
 const BatchView = () => {
   // * Modal state
@@ -137,7 +137,6 @@ const BatchView = () => {
           <CardContent>
             <div className="grid gap-4 md:grid-cols-4">
               <div className="relative">
-                <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <SearchInputField value={search} onChange={setSearch} onSearch={setSearch} />
               </div>
               <SelectBatch value={selectedBatch} onChange={setSelectedBatch} />
@@ -171,7 +170,7 @@ const BatchView = () => {
                 <Table>
                   <TableHeader>
                     <TableRow className="border-border hover:bg-muted/50">
-                      <TableHead className="w-[60px] font-semibold text-foreground">S.N</TableHead>
+                      <TableHead className="w-[60px] font-semibold text-foreground">#.</TableHead>
                       <TableHead className="font-semibold text-foreground">Batch Name</TableHead>
                       <TableHead className="font-semibold text-foreground">Class Name</TableHead>
                       <TableHead className="font-semibold text-foreground">Shift Name</TableHead>

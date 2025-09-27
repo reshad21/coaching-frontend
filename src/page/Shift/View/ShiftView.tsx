@@ -34,9 +34,11 @@ const ShiftView = () => {
         text: "You won't be able to revert this!",
         icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#2563eb",
-        cancelButtonColor: "#dc2626",
+        confirmButtonColor: "rgb(34 197 94)",
+        cancelButtonColor: "rgb(239 68 68)",
         confirmButtonText: "Yes, delete it!",
+        background: "rgb(15 15 20)",
+        color: "rgb(250 250 250)",
       }).then(async (result: any) => {
         if (result.isConfirmed) {
           const res = await deleteShift(id)
