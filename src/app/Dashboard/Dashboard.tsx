@@ -1,52 +1,51 @@
 import { AppSidebar } from "@/components/app-sidebar";
 import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
-import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
+import { useGetSiteSettingQuery } from "@/redux/api/siteSettingApi/siteSettingApi";
 import { Outlet } from "react-router-dom";
+import defaultLogo from "@/assets/logo.svg";
+import { Menu } from "lucide-react";
 
 export default function Dashboard() {
+  const { data: siteSettingData } = useGetSiteSettingQuery(undefined);
+  
+  // API returns an array, get the first item
+  const siteSetting = siteSettingData?.data?.[0];
+  const logo = siteSetting?.logo || defaultLogo;
+  const brandName = siteSetting?.brandName || "Educational Management System";
+
   return (
     <SidebarProvider className="h-screen">
-      {/* Sidebar */}
       <AppSidebar />
 
       {/* Full-Width Header */}
-      <header className="fixed top-0 left-0 w-full bg-primary   shadow-md h-16 flex items-center px-6 z-50">
-        <SidebarTrigger className="-ml-1" />
-        <Separator orientation="vertical" className="mx-2 h-6" />
-        <Breadcrumb className="hidden">
-          <BreadcrumbList>
-            <BreadcrumbItem className="hidden md:block">
-              <BreadcrumbLink href="#">
-                Building Your Application
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator className="hidden md:block" />
-            <BreadcrumbItem>
-              <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
+      <header className="fixed top-0 left-0 w-full bg-primary shadow-md h-16 flex items-center justify-between px-6 z-50">
+        {/* Left Section - Logo & Trigger */}
+        <div className="flex items-center gap-4">
+          <img src={logo} alt="Logo" className="h-10 w-auto" />
+          <SidebarTrigger className="h-9 w-9 rounded-lg bg-white/10 hover:bg-white/20 text-white border-none transition-all duration-200 ease-in-out hover:scale-105 flex items-center justify-center">
+            <Menu className="h-5 w-5" />
+          </SidebarTrigger>
+        </div>
+
+        {/* Center Section - Brand Name */}
+        <div className="absolute left-1/2 transform -translate-x-1/2">
+          <h1 className="text-white text-xl font-bold tracking-wide">
+            {brandName}
+          </h1>
+        </div>
+
+        {/* Right Section - Placeholder for future elements */}
+        <div className="w-[120px]"></div>
       </header>
 
       {/* Main Content Wrapper */}
       <div className="flex min-h-screen pt-16 w-full">
-        {/* Push content below header */}
         <SidebarInset />
-        {/* Content with Left Padding for Sidebar */}
         <main className="w-full p-5">
-          {/* Adjust 64px based on sidebar width */}
           <Outlet />
         </main>
       </div>

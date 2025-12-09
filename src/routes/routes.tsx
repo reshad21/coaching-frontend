@@ -26,6 +26,7 @@ import PrivateRout from "@/PrivateRout/PrivateRout";
 import { createBrowserRouter } from "react-router-dom";
 import { DashboardOverview } from '@/page/DashboardView/DashboardView';
 import BalanceStatus from "@/page/Payment/Balance/BalanceStatus";
+import SiteSettingPage from "@/components/SiteSetting/SiteSettingPage";
 
 const componentMapping: Record<string, React.ElementType> = {
   // login route
@@ -67,6 +68,9 @@ const componentMapping: Record<string, React.ElementType> = {
 
   //message routes
   "/message": Message,
+
+  //setting routes
+  "/site-setting": SiteSettingPage,
 };
 
 const routs = createBrowserRouter([

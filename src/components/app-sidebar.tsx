@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { NavMain } from "@/components/nav-main";
-import { Sidebar, SidebarContent, SidebarRail } from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarRail } from "@/components/ui/sidebar";
 import { navMain } from "./Routs/Routs";
 import { LayoutDashboard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -35,8 +35,14 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </div>
           </div>
         <NavMain items={data.navMain} />
-        {/* <NavProjects projects={data.projects} /> */}
+
       </SidebarContent>
+
+      <SidebarFooter className="bg-[#ffffff] border-t border-gray-200 p-4">
+        <p className="text-xs text-gray-500 text-center">
+          copyright@webspider.com
+        </p>
+      </SidebarFooter>
 
       <SidebarRail />
     </Sidebar>

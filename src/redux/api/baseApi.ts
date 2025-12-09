@@ -10,8 +10,8 @@ import { RootState } from "../store";
 export const baseApi = createApi({
   reducerPath: "baseApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://coachingdevelopbackend.vercel.app/api",
-    // baseUrl: "http://localhost:3000/api",
+    // baseUrl: "https://coachingdevelopbackend.vercel.app/api",
+    baseUrl: "http://localhost:3000/api",
     credentials: "include",
     prepareHeaders: (
       headers: Headers,
@@ -27,6 +27,6 @@ export const baseApi = createApi({
       return headers;
     },
   }),
-  tagTypes: ["batch", "shift", "role", "student", "admin", "class", "message", "payment", "cost"],
+  tagTypes: ["batch", "shift", "role", "student", "admin", "class", "message", "payment", "cost", "siteSetting"],
   endpoints: () => ({}),
 });

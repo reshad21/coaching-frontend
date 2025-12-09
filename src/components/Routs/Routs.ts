@@ -1,4 +1,4 @@
-import { BadgeDollarSign, CircleUser, Coins, DatabaseZapIcon, MessagesSquare, School, TimerIcon } from "lucide-react";
+import { BadgeDollarSign, CircleUser, Coins, DatabaseZapIcon, MessagesSquare, School, Settings, TimerIcon } from "lucide-react";
 
 const featureAccess = { admin: [1] };
 
@@ -170,7 +170,6 @@ export const navMain = [
     ].filter(Boolean), // Remove false values
   },
 
-
   {
     title: "Message",
     url: "#",
@@ -180,6 +179,20 @@ export const navMain = [
       featureAccess["admin"]?.includes(1) && {
         title: "Message",
         url: "/message",
+        isShow: true,
+      },
+    ].filter(Boolean), // Remove false values
+  },
+
+  {
+    title: "Site Setting",
+    url: "#",
+    icon: Settings,
+    isActive: false,
+    items: [
+      featureAccess["admin"]?.includes(1) && {
+        title: "Site Setting",
+        url: "/site-setting",
         isShow: true,
       },
     ].filter(Boolean), // Remove false values
