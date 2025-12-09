@@ -8,6 +8,7 @@ import { useGetSiteSettingQuery } from "@/redux/api/siteSettingApi/siteSettingAp
 import { Outlet } from "react-router-dom";
 import defaultLogo from "@/assets/logo.svg";
 import { Menu } from "lucide-react";
+import { useEffect } from "react";
 
 export default function Dashboard() {
   const { data: siteSettingData } = useGetSiteSettingQuery(undefined);
@@ -16,6 +17,23 @@ export default function Dashboard() {
   const siteSetting = siteSettingData?.data?.[0];
   const logo = siteSetting?.logo || defaultLogo;
   const brandName = siteSetting?.brandName || "Educational Management System";
+  const favicon = siteSetting?.favicon;
+
+  // Update favicon dynamically
+  useEffect(() => {
+    if (favicon) {
+      const link: HTMLLinkElement = document.querySelector("link[rel*='icon']") || document.createElement('link');
+      link.type = 'image/x-icon';
+      link.rel = 'shortcut icon';
+      link.href = favicon;
+      document.getElementsByTagName('head')[0].appendChild(link);
+    }
+  }, [favicon]);
+
+  // Update document title with brand name
+  useEffect(() => {
+    document.title = brandName;
+  }, [brandName]);
 
   return (
     <SidebarProvider className="h-screen">
