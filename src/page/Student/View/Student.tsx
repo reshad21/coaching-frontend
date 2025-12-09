@@ -139,7 +139,7 @@ const Student = () => {
               <Loading />
             </div>
           ) : students?.data?.length > 0 ? (
-            <div className="border border-border rounded-lg overflow-y-auto overflow-x-scroll max-h-[500px] table-scroll">
+            <div className="border border-border rounded-lg overflow-x-scroll overflow-y-hidden table-scroll">
               <Table className="min-w-[1300px]">
                 <TableHeader>
                   <TableRow className="border-border hover:bg-muted/50">
