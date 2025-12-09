@@ -1,9 +1,9 @@
 
-import { useGetTotalIncomeQuery } from "@/redux/api/payment/paymentApi"
-import { useState } from "react"
-import { Calendar, TrendingUp, Loader2, AlertCircle } from "lucide-react"
-import Loading from "@/components/Loading"
 import Error from "@/components/Error"
+import Loading from "@/components/Loading"
+import { useGetTotalIncomeQuery } from "@/redux/api/payment/paymentApi"
+import { Calendar, TrendingUp } from "lucide-react"
+import { useState } from "react"
 
 const BalanceStatus = () => {
     const [filter, setFilter] = useState<"daily" | "weekly" | "monthly" | "yearly" | "custom">("daily")
