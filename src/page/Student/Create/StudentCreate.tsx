@@ -10,6 +10,7 @@ import { useGetAllBatchQuery, useGetBatchInfoByIdQuery } from "@/redux/api/batch
 import { useGetAllClassQuery } from "@/redux/api/class/classApi"
 import { useGetAllShiftQuery } from "@/redux/api/shiftApi/shiftApi"
 import { useAddStudentMutation } from "@/redux/api/studentApi/studentApi"
+import { useSendSingleMessageMutation } from "@/redux/api/auth/message/message"
 import { uploadImageToImgbb } from "@/utils/uploadImageToImgbb"
 import { ChevronRight, Plus, GraduationCap } from "lucide-react"
 import { useForm } from "react-hook-form"
@@ -44,6 +45,7 @@ const StudentCreate = () => {
   const batchId = form.watch("batchId")
   const { data: batchInfo } = useGetBatchInfoByIdQuery(batchId)
   const [addStudent] = useAddStudentMutation()
+  const [sendMessage] = useSendSingleMessageMutation()
 
   const onSubmit = async (data: any) => {
     const image = await uploadImageToImgbb(data.image)
@@ -76,6 +78,23 @@ const StudentCreate = () => {
       const res = await addStudent(studentData)
       if ("data" in res && res.data?.success) {
         toast.success(res.data.message || "Student added successfully!")
+        
+        // Send welcome SMS to the student's phone number
+        const welcomeMessage = `Welcome ${data.firstName} ${data.lastName}! You have been successfully registered. Thank you for joining us!`
+        
+        try {
+          const msgRes = await sendMessage({
+            message: welcomeMessage,
+            number: data.phone,
+          }).unwrap()
+          
+          if (msgRes?.data?.response_code == 202) {
+            toast.success("Welcome message sent successfully!")
+          }
+        } catch (msgError) {
+          console.error("Failed to send welcome message:", msgError)
+        }
+        
         form.reset()
         navigate("/view-student")
       } else {

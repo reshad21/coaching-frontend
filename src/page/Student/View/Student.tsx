@@ -70,7 +70,7 @@ const Student = () => {
   const hasActiveFilters = search || selectedBatch || selectClass || shift
 
   return (
-    <div className="min-h-screen bg-background p-6 space-y-6">
+    <div className="min-h-screen bg-background p-6 space-y-6 overflow-x-hidden">
       {/* Header Section */}
       <div className="flex items-center gap-3">
         <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10">
@@ -139,8 +139,8 @@ const Student = () => {
               <Loading />
             </div>
           ) : students?.data?.length > 0 ? (
-            <div className="border border-border rounded-lg overflow-hidden">
-              <Table>
+            <div className="border border-border rounded-lg overflow-y-auto overflow-x-scroll max-h-[500px] table-scroll">
+              <Table className="min-w-[1300px]">
                 <TableHeader>
                   <TableRow className="border-border hover:bg-muted/50">
                     <TableHead className="text-muted-foreground font-medium">
@@ -180,12 +180,12 @@ const Student = () => {
                 <TableBody>
                   {students?.data?.map((student: any, index: number) => (
                     <TableRow key={student.id} className="border-border hover:bg-muted/30 transition-colors">
-                      <TableCell>
+                      <TableCell className="whitespace-nowrap">
                         <span className="text-muted-foreground font-mono text-sm">
                           {String(index + 1).padStart(2, "0")}
                         </span>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="whitespace-nowrap">
                         <div className="flex items-center gap-3">
                           <div className="relative">
                             <img
@@ -202,30 +202,30 @@ const Student = () => {
                           </div>
                         </div>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="whitespace-nowrap">
                         <Badge variant="outline" className="font-mono">
                           {student?.studentId}
                         </Badge>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="whitespace-nowrap">
                         <Badge variant="secondary">{student.Class?.className || "N/A"}</Badge>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="whitespace-nowrap">
                         <div className="flex items-center gap-2">
                           <Clock className="w-3 h-3 text-muted-foreground" />
                           <span className="text-sm text-card-foreground">{student?.shiftName || "N/A"}</span>
                         </div>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="whitespace-nowrap">
                         <div className="flex items-center gap-2">
                           <Phone className="w-3 h-3 text-muted-foreground" />
                           <span className="text-sm text-card-foreground font-mono">{student?.phone || "N/A"}</span>
                         </div>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="whitespace-nowrap">
                         <Badge variant="outline">{student.Batch?.batchName || "N/A"}</Badge>
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="whitespace-nowrap">
                         <div className="flex items-center gap-1">
                           <Link to={`/view-student/${student.id}`}>
                             <Button

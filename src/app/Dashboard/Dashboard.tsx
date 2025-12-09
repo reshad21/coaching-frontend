@@ -61,9 +61,9 @@ export default function Dashboard() {
       </header>
 
       {/* Main Content Wrapper */}
-      <div className="flex min-h-screen pt-16 w-full">
+      <div className="flex min-h-screen pt-16 w-full overflow-x-hidden">
         <SidebarInset />
-        <main className="w-full p-5">
+        <main className="w-full p-5 overflow-x-hidden">
           <Outlet />
         </main>
       </div>
