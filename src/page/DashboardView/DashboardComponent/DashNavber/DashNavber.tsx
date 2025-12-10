@@ -6,8 +6,8 @@ const DashNavber = () => {
   return (
     <div className="flex h-16 shrink-0 items-center gap-2 border-b px-4 mb-5">
       <div className="flex items-center gap-2">
-        <h1 className="text-lg font-semibold">
-          Education Management Dashboard
+        <h1 className="text-2xl font-semibold">
+          Dashboard
         </h1>
       </div>
       <div className="ml-auto flex gap-2">

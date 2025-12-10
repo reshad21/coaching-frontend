@@ -67,11 +67,6 @@ export default function Dashboard() {
           <Outlet />
         </main>
       </div>
-
-      {/* Full-Width Footer */}
-      {/* <footer className="fixed bottom-0 left-0 w-full bg-[#09733D] text-center py-4 text-sm text-white shadow-md z-50">
-        © {new Date().getFullYear()} Your Company. All rights reserved.
-      </footer> */}
     </SidebarProvider>
   );
 }
