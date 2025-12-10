@@ -21,7 +21,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import StudentChartSkeleton from "./student-chart-skeleton";
+import Loading from "@/components/Loading";
 
 // Modern gradient color palette
 const GRADIENT_COLORS = [
@@ -36,8 +36,14 @@ const GRADIENT_COLORS = [
 ];
 
 const SOLID_COLORS = [
-  "#6366f1", "#22c55e", "#f59e0b", "#ec4899", 
-  "#06b6d4", "#8b5cf6", "#14b8a6", "#ef4444"
+  "#6366f1",
+  "#22c55e",
+  "#f59e0b",
+  "#ec4899",
+  "#06b6d4",
+  "#8b5cf6",
+  "#14b8a6",
+  "#ef4444",
 ];
 
 const StudentChart = () => {
@@ -57,7 +63,7 @@ const StudentChart = () => {
       name,
       value: value as number,
       color: SOLID_COLORS[index % SOLID_COLORS.length],
-      percentage: ((value as number) / totalStudents * 100).toFixed(1),
+      percentage: (((value as number) / totalStudents) * 100).toFixed(1),
     }))
     .sort((a, b) => b.value - a.value);
 
@@ -99,9 +105,14 @@ const StudentChart = () => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-white dark:bg-gray-800 px-4 py-3 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700">
-          <p className="font-semibold text-gray-900 dark:text-white text-sm">{payload[0].payload.fullName || payload[0].payload.name}</p>
+          <p className="font-semibold text-gray-900 dark:text-white text-sm">
+            {payload[0].payload.fullName || payload[0].payload.name}
+          </p>
           <p className="text-gray-500 dark:text-gray-400 text-xs mt-1">
-            <span className="font-bold text-indigo-600 dark:text-indigo-400 text-lg">{payload[0].value}</span> students
+            <span className="font-bold text-indigo-600 dark:text-indigo-400 text-lg">
+              {payload[0].value}
+            </span>{" "}
+            students
           </p>
         </div>
       );
@@ -114,10 +125,16 @@ const StudentChart = () => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-white dark:bg-gray-800 px-4 py-3 rounded-xl shadow-xl border border-gray-100 dark:border-gray-700">
-          <p className="font-semibold text-gray-900 dark:text-white text-sm">{payload[0].name}</p>
+          <p className="font-semibold text-gray-900 dark:text-white text-sm">
+            {payload[0].name}
+          </p>
           <p className="text-xs mt-1">
-            <span className="font-bold text-indigo-600 text-lg">{payload[0].value}</span>
-            <span className="text-gray-500 ml-1">students ({payload[0].payload.percentage}%)</span>
+            <span className="font-bold text-indigo-600 text-lg">
+              {payload[0].value}
+            </span>
+            <span className="text-gray-500 ml-1">
+              students ({payload[0].payload.percentage}%)
+            </span>
           </p>
         </div>
       );
@@ -126,7 +143,11 @@ const StudentChart = () => {
   };
 
   if (isLoading) {
-    return <StudentChartSkeleton />;
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loading />
+      </div>
+    );
   }
 
   return (
@@ -138,7 +159,9 @@ const StudentChart = () => {
           <CardContent className="p-5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-indigo-100 uppercase tracking-wide">Total Students</p>
+                <p className="text-xs font-medium text-indigo-100 uppercase tracking-wide">
+                  Total Students
+                </p>
                 <p className="text-3xl font-bold mt-1">{totalStudents}</p>
               </div>
               <div className="h-12 w-12 rounded-xl bg-white/20 flex items-center justify-center">
@@ -147,13 +170,15 @@ const StudentChart = () => {
             </div>
           </CardContent>
         </Card>
-        
+
         <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-emerald-500 via-green-600 to-teal-700 text-white shadow-lg shadow-green-500/25">
           <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-10 -mt-10"></div>
           <CardContent className="p-5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-green-100 uppercase tracking-wide">Classes</p>
+                <p className="text-xs font-medium text-green-100 uppercase tracking-wide">
+                  Classes
+                </p>
                 <p className="text-3xl font-bold mt-1">{classData.length}</p>
               </div>
               <div className="h-12 w-12 rounded-xl bg-white/20 flex items-center justify-center">
@@ -162,14 +187,18 @@ const StudentChart = () => {
             </div>
           </CardContent>
         </Card>
-        
+
         <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-amber-500 via-orange-500 to-red-500 text-white shadow-lg shadow-orange-500/25">
           <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-10 -mt-10"></div>
           <CardContent className="p-5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-orange-100 uppercase tracking-wide">Shifts</p>
-                <p className="text-3xl font-bold mt-1">{Object.keys(shiftDistribution).length}</p>
+                <p className="text-xs font-medium text-orange-100 uppercase tracking-wide">
+                  Shifts
+                </p>
+                <p className="text-3xl font-bold mt-1">
+                  {Object.keys(shiftDistribution).length}
+                </p>
               </div>
               <div className="h-12 w-12 rounded-xl bg-white/20 flex items-center justify-center">
                 <Clock className="h-6 w-6" />
@@ -177,14 +206,18 @@ const StudentChart = () => {
             </div>
           </CardContent>
         </Card>
-        
+
         <Card className="relative overflow-hidden border-0 bg-gradient-to-br from-pink-500 via-rose-500 to-red-600 text-white shadow-lg shadow-pink-500/25">
           <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full -mr-10 -mt-10"></div>
           <CardContent className="p-5">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs font-medium text-pink-100 uppercase tracking-wide">Batches</p>
-                <p className="text-3xl font-bold mt-1">{Object.keys(batchDistribution).length}</p>
+                <p className="text-xs font-medium text-pink-100 uppercase tracking-wide">
+                  Batches
+                </p>
+                <p className="text-3xl font-bold mt-1">
+                  {Object.keys(batchDistribution).length}
+                </p>
               </div>
               <div className="h-12 w-12 rounded-xl bg-white/20 flex items-center justify-center">
                 <TrendingUp className="h-6 w-6" />
@@ -203,33 +236,68 @@ const StudentChart = () => {
               <div className="h-3 w-3 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500"></div>
               Students by Shift
             </CardTitle>
-            <CardDescription className="text-xs">Top shifts by student enrollment</CardDescription>
+            <CardDescription className="text-xs">
+              Top shifts by student enrollment
+            </CardDescription>
           </CardHeader>
           <CardContent className="pt-4">
             <div className="h-[300px] w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={shiftData} layout="vertical" margin={{ top: 5, right: 30, left: 5, bottom: 5 }}>
+                <BarChart
+                  data={shiftData}
+                  layout="vertical"
+                  margin={{ top: 5, right: 30, left: 5, bottom: 5 }}
+                >
                   <defs>
                     {shiftData.map((_, index) => (
-                      <linearGradient key={index} id={`barGradient${index}`} x1="0" y1="0" x2="1" y2="0">
-                        <stop offset="0%" stopColor={GRADIENT_COLORS[index % GRADIENT_COLORS.length].start} />
-                        <stop offset="100%" stopColor={GRADIENT_COLORS[index % GRADIENT_COLORS.length].end} />
+                      <linearGradient
+                        key={index}
+                        id={`barGradient${index}`}
+                        x1="0"
+                        y1="0"
+                        x2="1"
+                        y2="0"
+                      >
+                        <stop
+                          offset="0%"
+                          stopColor={
+                            GRADIENT_COLORS[index % GRADIENT_COLORS.length]
+                              .start
+                          }
+                        />
+                        <stop
+                          offset="100%"
+                          stopColor={
+                            GRADIENT_COLORS[index % GRADIENT_COLORS.length].end
+                          }
+                        />
                       </linearGradient>
                     ))}
                   </defs>
-                  <XAxis type="number" tick={{ fontSize: 11, fill: '#9ca3af' }} axisLine={false} tickLine={false} />
-                  <YAxis 
-                    type="category" 
-                    dataKey="name" 
-                    tick={{ fontSize: 11, fill: '#6b7280' }} 
+                  <XAxis
+                    type="number"
+                    tick={{ fontSize: 11, fill: "#9ca3af" }}
+                    axisLine={false}
+                    tickLine={false}
+                  />
+                  <YAxis
+                    type="category"
+                    dataKey="name"
+                    tick={{ fontSize: 11, fill: "#6b7280" }}
                     width={120}
                     axisLine={false}
                     tickLine={false}
                   />
-                  <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(99, 102, 241, 0.08)' }} />
+                  <Tooltip
+                    content={<CustomTooltip />}
+                    cursor={{ fill: "rgba(99, 102, 241, 0.08)" }}
+                  />
                   <Bar dataKey="students" radius={[0, 8, 8, 0]} barSize={24}>
                     {shiftData.map((_, index) => (
-                      <Cell key={`cell-${index}`} fill={`url(#barGradient${index})`} />
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={`url(#barGradient${index})`}
+                      />
                     ))}
                   </Bar>
                 </BarChart>
@@ -245,7 +313,9 @@ const StudentChart = () => {
               <div className="h-3 w-3 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500"></div>
               Students by Class
             </CardTitle>
-            <CardDescription className="text-xs">Class-wise student distribution</CardDescription>
+            <CardDescription className="text-xs">
+              Class-wise student distribution
+            </CardDescription>
           </CardHeader>
           <CardContent className="pt-4">
             <div className="h-[220px] w-full">
@@ -253,9 +323,27 @@ const StudentChart = () => {
                 <PieChart>
                   <defs>
                     {classData.map((_, index) => (
-                      <linearGradient key={index} id={`pieGradient${index}`} x1="0" y1="0" x2="1" y2="1">
-                        <stop offset="0%" stopColor={GRADIENT_COLORS[index % GRADIENT_COLORS.length].start} />
-                        <stop offset="100%" stopColor={GRADIENT_COLORS[index % GRADIENT_COLORS.length].end} />
+                      <linearGradient
+                        key={index}
+                        id={`pieGradient${index}`}
+                        x1="0"
+                        y1="0"
+                        x2="1"
+                        y2="1"
+                      >
+                        <stop
+                          offset="0%"
+                          stopColor={
+                            GRADIENT_COLORS[index % GRADIENT_COLORS.length]
+                              .start
+                          }
+                        />
+                        <stop
+                          offset="100%"
+                          stopColor={
+                            GRADIENT_COLORS[index % GRADIENT_COLORS.length].end
+                          }
+                        />
                       </linearGradient>
                     ))}
                   </defs>
@@ -270,8 +358,8 @@ const StudentChart = () => {
                     stroke="none"
                   >
                     {classData.map((_, index) => (
-                      <Cell 
-                        key={`cell-${index}`} 
+                      <Cell
+                        key={`cell-${index}`}
                         fill={`url(#pieGradient${index})`}
                         className="drop-shadow-sm"
                       />
@@ -285,12 +373,22 @@ const StudentChart = () => {
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2 mt-4 px-2">
               {classData.slice(0, 6).map((entry, index) => (
                 <div key={index} className="flex items-center gap-2">
-                  <div 
-                    className="h-3 w-3 rounded-full flex-shrink-0 shadow-sm" 
-                    style={{ background: `linear-gradient(135deg, ${GRADIENT_COLORS[index % GRADIENT_COLORS.length].start}, ${GRADIENT_COLORS[index % GRADIENT_COLORS.length].end})` }}
+                  <div
+                    className="h-3 w-3 rounded-full flex-shrink-0 shadow-sm"
+                    style={{
+                      background: `linear-gradient(135deg, ${
+                        GRADIENT_COLORS[index % GRADIENT_COLORS.length].start
+                      }, ${
+                        GRADIENT_COLORS[index % GRADIENT_COLORS.length].end
+                      })`,
+                    }}
                   />
-                  <span className="text-xs text-muted-foreground truncate">{entry.name}</span>
-                  <span className="text-xs font-semibold ml-auto">{entry.value}</span>
+                  <span className="text-xs text-muted-foreground truncate">
+                    {entry.name}
+                  </span>
+                  <span className="text-xs font-semibold ml-auto">
+                    {entry.value}
+                  </span>
                 </div>
               ))}
             </div>
@@ -304,47 +402,82 @@ const StudentChart = () => {
               <div className="h-3 w-3 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500"></div>
               Students by Batch
             </CardTitle>
-            <CardDescription className="text-xs">Batch-wise enrollment overview</CardDescription>
+            <CardDescription className="text-xs">
+              Batch-wise enrollment overview
+            </CardDescription>
           </CardHeader>
           <CardContent className="pt-4">
             <div className="h-[280px] w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={batchData} margin={{ top: 10, right: 20, left: 0, bottom: 50 }}>
+                <AreaChart
+                  data={batchData}
+                  margin={{ top: 10, right: 20, left: 0, bottom: 50 }}
+                >
                   <defs>
-                    <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+                    <linearGradient
+                      id="areaGradient"
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="1"
+                    >
                       <stop offset="0%" stopColor="#6366f1" stopOpacity={0.5} />
-                      <stop offset="50%" stopColor="#8b5cf6" stopOpacity={0.2} />
-                      <stop offset="100%" stopColor="#a855f7" stopOpacity={0.05} />
+                      <stop
+                        offset="50%"
+                        stopColor="#8b5cf6"
+                        stopOpacity={0.2}
+                      />
+                      <stop
+                        offset="100%"
+                        stopColor="#a855f7"
+                        stopOpacity={0.05}
+                      />
                     </linearGradient>
-                    <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
+                    <linearGradient
+                      id="lineGradient"
+                      x1="0"
+                      y1="0"
+                      x2="1"
+                      y2="0"
+                    >
                       <stop offset="0%" stopColor="#6366f1" />
                       <stop offset="100%" stopColor="#a855f7" />
                     </linearGradient>
                   </defs>
-                  <XAxis 
-                    dataKey="name" 
-                    tick={{ fontSize: 10, fill: '#6b7280' }}
+                  <XAxis
+                    dataKey="name"
+                    tick={{ fontSize: 10, fill: "#6b7280" }}
                     angle={-45}
                     textAnchor="end"
                     height={60}
                     axisLine={false}
                     tickLine={false}
                   />
-                  <YAxis 
-                    tick={{ fontSize: 11, fill: '#9ca3af' }}
+                  <YAxis
+                    tick={{ fontSize: 11, fill: "#9ca3af" }}
                     axisLine={false}
                     tickLine={false}
                     width={35}
                   />
                   <Tooltip content={<CustomTooltip />} />
-                  <Area 
-                    type="monotone" 
-                    dataKey="students" 
-                    stroke="url(#lineGradient)" 
+                  <Area
+                    type="monotone"
+                    dataKey="students"
+                    stroke="url(#lineGradient)"
                     strokeWidth={3}
                     fill="url(#areaGradient)"
-                    dot={{ fill: '#6366f1', strokeWidth: 3, r: 5, stroke: '#fff' }}
-                    activeDot={{ r: 8, stroke: '#6366f1', strokeWidth: 3, fill: '#fff' }}
+                    dot={{
+                      fill: "#6366f1",
+                      strokeWidth: 3,
+                      r: 5,
+                      stroke: "#fff",
+                    }}
+                    activeDot={{
+                      r: 8,
+                      stroke: "#6366f1",
+                      strokeWidth: 3,
+                      fill: "#fff",
+                    }}
                   />
                 </AreaChart>
               </ResponsiveContainer>
