@@ -41,7 +41,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
       <SidebarFooter className="bg-[#ffffff] border-t border-gray-200 p-4">
         <p className="text-xs text-gray-500 text-center">
-          copyright@webspider.com
+          copyright@www.webspiderbd.com
         </p>
       </SidebarFooter>
 
