@@ -1,7 +1,7 @@
 import * as React from "react";
 
 import { NavMain } from "@/components/nav-main";
-import { Sidebar, SidebarContent, SidebarFooter, SidebarRail } from "@/components/ui/sidebar";
+import { Sidebar, SidebarContent, SidebarFooter, SidebarRail, useSidebar } from "@/components/ui/sidebar";
 import { navMain } from "./Routs/Routs";
 import { LayoutDashboard } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -19,21 +19,22 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const navigate = useNavigate();
+  const { state } = useSidebar();
 
   const handleNavigate = () => {
-    console.log("cliced");
-    
     navigate("/");
   };
   return (
     <Sidebar collapsible="icon" {...props} className="shadow-xl  mt-[4rem]">
       <SidebarContent className="bg-[#ffffff]">
         <div className="flex justify-start items-center ps-5 gap-2 mt-4 cursor-pointer" onClick={handleNavigate}>
-          <LayoutDashboard className="size-[15px] font-semibold"/>
+          <LayoutDashboard className="size-[20px] font-semibold"/>
+          {state === "expanded" && (
             <div className="text-xs font-semibold text-gray-700">
               Dashboard
             </div>
-          </div>
+          )}
+        </div>
         <NavMain items={data.navMain} />
 
       </SidebarContent>

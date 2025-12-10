@@ -306,7 +306,7 @@ const SiteSettingPage = () => {
                   </Button>
                   <Button 
                     type="submit" 
-                    className="bg-primary hover:bg-primary/90"
+                    className="bg-primary hover:bg-primary/90m text-white"
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? (
