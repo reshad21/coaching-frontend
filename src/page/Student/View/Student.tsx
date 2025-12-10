@@ -70,7 +70,7 @@ const Student = () => {
   const hasActiveFilters = search || selectedBatch || selectClass || shift
 
   return (
-    <div className="min-h-screen bg-background p-6 space-y-6 overflow-x-hidden">
+    <div className="bg-background p-6 space-y-6">
       {/* Header Section */}
       <div className="flex items-center gap-3">
         <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10">
@@ -139,7 +139,7 @@ const Student = () => {
               <Loading />
             </div>
           ) : students?.data?.length > 0 ? (
-            <div className="border border-border rounded-lg overflow-hidden">
+            <div className="border border-border rounded-lg whitespace-nowrap">
               <Table>
                 <TableHeader>
                   <TableRow className="border-border hover:bg-muted/50">
