@@ -15,7 +15,6 @@ import { useEffect } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
-import { StudentHeader } from "../component/student-header";
 
 // --- Define types
 type TStudentFormData = {
@@ -105,7 +104,8 @@ const StudentUpdate = () => {
 
   return (
     <div>
-      <StudentHeader
+      
+      {/* <StudentHeader
         title="Update Student"
         description="Modify student information and academic records"
         breadcrumbItems={[
@@ -113,7 +113,7 @@ const StudentUpdate = () => {
           { label: "Student Management", href: "/view-student" },
           { label: "Update Student" },
         ]}
-      />
+      /> */}
 
       <div className="border-1 border-slate-500 rounded-lg shadow-md p-5">
         <Form {...form}>
