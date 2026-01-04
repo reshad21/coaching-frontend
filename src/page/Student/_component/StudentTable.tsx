@@ -23,8 +23,7 @@ import {
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import SendMessage from "../View/SendMessage/SendMessage";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
+import StudentPDFGenerator from "./StudentPDFGenerator";
 import { useGetSiteSettingQuery } from "@/redux/api/siteSettingApi/siteSettingApi";
 
 interface StudentTableProps {
@@ -33,92 +32,23 @@ interface StudentTableProps {
 }
 
 const StudentTable = ({ students, onDelete }: StudentTableProps) => {
-  //logo image as base64
   const { data, isLoading } = useGetSiteSettingQuery([]);
+  
   if (isLoading) {
     return <div>Loading...</div>;
   }
+  
   const logo = data?.data[0].logo || "";
   const brandName = data?.data[0].brandName || "";
-
-  //pdf download handler
-  const handleDownloadPDF = () => {
-    const doc = new jsPDF("p", "mm", "a4");
-
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const pageHeight = doc.internal.pageSize.getHeight();
-
-    /* ---------- HEADER ---------- */
-    if (logo) {
-      // Try to detect image type from base64 string, fallback to PNG
-      const imageType = logo.startsWith("data:image/jpeg") ? "JPEG" : "PNG";
-      doc.addImage(logo, imageType, 14, 10, 20, 20);
-    }
-
-    doc.setFontSize(16);
-    doc.text(brandName || "School Name", pageWidth / 2, 18, {
-      align: "center",
-    });
-
-    doc.setFontSize(10);
-    doc.text("Student Information Report", pageWidth / 2, 25, {
-      align: "center",
-    });
-
-    const date = new Date().toLocaleDateString();
-    doc.text(`Generated: ${date}`, pageWidth - 14, 15, { align: "right" });
-
-    /* ---------- TABLE ---------- */
-    const tableColumn = [
-      "SL",
-      "Name",
-      "Student ID",
-      "Class",
-      "Shift",
-      "Phone",
-      "Batch",
-    ];
-
-    const tableRows = students.map((student: any, index: number) => [
-      index + 1,
-      `${student?.firstName || ""} ${student?.lastName || ""}`,
-      student?.studentId || "N/A",
-      student?.Class?.className || "N/A",
-      student?.shiftName || "N/A",
-      student?.phone || "N/A",
-      student?.Batch?.batchName || "N/A",
-    ]);
-
-    autoTable(doc, {
-      head: [tableColumn],
-      body: tableRows,
-      startY: 35,
-      theme: "grid",
-      styles: {
-        fontSize: 9,
-        cellPadding: 3,
-      },
-      headStyles: {
-        fillColor: [255, 76, 48],
-        textColor: 255,
-      },
-      didDrawPage: (data) => {
-        /* ---------- FOOTER ---------- */
-        const pageCount = doc.getNumberOfPages();
-        doc.setFontSize(9);
-        doc.text(`Page ${pageCount}`, pageWidth / 2, pageHeight - 10, {
-          align: "center",
-        });
-      },
-    });
-
-    doc.save("student-list.pdf");
-  };
 
   return (
     <div className="border border-border rounded-lg whitespace-nowrap">
       <div className="flex justify-end m-4">
-        <Button onClick={handleDownloadPDF}>Download PDF</Button>
+        <StudentPDFGenerator 
+          students={students}
+          logo={logo}
+          brandName={brandName}
+        />
       </div>
 
       <Table>
