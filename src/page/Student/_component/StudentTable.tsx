@@ -25,6 +25,7 @@ import { Link } from "react-router-dom";
 import SendMessage from "../View/SendMessage/SendMessage";
 import StudentPDFGenerator from "./StudentPDFGenerator";
 import { useGetSiteSettingQuery } from "@/redux/api/siteSettingApi/siteSettingApi";
+import Loading from "@/components/Loading";
 
 interface StudentTableProps {
   students: any[];
@@ -35,7 +36,7 @@ const StudentTable = ({ students, onDelete }: StudentTableProps) => {
   const { data, isLoading } = useGetSiteSettingQuery([]);
   
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Loading />;
   }
   
   const logo = data?.data[0].logo || "";
