@@ -60,11 +60,11 @@ const MonthlyPayment = () => {
 
     let message = "";
     if (data.title === "Monthly") {
-      message = `Dear ${data?.firstName}, your monthly fee for January has been successfully paid.\n\nThanks for choosing EDUCARE.`;
+      message = `Dear ${data?.firstName}, your monthly fee for ${data.month} has been successfully paid.\n\nThanks for choosing EDUCARE.`;
     } else if (data.title === "ModelTest") {
-      message = `Dear ${data?.firstName}, your Special Model Test fee has been successfully paid.\n\nBest of luck for your test!`;
+      message = `Dear ${data?.firstName}, your Special Model Test fee has been successfully paid.\n\nThanks for choosing EDUCARE.`;
     } else if (data.title === "Others") {
-      message = customMessage || `Dear ${data?.firstName}, your payment for ${data?.month} has been received.`;
+      message = customMessage || `Dear ${data?.firstName}, your payment has been received.`;
     }
 
     const res: any = await addPayment(payload).unwrap();
