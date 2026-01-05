@@ -64,9 +64,9 @@ const MonthlyPayment = () => {
       setOpenFormFor(null);
       toast.success(res?.message || "Payment added successfully");
       const response = await sendMessage({
-        message: `Dear ${data?.firstName},
-We have successfully received your payment of ${data?.amount} TK for ${data?.month}.
-Thank you for staying with EDUCARE!`,
+        message: `Dear ${data?.firstName}, your monthly fee for January has been successfully paid.
+
+Thanks for staying with educare`,
         number: data?.phone,
       }).unwrap();
       console.log(response);

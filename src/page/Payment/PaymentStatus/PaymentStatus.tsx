@@ -221,7 +221,7 @@ const PaymentStatus = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {students.data.map((student: any, index: number) => (
+                    {students?.data?.map((student: any, index: number) => (
                       <TableRow key={student.id} className="hover:bg-slate-50/50 transition-colors">
                         <TableCell className="font-medium text-slate-600">{(page - 1) * 10 + index + 1}</TableCell>
                         <TableCell>
