@@ -28,6 +28,7 @@ const MonthlyPayment = () => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [openFormFor, setOpenFormFor] = useState<string | null>(null);
+  const [customMessage, setCustomMessage] = useState("");
   const [sendMessage] = useSendSingleMessageMutation();
 
   const { data: students, isLoading } = useGetAllStudentQuery([
@@ -57,6 +58,15 @@ const MonthlyPayment = () => {
       title: data.title,
     };
 
+    let message = "";
+    if (data.title === "Monthly") {
+      message = `Dear ${data?.firstName}, your monthly fee for January has been successfully paid.\n\nThanks for choosing EDUCARE.`;
+    } else if (data.title === "ModelTest") {
+      message = `Dear ${data?.firstName}, your Special Model Test fee has been successfully paid.\n\nBest of luck for your test!`;
+    } else if (data.title === "Others") {
+      message = customMessage || `Dear ${data?.firstName}, your payment for ${data?.month} has been received.`;
+    }
+
     const res: any = await addPayment(payload).unwrap();
 
     if (res?.statusCode == 200) {
@@ -64,9 +74,7 @@ const MonthlyPayment = () => {
       setOpenFormFor(null);
       toast.success(res?.message || "Payment added successfully");
       const response = await sendMessage({
-        message: `Dear ${data?.firstName}, your monthly fee for January has been successfully paid.
-
-Thanks for staying with educare`,
+        message,
         number: data?.phone,
       }).unwrap();
       console.log(response);
@@ -193,8 +201,8 @@ Thanks for staying with educare`,
                                     label="Payment Title"
                                     options={[
                                       { value: "Monthly", name: "Monthly" },
-                                      { value: "ModelTest", name: "ModelTest" },
-                                      { value: "Others", name: "Others" },
+                                      { value: "ModelTest", name: "Model Test" },
+                                      { value: "Others", name: "Other" },
                                     ]}
                                     control={form.control}
                                   />
@@ -223,6 +231,24 @@ Thanks for staying with educare`,
                                     ]}
                                     control={form.control}
                                   />
+                                  {/* Conditional message or input */}
+                                  {form.watch("title") === "Monthly" && (
+                                    <div className="col-span-2 text-green-700 font-medium">This is your monthly payment message.</div>
+                                  )}
+                                  {form.watch("title") === "ModelTest" && (
+                                    <div className="col-span-2 text-blue-700 font-medium">This is your model test payment message.</div>
+                                  )}
+                                  {form.watch("title") === "Others" && (
+                                    <div className="col-span-2">
+                                      <input
+                                        type="text"
+                                        className="w-full p-2 border rounded"
+                                        placeholder="Enter your custom message"
+                                        value={customMessage}
+                                        onChange={e => setCustomMessage(e.target.value)}
+                                      />
+                                    </div>
+                                  )}
                                 </div>
 
                                 <Button
