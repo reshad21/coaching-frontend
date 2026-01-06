@@ -90,7 +90,7 @@ const StudentCreate = () => {
 
         // Send welcome SMS to the student's phone number
 
-        const welcomeMessage = `Dear ${data.firstName}, your admission fee has been successfully received.\n\nThanks for choosing EDUCARE!`;
+        const welcomeMessage = `Dear ${data.firstName}, your admission fee has been successfully received.\n\nThanks for staying EDUCARE!`;
 
         try {
           const msgRes = await sendMessage({
