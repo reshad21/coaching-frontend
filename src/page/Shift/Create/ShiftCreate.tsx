@@ -65,37 +65,38 @@ const ShiftCreate = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="gap-2 bg-primary hover:bg-primary/90 text-white shadow-sm">
-          <Plus className="h-4 w-4" />
-          CREATE SHIFT
+        <Button className="w-full sm:w-auto gap-2 bg-primary hover:bg-primary/90 text-white shadow-sm text-sm sm:text-base">
+          <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
+          <span className="hidden sm:inline">CREATE SHIFT</span>
+          <span className="sm:hidden">New Shift</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader className="space-y-3">
-          <DialogTitle className="text-xl font-semibold">
+      <DialogContent className="w-full sm:max-w-md mx-4 sm:mx-0 rounded-lg sm:rounded-lg">
+        <DialogHeader className="space-y-2 sm:space-y-3">
+          <DialogTitle className="text-lg sm:text-xl font-semibold">
             Create New Shift
           </DialogTitle>
-          <DialogDescription className="text-muted-foreground">
+          <DialogDescription className="text-xs sm:text-sm text-muted-foreground">
             Set the start and end times for your new shift schedule.
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-          <div className="space-y-4">
-            {/* Start Time Field */}
-            <div className="space-y-2">
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
+          <div className="space-y-3 sm:space-y-4">
+            {/* ✅ Responsive Start Time Field */}
+            <div className="space-y-1 sm:space-y-2">
               <Label
                 htmlFor="startTime"
-                className="text-sm font-medium text-foreground"
+                className="text-xs sm:text-sm font-medium text-foreground"
               >
                 Start Time
               </Label>
               <div className="relative">
-                <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
                 <Input
                   id="startTime"
                   type="time"
-                  className={`pl-10 h-11 ${
+                  className={`pl-10 h-9 sm:h-11 text-sm sm:text-base ${
                     errors.startTime
                       ? "border-destructive focus-visible:ring-destructive"
                       : ""
@@ -107,27 +108,27 @@ const ShiftCreate = () => {
                 />
               </div>
               {errors.startTime && (
-                <div className="flex items-center gap-2 text-sm text-destructive">
-                  <AlertCircle className="h-4 w-4" />
+                <div className="flex items-center gap-2 text-xs sm:text-sm text-destructive">
+                  <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span>{errors.startTime.message}</span>
                 </div>
               )}
             </div>
 
-            {/* End Time Field */}
-            <div className="space-y-2">
+            {/* ✅ Responsive End Time Field */}
+            <div className="space-y-1 sm:space-y-2">
               <Label
                 htmlFor="endTime"
-                className="text-sm font-medium text-foreground"
+                className="text-xs sm:text-sm font-medium text-foreground"
               >
                 End Time
               </Label>
               <div className="relative">
-                <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Clock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-3 w-3 sm:h-4 sm:w-4 text-muted-foreground" />
                 <Input
                   id="endTime"
                   type="time"
-                  className={`pl-10 h-11 ${
+                  className={`pl-10 h-9 sm:h-11 text-sm sm:text-base ${
                     errors.endTime
                       ? "border-destructive focus-visible:ring-destructive"
                       : ""
@@ -139,26 +140,27 @@ const ShiftCreate = () => {
                 />
               </div>
               {errors.endTime && (
-                <div className="flex items-center gap-2 text-sm text-destructive">
-                  <AlertCircle className="h-4 w-4" />
+                <div className="flex items-center gap-2 text-xs sm:text-sm text-destructive">
+                  <AlertCircle className="h-3 w-3 sm:h-4 sm:w-4" />
                   <span>{errors.endTime.message}</span>
                 </div>
               )}
             </div>
           </div>
 
-          <DialogFooter className="gap-2 pt-4">
+          {/* ✅ Responsive DialogFooter */}
+          <DialogFooter className="gap-2 pt-2 sm:pt-4 flex-col-reverse sm:flex-row">
             <Button
               type="button"
               variant="outline"
               onClick={() => setOpen(false)}
-              className="flex-1 sm:flex-none"
+              className="w-full sm:w-auto text-xs sm:text-sm"
             >
               Cancel
             </Button>
             <Button
               type="submit"
-              className="flex-1 sm:flex-none bg-primary hover:bg-primary/90 text-white shadow-sm"
+              className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white text-xs sm:text-sm"
             >
               Create Shift
             </Button>

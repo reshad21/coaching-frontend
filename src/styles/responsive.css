@@ -1,0 +1,156 @@
+/* ✅ Responsive Design Utilities */
+
+/* ============================================================================
+   Responsive Text Scaling
+   ============================================================================ */
+@layer utilities {
+  /* Mobile-first text sizing */
+  .text-responsive-sm {
+    @apply text-xs sm:text-sm;
+  }
+
+  .text-responsive-base {
+    @apply text-sm sm:text-base;
+  }
+
+  .text-responsive-lg {
+    @apply text-base sm:text-lg;
+  }
+
+  .text-responsive-xl {
+    @apply text-lg sm:text-xl;
+  }
+
+  .text-responsive-2xl {
+    @apply text-xl sm:text-2xl;
+  }
+
+  .text-responsive-3xl {
+    @apply text-2xl sm:text-3xl;
+  }
+
+  /* ============================================================================
+     Responsive Spacing
+     ============================================================================ */
+  .p-responsive {
+    @apply p-3 sm:p-6;
+  }
+
+  .px-responsive {
+    @apply px-3 sm:px-6;
+  }
+
+  .py-responsive {
+    @apply py-3 sm:py-6;
+  }
+
+  .gap-responsive {
+    @apply gap-2 sm:gap-4;
+  }
+
+  .gap-responsive-xl {
+    @apply gap-3 sm:gap-6;
+  }
+
+  /* ============================================================================
+     Responsive Container Sizes
+     ============================================================================ */
+  .icon-responsive-sm {
+    @apply w-4 h-4 sm:w-5 sm:h-5;
+  }
+
+  .icon-responsive-base {
+    @apply w-5 h-5 sm:w-6 sm:h-6;
+  }
+
+  .avatar-responsive-sm {
+    @apply w-8 h-8 sm:w-10 sm:h-10;
+  }
+
+  /* ============================================================================
+     Responsive Button Sizes
+     ============================================================================ */
+  .btn-responsive-sm {
+    @apply h-8 px-2 text-xs sm:h-9 sm:px-3 sm:text-sm;
+  }
+
+  .btn-responsive-base {
+    @apply h-9 px-3 text-sm sm:h-10 sm:px-4 sm:text-base;
+  }
+
+  /* ============================================================================
+     Table Responsiveness
+     ============================================================================ */
+  .table-responsive {
+    @apply overflow-x-auto -mx-3 sm:mx-0 sm:rounded-lg border border-transparent sm:border-border;
+  }
+
+  .table-cell-responsive {
+    @apply text-xs sm:text-sm;
+  }
+
+  /* ============================================================================
+     Grid Responsiveness
+     ============================================================================ */
+  .grid-responsive-cols {
+    @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-3;
+  }
+
+  .grid-responsive-cols-4 {
+    @apply grid-cols-1 sm:grid-cols-2 lg:grid-cols-4;
+  }
+
+  /* ============================================================================
+     Mobile-Safe Truncation
+     ============================================================================ */
+  .truncate-responsive {
+    @apply truncate max-w-full;
+  }
+}
+
+/* ============================================================================
+   Mobile-Friendly Form Inputs
+   ============================================================================ */
+@layer base {
+  input,
+  textarea,
+  select {
+    @apply text-base; /* Prevents zoom on iOS */
+  }
+}
+
+/* ============================================================================
+   Responsive Layout Utilities
+   ============================================================================ */
+@layer utilities {
+  .flex-responsive-col {
+    @apply flex flex-col sm:flex-row;
+  }
+
+  .flex-responsive-center-col {
+    @apply flex flex-col sm:flex-row sm:items-center;
+  }
+
+  .justify-responsive-between {
+    @apply flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center;
+  }
+
+  /* ============================================================================
+     Responsive Display
+     ============================================================================ */
+  .hide-mobile {
+    @apply hidden sm:block;
+  }
+
+  .hide-tablet {
+    @apply hidden md:block;
+  }
+
+  .show-mobile {
+    @apply block sm:hidden;
+  }
+
+  .show-tablet {
+    @apply block md:hidden;
+  }
+}

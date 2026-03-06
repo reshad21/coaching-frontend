@@ -87,23 +87,23 @@ const MonthlyPayment = () => {
   };
 
   return (
-    // ✅ Added p-6 for consistent spacing on all sides
-    <div className="p-6 space-y-6">
+    // ✅ Responsive padding: Adjusted for mobile, tablet, and desktop
+    <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
 
-      {/* Header */}
+      {/* ✅ Responsive Header */}
       <div>
-        <div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-          <span>Payment</span>
-          <ChevronRight className="h-4 w-4" />
-          <span>Student Monthly Fees</span>
+        <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground mb-2 overflow-x-auto">
+          <span className="whitespace-nowrap">Payment</span>
+          <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4 flex-shrink-0" />
+          <span className="whitespace-nowrap">Student Monthly Fees</span>
         </div>
-        <h1 className="text-3xl font-semibold text-foreground">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-foreground">
           Student Monthly Fees
         </h1>
       </div>
 
-      {/* Search & Filter */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+      {/* ✅ Responsive Search & Filter */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3">
         <SearchInputField
           value={search}
           onChange={setSearch}
@@ -111,14 +111,15 @@ const MonthlyPayment = () => {
         />
         <Button
           onClick={() => setSearch("")}
-          className="w-2/4 bg-primary text-white"
+          className="w-full sm:w-auto bg-primary text-white text-sm sm:text-base"
         >
-          <RotateCcw className="h-4 w-4 mr-2" />
-          Clear Filter
+          <RotateCcw className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
+          <span className="hidden sm:inline">Clear Filter</span>
+          <span className="sm:hidden">Clear</span>
         </Button>
       </div>
 
-      {/* Table */}
+      {/* ✅ Responsive Table */}
       {isLoading ? (
         <Loading />
       ) : students?.data?.length > 0 ? (
@@ -126,10 +127,10 @@ const MonthlyPayment = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>SL No.</TableHead>
+                <TableHead className="hidden sm:table-cell">SL No.</TableHead>
                 <TableHead>Full Name</TableHead>
-                <TableHead>Std Id</TableHead>
-                <TableHead>Phone</TableHead>
+                <TableHead className="hidden md:table-cell">Std Id</TableHead>
+                <TableHead className="hidden md:table-cell">Phone</TableHead>
                 <TableHead>Action</TableHead>
               </TableRow>
             </TableHeader>
@@ -137,26 +138,31 @@ const MonthlyPayment = () => {
               {students?.data?.map((student: any, index: number) => (
                 <>
                   <TableRow key={student.id}>
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell>
+                    <TableCell data-label="SL No." className="hidden sm:table-cell">{index + 1}</TableCell>
+                    <TableCell data-label="Full Name">
                       <div className="flex items-center gap-2">
                         <img
                           src={student?.image || studentImage}
                           alt={`${student?.firstName ?? ""} ${student?.lastName ?? ""}`}
-                          className="size-10 rounded-md object-cover"
+                          className="size-8 sm:size-10 rounded-md object-cover flex-shrink-0"
                         />
-                        <span>
-                          {student.firstName} {student.lastName}
-                        </span>
+                        <div className="min-w-0">
+                          <div className="truncate text-sm font-medium">
+                            {student.firstName} {student.lastName}
+                          </div>
+                          <div className="text-xs text-gray-500 block sm:hidden">{student.studentId}</div>
+                          <div className="text-xs text-gray-500 block md:hidden">{student.phone}</div>
+                        </div>
                       </div>
                     </TableCell>
-                    <TableCell>{student.studentId}</TableCell>
-                    <TableCell>{student.phone}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
+                    <TableCell data-label="Std Id" className="hidden md:table-cell">{student.studentId}</TableCell>
+                    <TableCell data-label="Phone" className="hidden md:table-cell">{student.phone}</TableCell>
+                    <TableCell data-label="Action">
+                      <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2">
                         <Button
                           variant="outline"
-                          className="bg-green-600 hover:bg-green-500 text-slate-100"
+                          size="sm"
+                          className="w-full sm:w-auto bg-green-600 hover:bg-green-500 text-white text-xs sm:text-sm"
                           onClick={() => {
                             form.setValue("studentId", student.id);
                             form.setValue("phone", student.phone);
@@ -168,33 +174,40 @@ const MonthlyPayment = () => {
                             );
                           }}
                         >
-                          <DollarSign className="w-5 h-5" />
-                          {openFormFor === student.studentId
-                            ? "Cancel"
-                            : "Make Payment"}
+                          <DollarSign className="w-3 h-3 sm:w-5 sm:h-5 mr-1" />
+                          <span className="hidden sm:inline">
+                            {openFormFor === student.studentId
+                              ? "Cancel"
+                              : "Make Payment"}
+                          </span>
+                          <span className="sm:hidden">
+                            {openFormFor === student.studentId ? "Cancel" : "Pay"}
+                          </span>
                         </Button>
-                        <Link to={`/payment/${student.id}`}>
+                        <Link to={`/payment/${student.id}`} className="w-full sm:w-auto">
                           <Button
                             variant="outline"
-                            className="bg-green-600 hover:bg-green-500 text-slate-100"
+                            size="sm"
+                            className="w-full bg-green-600 hover:bg-green-500 text-white text-xs sm:text-sm"
                           >
-                            <Eye className="w-5 h-5 mr-1" /> View Payment
+                            <Eye className="w-3 h-3 sm:w-5 sm:h-5" />
+                            <span className="hidden sm:inline ml-1">View</span>
                           </Button>
                         </Link>
                       </div>
                     </TableCell>
                   </TableRow>
 
-                  {/* Collapsible Form Row */}
+                  {/* ✅ Responsive Collapsible Form Row */}
                   {openFormFor === student.studentId && (
                     <TableRow>
-                      <TableCell colSpan={5}>
+                      <TableCell colSpan={5} className="p-2 sm:p-4">
                         <Form {...form}>
                           <form
                             onSubmit={form.handleSubmit(onSubmit)}
-                            className="p-4 bg-muted rounded-md"
+                            className="p-3 sm:p-4 bg-muted rounded-md"
                           >
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4">
                               <SelectFieldWrapper
                                 name="title"
                                 label="Payment Title"
@@ -231,20 +244,20 @@ const MonthlyPayment = () => {
                                 control={form.control}
                               />
                               {form.watch("title") === "Monthly" && (
-                                <div className="col-span-2 text-green-700 font-medium">
+                                <div className="col-span-1 sm:col-span-2 text-green-700 font-medium text-sm">
                                   This is your monthly payment message.
                                 </div>
                               )}
                               {form.watch("title") === "ModelTest" && (
-                                <div className="col-span-2 text-blue-700 font-medium">
+                                <div className="col-span-1 sm:col-span-2 text-blue-700 font-medium text-sm">
                                   This is your model test payment message.
                                 </div>
                               )}
                               {form.watch("title") === "Others" && (
-                                <div className="col-span-2">
+                                <div className="col-span-1 sm:col-span-2">
                                   <input
                                     type="text"
-                                    className="w-full p-2 border rounded"
+                                    className="w-full p-2 border rounded text-sm"
                                     placeholder="Enter your custom message"
                                     value={customMessage}
                                     onChange={(e) => setCustomMessage(e.target.value)}
@@ -254,10 +267,10 @@ const MonthlyPayment = () => {
                             </div>
                             <Button
                               type="submit"
-                              className="bg-primary hover:bg-cyan-800 text-white flex items-center gap-2 py-2 px-4 rounded-md transition"
+                              className="w-full sm:w-auto bg-primary hover:bg-cyan-800 text-white flex items-center justify-center gap-2 py-2 px-3 sm:px-4 rounded-md transition text-sm sm:text-base"
                             >
-                              <Plus className="w-5 h-5" />
-                              Submit Payment
+                              <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
+                              <span>Submit Payment</span>
                             </Button>
                           </form>
                         </Form>
@@ -270,16 +283,16 @@ const MonthlyPayment = () => {
           </Table>
         </div>
       ) : (
-        <p className="text-center text-muted-foreground mt-10">No data found</p>
+        <p className="text-center text-muted-foreground mt-10 text-sm sm:text-base">No data found</p>
       )}
 
-      {/* Pagination */}
+      {/* ✅ Responsive Pagination */}
       {students?.meta?.total > students?.meta?.limit && (
         <EduCPagination
           page={page}
           setPage={setPage}
           totalPages={students?.meta?.totalPages}
-          className="mt-4 flex justify-end"
+          className="mt-4 flex justify-end text-xs sm:text-base"
         />
       )}
     </div>

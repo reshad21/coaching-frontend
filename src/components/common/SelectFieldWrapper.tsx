@@ -33,7 +33,8 @@ export const SelectFieldWrapper = ({
       rules={rules}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
+          {/* ✅ Responsive label sizing */}
+          <FormLabel className="text-xs sm:text-sm">{label}</FormLabel>
           <Select
             value={field.value}
             onValueChange={(value) => {
@@ -42,20 +43,20 @@ export const SelectFieldWrapper = ({
             }}
           >
             <FormControl>
-              <SelectTrigger>
+              <SelectTrigger className="text-xs sm:text-sm h-10 sm:h-auto">
                 <SelectValue placeholder={`Select ${label}`} />
               </SelectTrigger>
             </FormControl>
-            <SelectContent className="bg-white">
+            <SelectContent className="bg-white text-xs sm:text-sm">
               {options.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
+                <SelectItem key={option.value} value={option.value} className="text-xs sm:text-sm">
                   {option.name}
                 </SelectItem>
               ))}
             </SelectContent>
           </Select>
           <FormDescription />
-          <FormMessage />
+          <FormMessage className="text-xs" />
         </FormItem>
       )}
     />

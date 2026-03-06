@@ -29,7 +29,8 @@ export const FormFieldWrapper = ({
       }}
       render={({ field }) => (
         <FormItem>
-          <FormLabel>{label}</FormLabel>
+          {/* ✅ Responsive label sizing */}
+          <FormLabel className="text-xs sm:text-sm">{label}</FormLabel>
           <FormControl>
             {isPassword ? (
               <div className="relative">
@@ -38,15 +39,16 @@ export const FormFieldWrapper = ({
                   {...field}
                   placeholder={placeholder}
                   disabled={isDisabled}
+                  className="text-sm sm:text-base pr-10 h-10 sm:h-auto"
                 />
                 <Button
                   type="button"
                   variant="ghost"
                   size="icon"
-                  className="absolute right-0 top-0"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 h-6 w-6 sm:h-8 sm:w-8"
                   onClick={() => setShow(!show)}
                 >
-                  {show ? <EyeOff size={20} /> : <Eye size={20} />}
+                  {show ? <EyeOff size={16} className="sm:w-[20px] sm:h-[20px]" /> : <Eye size={16} className="sm:w-[20px] sm:h-[20px]" />}
                 </Button>
               </div>
             ) : (
@@ -56,6 +58,7 @@ export const FormFieldWrapper = ({
                 placeholder={placeholder}
                 defaultValue={defaultValue}
                 disabled={isDisabled}
+                className="text-sm sm:text-base h-10 sm:h-auto"
               />
             )}
           </FormControl>

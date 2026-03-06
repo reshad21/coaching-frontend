@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ✅ Import responsive utilities */
+@import './styles/responsive.css';
+
 /* body {
   background-color: #d4d3d3;
 } */

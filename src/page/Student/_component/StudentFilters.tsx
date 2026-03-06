@@ -34,22 +34,22 @@ const StudentFilters = ({
   const activeFilterCount = [search, selectedBatch, selectClass, shift].filter(Boolean).length
 
   return (
-    // ✅ w-full + min-w-0 prevents card from stretching beyond viewport
+    // ✅ Responsive filters: w-full + min-w-0 prevents card from stretching, proper spacing for mobile
     <Card className="w-full min-w-0 border-border bg-card">
-      <CardHeader className="pb-4">
+      <CardHeader className="pb-3 sm:pb-4">
         <div className="flex items-center gap-2">
-          <Filter className="w-4 h-4 text-muted-foreground" />
-          <h3 className="text-sm font-medium text-card-foreground">Filters</h3>
+          <Filter className="w-3 sm:w-4 h-3 sm:h-4 text-muted-foreground flex-shrink-0" />
+          <h3 className="text-xs sm:text-sm font-medium text-card-foreground truncate">Filters</h3>
           {hasActiveFilters && (
             <Badge variant="secondary" className="ml-2 text-xs">
-              {activeFilterCount} active
+              {activeFilterCount}
             </Badge>
           )}
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
-        {/* ✅ flex-wrap ensures filter row wraps on smaller screens instead of overflowing */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+      <CardContent className="space-y-3 sm:space-y-4">
+        {/* ✅ Responsive grid: 1 col on mobile, 2 on sm, 5 on lg */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2 sm:gap-3">
           <div className="relative">
             <SearchInputField value={search} onChange={onSearchChange} onSearch={onSearchChange} />
           </div>
@@ -59,11 +59,13 @@ const StudentFilters = ({
           <Button
             onClick={onClearFilters}
             variant="outline"
-            className="w-full border-border bg-primary text-white cursor-pointer"
+            className="w-full border-border bg-primary text-white cursor-pointer text-sm"
             disabled={!hasActiveFilters}
+            size="sm"
           >
-            <RotateCcw className="w-4 h-4 mr-2" />
-            Clear Filters
+            <RotateCcw className="w-3 sm:w-4 h-3 sm:h-4 mr-1 sm:mr-2 flex-shrink-0" />
+            <span className="hidden sm:inline">Clear Filters</span>
+            <span className="sm:hidden">Clear</span>
           </Button>
         </div>
       </CardContent>

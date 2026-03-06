@@ -42,16 +42,16 @@ const All = () => {
   };
   return (
     <div>
-      <Card className="p-6 w-full">
+      <Card className="p-3 sm:p-6 w-full">
         <Form {...form}>
-          <form className="">
+          <form className="space-y-3 sm:space-y-4">
             <textarea
               {...form.register("message")}
               placeholder="Wright your message"
-              className="border p-2 rounded w-full shadow-sm mb-4"
+              className="border p-2 sm:p-3 rounded w-full shadow-sm text-xs sm:text-sm min-h-[120px] sm:min-h-[150px] focus:ring-2 focus:ring-primary focus:border-transparent"
             />
             <Button
-              className="w-full mt-4 text-white"
+              className="w-full mt-2 sm:mt-4 text-white text-xs sm:text-sm h-9 sm:h-10"
               // disabled={!selectedBatch}
               onClick={(e) => handelSendMessage(e)}
             >

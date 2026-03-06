@@ -41,7 +41,8 @@ const StudentTable = ({ students, onDelete }: StudentTableProps) => {
 
   return (
     <div className="w-full">
-      <div className="flex justify-end m-4">
+      {/* ✅ Responsive button container: Responsive padding and size */}
+      <div className="flex justify-end m-2 sm:m-4">
         <StudentPDFGenerator
           students={students}
           logo={logo}
@@ -52,42 +53,43 @@ const StudentTable = ({ students, onDelete }: StudentTableProps) => {
       <Table>
         <TableHeader>
           <TableRow className="border-border hover:bg-muted/50">
-            <TableHead className="text-muted-foreground font-medium w-10">
+            <TableHead className="text-muted-foreground font-medium w-8 sm:w-10 text-xs sm:text-sm">
               <div className="flex items-center gap-1">
                 <Hash className="w-3 h-3" />
               </div>
             </TableHead>
-            <TableHead className="text-muted-foreground font-medium min-w-[180px]">
-              <div className="flex items-center gap-2">
-                <Users className="w-3 h-3" />
-                Student Details
+            <TableHead className="text-muted-foreground font-medium min-w-[140px] sm:min-w-[180px] text-xs sm:text-sm">
+              <div className="flex items-center gap-1 sm:gap-2">
+                <Users className="w-3 h-3 flex-shrink-0" />
+                <span className="hidden sm:inline">Student Details</span>
+                <span className="sm:hidden">Student</span>
               </div>
             </TableHead>
-            <TableHead className="text-muted-foreground font-medium min-w-[120px]">
+            <TableHead className="hidden sm:table-cell text-muted-foreground font-medium min-w-[120px] text-xs sm:text-sm">
               Student ID
             </TableHead>
-            <TableHead className="text-muted-foreground font-medium min-w-[100px]">
+            <TableHead className="hidden md:table-cell text-muted-foreground font-medium min-w-[100px] text-xs sm:text-sm">
               <div className="flex items-center gap-2">
-                <GraduationCap className="w-3 h-3" />
-                Class
+                <GraduationCap className="w-3 h-3 flex-shrink-0" />
+                <span className="hidden lg:inline">Class</span>
               </div>
             </TableHead>
-            <TableHead className="text-muted-foreground font-medium min-w-[160px]">
+            <TableHead className="hidden lg:table-cell text-muted-foreground font-medium min-w-[160px] text-xs sm:text-sm">
               <div className="flex items-center gap-2">
-                <Clock className="w-3 h-3" />
+                <Clock className="w-3 h-3 flex-shrink-0" />
                 Shift
               </div>
             </TableHead>
-            <TableHead className="text-muted-foreground font-medium min-w-[150px]">
+            <TableHead className="hidden md:table-cell text-muted-foreground font-medium min-w-[150px] text-xs sm:text-sm">
               <div className="flex items-center gap-2">
-                <Phone className="w-3 h-3" />
-                Contact
+                <Phone className="w-3 h-3 flex-shrink-0" />
+                <span className="hidden lg:inline">Contact</span>
               </div>
             </TableHead>
-            <TableHead className="text-muted-foreground font-medium min-w-[130px]">
+            <TableHead className="hidden lg:table-cell text-muted-foreground font-medium min-w-[130px] text-xs sm:text-sm">
               Batch
             </TableHead>
-            <TableHead className="text-muted-foreground font-medium min-w-[140px]">
+            <TableHead className="text-muted-foreground font-medium min-w-[100px] sm:min-w-[140px] text-xs sm:text-sm">
               Actions
             </TableHead>
           </TableRow>
@@ -100,104 +102,110 @@ const StudentTable = ({ students, onDelete }: StudentTableProps) => {
               className="border-border hover:bg-muted/30 transition-colors"
             >
               {/* # */}
-              <TableCell>
-                <span className="text-muted-foreground font-mono text-sm">
+              <TableCell className="text-xs sm:text-sm">
+                <span className="text-muted-foreground font-mono">
                   {String(index + 1).padStart(2, "0")}
                 </span>
               </TableCell>
 
-              {/* Student Details */}
+              {/* ✅ Responsive Student Details: Show image and name on mobile, hide on smaller screens */}
               <TableCell className="whitespace-nowrap">
-                <div className="flex items-center gap-3">
-                  <div className="relative shrink-0">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="relative flex-shrink-0">
                     <img
                       src={student?.image || defaultImg}
                       alt={`${student?.firstName} ${student?.lastName}`}
-                      className="w-10 h-10 rounded-lg object-cover border border-border"
+                      className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg object-cover border border-border"
                     />
-                    <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-accent rounded-full border-2 border-card" />
+                    <div className="absolute -bottom-1 -right-1 w-2 h-2 sm:w-3 sm:h-3 bg-accent rounded-full border-2 border-card" />
                   </div>
-                  <div>
-                    <p className="font-medium text-card-foreground">
-                      {student?.firstName} {student?.lastName}
+                  <div className="min-w-0">
+                    <p className="font-medium text-card-foreground text-xs sm:text-sm truncate">
+                      {student?.firstName}
+                    </p>
+                    <p className="text-xs text-muted-foreground truncate hidden sm:block">
+                      {student?.lastName}
+                    </p>
+                    <p className="text-xs text-muted-foreground block sm:hidden">
+                      ID: {student?.studentId}
                     </p>
                   </div>
                 </div>
               </TableCell>
 
-              {/* Student ID */}
-              <TableCell className="whitespace-nowrap">
-                <Badge variant="outline" className="font-mono">
+              {/* ✅ Student ID - Hidden on mobile */}
+              <TableCell className="hidden sm:table-cell">
+                <Badge variant="outline" className="font-mono text-xs">
                   {student?.studentId}
                 </Badge>
               </TableCell>
 
-              {/* ✅ Class - correctly shows className */}
-              <TableCell>
-                <Badge variant="secondary">
+              {/* ✅ Class - Hidden on mobile and tablet */}
+              <TableCell className="hidden md:table-cell">
+                <Badge variant="secondary" className="text-xs">
                   {student.Class?.className || "N/A"}
                 </Badge>
               </TableCell>
 
-              {/* Shift */}
-              <TableCell className="whitespace-nowrap">
+              {/* ✅ Shift - Hidden on mobile and tablet */}
+              <TableCell className="hidden lg:table-cell whitespace-nowrap">
                 <div className="flex items-center gap-2">
-                  <Clock className="w-3 h-3 text-muted-foreground shrink-0" />
-                  <span className="text-sm text-card-foreground">
+                  <Clock className="w-3 h-3 text-muted-foreground flex-shrink-0" />
+                  <span className="text-xs text-card-foreground">
                     {student?.shiftName || "N/A"}
                   </span>
                 </div>
               </TableCell>
 
-              {/* Contact */}
-              <TableCell className="whitespace-nowrap">
+              {/* ✅ Contact - Hidden on mobile */}
+              <TableCell className="hidden md:table-cell whitespace-nowrap">
                 <div className="flex items-center gap-2">
-                  <Phone className="w-3 h-3 text-muted-foreground shrink-0" />
-                  <span className="text-sm text-card-foreground font-mono">
+                  <Phone className="w-3 h-3 text-muted-foreground flex-shrink-0" />
+                  <span className="text-xs text-card-foreground font-mono">
                     {student?.phone || "N/A"}
                   </span>
                 </div>
               </TableCell>
 
-              {/* ✅ Batch - truncates long names, shows full on hover */}
-              <TableCell className="max-w-[130px]">
+              {/* ✅ Batch - Hidden on mobile and tablet */}
+              <TableCell className="hidden lg:table-cell max-w-[130px]">
                 <Badge
                   variant="outline"
-                  className="whitespace-nowrap overflow-hidden text-ellipsis truncate block max-w-full"
+                  className="whitespace-nowrap overflow-hidden text-ellipsis truncate block max-w-full text-xs"
                   title={student.Batch?.batchName || "N/A"}
                 >
                   {student.Batch?.batchName || "N/A"}
                 </Badge>
               </TableCell>
 
-              {/* Actions */}
+              {/* ✅ Responsive Actions */}
               <TableCell>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-0.5 sm:gap-1">
                   <Link to={`/view-student/${student.id}`}>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-8 w-8 p-0 hover:bg-accent/10 hover:text-accent"
+                      className="h-7 w-7 sm:h-8 sm:w-8 p-0 hover:bg-accent/10 hover:text-accent"
                     >
-                      <Eye className="w-4 h-4" />
+                      <Eye className="w-3 sm:w-4 h-3 sm:h-4" />
                     </Button>
                   </Link>
                   <Link to={`/update-student/${student.id}`}>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-8 w-8 p-0 hover:bg-primary/10 hover:text-primary"
+                      className="h-7 w-7 sm:h-8 sm:w-8 p-0 hover:bg-primary/10 hover:text-primary"
                     >
-                      <Edit3 className="w-4 h-4" />
+                      <Edit3 className="w-3 sm:w-4 h-3 sm:h-4" />
                     </Button>
                   </Link>
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-8 w-8 p-0 hover:bg-destructive/10 hover:text-destructive"
+                    className="h-7 w-7 sm:h-8 sm:w-8 p-0 hover:bg-destructive/10 hover:text-destructive"
                     onClick={() => onDelete(student.id)}
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-3 sm:w-4 h-3 sm:h-4" />
                   </Button>
                   <SendMessage student={student} />
                 </div>

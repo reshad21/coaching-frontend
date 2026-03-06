@@ -66,33 +66,33 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-900 dark:to-slate-800">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 to-slate-200 dark:from-slate-900 dark:to-slate-800 p-4 sm:p-6">
       <Card className="w-full max-w-md shadow-xl border-0 rounded-2xl bg-white/90 dark:bg-slate-900/90">
         <form onSubmit={handleSubmit(onSubmit)}>
-          <CardHeader className="text-center pb-2">
-            <h1 className="text-3xl font-bold text-primary mb-1 tracking-tight">Welcome Back</h1>
-            <p className="text-muted-foreground text-sm">Sign in to your account</p>
+          <CardHeader className="text-center pb-2 sm:pb-4 pt-4 sm:pt-6 px-4 sm:px-6">
+            <h1 className="text-2xl sm:text-3xl font-bold text-primary mb-1 sm:mb-2 tracking-tight">Welcome Back</h1>
+            <p className="text-muted-foreground text-xs sm:text-sm">Sign in to your account</p>
           </CardHeader>
-          <CardContent className="space-y-6 px-6 pt-2 pb-0">
-            <div className="space-y-1">
-              <Label htmlFor="email" className="text-base">Email</Label>
+          <CardContent className="space-y-4 sm:space-y-6 px-4 sm:px-6 pt-2 pb-0">
+            <div className="space-y-1 sm:space-y-2">
+              <Label htmlFor="email" className="text-xs sm:text-sm font-medium">Email</Label>
               <Input
                 id="email"
                 placeholder="Enter your email"
-                className="bg-slate-100 dark:bg-slate-800 border-0 focus:ring-2 focus:ring-primary/60 focus:border-primary/60 rounded-lg text-base"
+                className="bg-slate-100 dark:bg-slate-800 border-0 focus:ring-2 focus:ring-primary/60 focus:border-primary/60 rounded-lg text-sm sm:text-base h-10 sm:h-auto"
                 {...register("email", { required: "Email is required" })}
                 autoComplete="email"
               />
               {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>}
             </div>
-            <div className="space-y-1">
-              <Label htmlFor="password" className="text-base">Password</Label>
+            <div className="space-y-1 sm:space-y-2">
+              <Label htmlFor="password" className="text-xs sm:text-sm font-medium">Password</Label>
               <div className="relative">
                 <Input
                   id="password"
                   type={isShow ? "text" : "password"}
                   placeholder="Enter your password"
-                  className="bg-slate-100 dark:bg-slate-800 border-0 focus:ring-2 focus:ring-primary/60 focus:border-primary/60 rounded-lg text-base pr-10"
+                  className="bg-slate-100 dark:bg-slate-800 border-0 focus:ring-2 focus:ring-primary/60 focus:border-primary/60 rounded-lg text-sm sm:text-base h-10 sm:h-auto pr-10"
                   {...register("password", { required: "Password is required" })}
                   autoComplete="current-password"
                 />
@@ -103,14 +103,14 @@ const Login = () => {
                   className="absolute top-1/2 right-3 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
                   aria-label={isShow ? "Hide password" : "Show password"}
                 >
-                  {isShow ? <EyeOff size={18} /> : <Eye size={18} />}
+                  {isShow ? <EyeOff size={16} className="sm:w-[18px] sm:h-[18px]" /> : <Eye size={16} className="sm:w-[18px] sm:h-[18px]" />}
                 </button>
               </div>
               {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password.message}</p>}
             </div>
           </CardContent>
-          <CardFooter className="px-6 pb-6 pt-2">
-            <Button type="submit" className="w-full py-2 text-base font-semibold rounded-lg shadow-sm bg-primary hover:bg-primary/90 transition-colors text-white">
+          <CardFooter className="px-4 sm:px-6 pb-4 sm:pb-6 pt-4 sm:pt-6">
+            <Button type="submit" className="w-full py-2 sm:py-3 text-sm sm:text-base font-semibold rounded-lg shadow-sm bg-primary hover:bg-primary/90 transition-colors text-white">
               Login
             </Button>
           </CardFooter>
