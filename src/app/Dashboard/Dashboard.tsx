@@ -58,7 +58,7 @@ export default function Dashboard() {
 
       <div className="flex w-full min-w-0 overflow-x-hidden">
         <SidebarInset />
-        <main className="w-full min-w-0 overflow-x-hidden p-5">
+        <main className="w-full min-w-0 overflow-x-hidden my-20">
           <Outlet />
         </main>
       </div>
