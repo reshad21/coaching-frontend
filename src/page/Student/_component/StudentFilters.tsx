@@ -34,7 +34,8 @@ const StudentFilters = ({
   const activeFilterCount = [search, selectedBatch, selectClass, shift].filter(Boolean).length
 
   return (
-    <Card className="border-border bg-card">
+    // ✅ w-full + min-w-0 prevents card from stretching beyond viewport
+    <Card className="w-full min-w-0 border-border bg-card">
       <CardHeader className="pb-4">
         <div className="flex items-center gap-2">
           <Filter className="w-4 h-4 text-muted-foreground" />
@@ -47,7 +48,8 @@ const StudentFilters = ({
         </div>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+        {/* ✅ flex-wrap ensures filter row wraps on smaller screens instead of overflowing */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
           <div className="relative">
             <SearchInputField value={search} onChange={onSearchChange} onSearch={onSearchChange} />
           </div>
@@ -57,7 +59,7 @@ const StudentFilters = ({
           <Button
             onClick={onClearFilters}
             variant="outline"
-            className="border-border bg-primary text-white cursor-pointer"
+            className="w-full border-border bg-primary text-white cursor-pointer"
             disabled={!hasActiveFilters}
           >
             <RotateCcw className="w-4 h-4 mr-2" />

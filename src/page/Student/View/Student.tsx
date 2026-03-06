@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { useDeleteStudentMutation, useGetAllStudentQuery } from "@/redux/api/studentApi/studentApi"
-import { Users, RotateCcw, GraduationCap, } from "lucide-react"
+import { Users, RotateCcw, GraduationCap } from "lucide-react"
 import { useState } from "react"
 import toast from "react-hot-toast"
 import Swal from "sweetalert2"
@@ -13,7 +13,6 @@ import StudentFilters from "../_component/StudentFilters"
 import StudentTable from "../_component/StudentTable"
 
 const Student = () => {
-  // * Pagination, search and filter state
   const [search, setSearch] = useState("")
   const [selectedBatch, setSelectedBatch] = useState("")
   const [selectClass, setSelectedClass] = useState("")
@@ -65,25 +64,24 @@ const Student = () => {
   const hasActiveFilters = search || selectedBatch || selectClass || shift
 
   return (
-    <div className="bg-background p-6 space-y-6">
-      {/* Header Section */}
-      <StudentHeader/>
+    <div className="w-full min-w-0 overflow-x-hidden bg-background p-6 space-y-6">
+      <StudentHeader />
 
-      {/* Filters Card */}
-      <StudentFilters
-        search={search}
-        selectedBatch={selectedBatch}
-        selectClass={selectClass}
-        shift={shift}
-        onSearchChange={setSearch}
-        onBatchChange={setSelectedBatch}
-        onClassChange={setSelectedClass}
-        onShiftChange={setShift}
-        onClearFilters={clearFilters}
-      />
+      <div className="w-full min-w-0">
+        <StudentFilters
+          search={search}
+          selectedBatch={selectedBatch}
+          selectClass={selectClass}
+          shift={shift}
+          onSearchChange={setSearch}
+          onBatchChange={setSelectedBatch}
+          onClassChange={setSelectedClass}
+          onShiftChange={setShift}
+          onClearFilters={clearFilters}
+        />
+      </div>
 
-      {/* Content Card */}
-      <Card className="border-border bg-card">
+      <Card className="w-full min-w-0 border-border bg-card">
         <CardHeader className="pb-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -99,7 +97,9 @@ const Student = () => {
             </div>
           </div>
         </CardHeader>
-        <CardContent className="p-0">
+
+        {/* ✅ overflow-x-auto keeps scroll inside card, not the whole page */}
+        <CardContent className="p-0 overflow-x-auto">
           {isLoading ? (
             <div className="flex items-center justify-center py-12">
               <Loading />
@@ -107,7 +107,7 @@ const Student = () => {
           ) : students?.data?.length > 0 ? (
             <StudentTable students={students.data} onDelete={handleDelete} />
           ) : (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
+            <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
               <div className="w-16 h-16 rounded-full bg-muted flex items-center justify-center mb-4">
                 <Users className="w-8 h-8 text-muted-foreground" />
               </div>
