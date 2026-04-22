@@ -5,7 +5,9 @@ import { SelectFieldWrapper } from "@/components/common/SelectFieldWrapper";
 import Loading from "@/components/Loading";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { useGetAllBatchQuery } from "@/redux/api/batch/batchApi";
+import { useGetAllBatchQuery, useGetBatchInfoByIdQuery } from "@/redux/api/batch/batchApi";
+import { useGetAllClassQuery } from "@/redux/api/class/classApi";
+import { useGetAllShiftQuery } from "@/redux/api/shiftApi/shiftApi";
 import {
   useGetStudentByIdQuery,
   useUpdateStudentMutation,
@@ -31,6 +33,8 @@ type TStudentFormData = {
   image: File | string;
   gender: string;
   batchId: string;
+  className: string;
+  shiftName: string;
 };
 
 type TBatch = {
@@ -44,10 +48,24 @@ const StudentUpdate = () => {
 
   const { data: student, isLoading } = useGetStudentByIdQuery(id!);
   const { data: batchData } = useGetAllBatchQuery(undefined);
+  const { data: classData } = useGetAllClassQuery(undefined);
+  const { data: shiftData } = useGetAllShiftQuery(undefined);
   const [updateStudent] = useUpdateStudentMutation();
 
   const form = useForm<TStudentFormData>();
   const { reset } = form;
+
+  const batchId = form.watch("batchId");
+  const { data: batchInfo } = useGetBatchInfoByIdQuery(batchId as string, {
+    skip: !batchId,
+  });
+
+  useEffect(() => {
+    if (batchInfo?.data) {
+      form.setValue("className", batchInfo.data.Class?.className || "");
+      form.setValue("shiftName", batchInfo.data.Shift?.shiftName || "");
+    }
+  }, [batchInfo?.data, form]);
 
   useEffect(() => {
     if (student?.data) {
@@ -64,6 +82,8 @@ const StudentUpdate = () => {
         image: student?.data?.image || "",
         gender: student?.data?.gender || "",
         batchId: student?.data?.batchId || "",
+        className: student?.data?.className || student?.data?.Class?.className || "",
+        shiftName: student?.data?.shiftName || student?.data?.Shift?.shiftName || "",
       });
     }
   }, [student?.data, reset]);
@@ -85,6 +105,8 @@ const StudentUpdate = () => {
     formData.append("address", data.address);
     formData.append("gender", data.gender);
     formData.append("batchId", data.batchId);
+    formData.append("className", data.className);
+    formData.append("shiftName", data.shiftName);
 
     const payload = Object.fromEntries(formData);
     const res: any = await updateStudent({
@@ -104,7 +126,12 @@ const StudentUpdate = () => {
   };
 
   return (
-    <div>
+    <div className="p-6">
+      <div className="mb-4">
+        <Button variant="outline" onClick={() => navigate(-1)} className="flex items-center gap-2">
+          &larr; Back
+        </Button>
+      </div>
       
       <StudentUpdateHeader
         title="Update Student"
@@ -196,6 +223,44 @@ const StudentUpdate = () => {
                 name="schoolName"
                 label="SCHOOL NAME"
                 placeholder="Enter your School Name"
+              />
+
+              <SelectFieldWrapper
+                name="className"
+                label="CLASS"
+                options={
+                  batchInfo?.data?.Class
+                    ? [
+                        {
+                          value: batchInfo.data.Class.className,
+                          name: batchInfo.data.Class.className,
+                        },
+                      ]
+                    : classData?.data?.map((cls: any) => ({
+                        value: cls.className,
+                        name: cls.className,
+                      })) || []
+                }
+                control={form.control}
+              />
+
+              <SelectFieldWrapper
+                name="shiftName"
+                label="SHIFT"
+                options={
+                  batchInfo?.data?.Shift
+                    ? [
+                        {
+                          value: batchInfo.data.Shift.shiftName,
+                          name: batchInfo.data.Shift.shiftName,
+                        },
+                      ]
+                    : shiftData?.data?.map((shift: any) => ({
+                        value: shift.shiftName,
+                        name: shift.shiftName,
+                      })) || []
+                }
+                control={form.control}
               />
 
               <SelectFieldWrapper

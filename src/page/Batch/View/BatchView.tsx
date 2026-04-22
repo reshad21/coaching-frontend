@@ -241,12 +241,12 @@ const BatchView = () => {
         </Card>
 
         {/* Pagination */}
-        {batchData?.meta?.total > batchData?.meta?.limit && (
+        {batchData?.data?.meta?.total > batchData?.data?.meta?.limit && (
           <div className="flex justify-center">
             <EduCPagination
               page={page}
               setPage={setPage}
-              totalPages={batchData?.meta?.totalPages}
+              totalPages={batchData?.data?.meta?.totalPages}
               className="bg-card border-border rounded-lg p-2"
             />
           </div>

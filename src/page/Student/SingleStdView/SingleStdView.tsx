@@ -10,6 +10,8 @@ const SingleStdView = () => {
   const navigate = useNavigate()
   const { data: studentData } = useGetStudentByIdQuery(id as string)
 
+  console.log("see single studnet data==>",studentData)
+
   return (
     <div className="min-h-screen bg-background">
       <div className="border-b border-border bg-card">
@@ -78,10 +80,10 @@ const SingleStdView = () => {
               <div className="grid sm:grid-cols-2 gap-6">
                 <InfoCard
                   label="Class"
-                  value={studentData?.data?.className}
+                  value={studentData?.data?.className || studentData?.data?.Class?.className}
                   icon={<GraduationCap className="w-4 h-4" />}
                 />
-                <InfoCard label="Batch" value={studentData?.data?.batchName} icon={<Users className="w-4 h-4" />} />
+                <InfoCard label="Batch" value={studentData?.data?.Batch?.batchName || studentData?.data?.batchName} icon={<Users className="w-4 h-4" />} />
               </div>
             </div>
 
