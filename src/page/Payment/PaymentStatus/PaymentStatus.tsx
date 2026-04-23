@@ -210,14 +210,14 @@ const PaymentStatus = () => {
                 <Table>
                   <TableHeader>
                     <TableRow className="bg-slate-50/50">
-                      <TableHead className="font-semibold text-slate-700">SL No.</TableHead>
-                      <TableHead className="font-semibold text-slate-700">Student Details</TableHead>
-                      <TableHead className="font-semibold text-slate-700">Student ID</TableHead>
-                      <TableHead className="font-semibold text-slate-700">Contact</TableHead>
-                      <TableHead className="font-semibold text-slate-700">Batch</TableHead>
-                      <TableHead className="font-semibold text-slate-700">Payment Status</TableHead>
-                      <TableHead className="font-semibold text-slate-700">Model Test</TableHead>
-                      <TableHead className="font-semibold text-slate-700 text-center">Actions</TableHead>
+                      <TableHead className="w-[80px] font-semibold text-slate-700 whitespace-nowrap">SL No.</TableHead>
+                      <TableHead className="min-w-[250px] font-semibold text-slate-700 whitespace-nowrap">Student Details</TableHead>
+                      <TableHead className="w-[120px] font-semibold text-slate-700 whitespace-nowrap">Student ID</TableHead>
+                      <TableHead className="w-[140px] font-semibold text-slate-700 whitespace-nowrap">Contact</TableHead>
+                      <TableHead className="min-w-[200px] font-semibold text-slate-700 whitespace-nowrap">Batch</TableHead>
+                      <TableHead className="w-[150px] font-semibold text-slate-700 whitespace-nowrap">Payment Status</TableHead>
+                      <TableHead className="w-[150px] font-semibold text-slate-700 whitespace-nowrap">Model Test</TableHead>
+                      <TableHead className="w-[120px] font-semibold text-slate-700 text-center whitespace-nowrap">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
@@ -242,11 +242,11 @@ const PaymentStatus = () => {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <Badge variant="outline" className="font-mono text-xs">
+                          <Badge variant="outline" className="font-mono text-xs whitespace-nowrap">
                             {student.studentId}
                           </Badge>
                         </TableCell>
-                        <TableCell className="text-slate-600">{student.phone}</TableCell>
+                        <TableCell className="text-slate-600 whitespace-nowrap">{student.phone}</TableCell>
                         <TableCell>
                           {student.Batch?.batchName ? (
                             <Badge variant="secondary" className="text-xs">
@@ -261,12 +261,12 @@ const PaymentStatus = () => {
                             const currentMonth = new Date().toLocaleString("default", { month: "long" })
                             const hasPaid = student?.Payment?.some((p: any) => p.month === currentMonth)
                             return hasPaid ? (
-                              <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
+                              <Badge className="bg-green-100 text-green-700 hover:bg-green-100 whitespace-nowrap">
                                 <CreditCard className="h-3 w-3 mr-1" />
                                 Paid
                               </Badge>
                             ) : (
-                              <Badge variant="destructive" className="bg-red-100 text-red-700 hover:bg-red-100">
+                              <Badge variant="destructive" className="bg-red-100 text-red-700 hover:bg-red-100 whitespace-nowrap">
                                 <CreditCard className="h-3 w-3 mr-1" />
                                 Pending
                               </Badge>
@@ -278,7 +278,7 @@ const PaymentStatus = () => {
                             const modelTests = student?.Payment?.filter((p: any) => p.title === "ModelTest")
                             if (!modelTests || modelTests.length === 0) {
                               return (
-                                <Badge variant="outline" className="text-red-600 border-red-200">
+                                <Badge variant="outline" className="text-red-600 border-red-200 whitespace-nowrap">
                                   <FileText className="h-3 w-3 mr-1" />
                                   Not Taken
                                 </Badge>
@@ -288,12 +288,12 @@ const PaymentStatus = () => {
                               (a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
                             )[0]
                             return latestModelTest ? (
-                              <Badge className="bg-purple-100 text-purple-700 hover:bg-purple-100">
+                              <Badge className="bg-purple-100 text-purple-700 hover:bg-purple-100 whitespace-nowrap">
                                 <FileText className="h-3 w-3 mr-1" />
                                 Completed
                               </Badge>
                             ) : (
-                              <Badge variant="outline" className="text-red-600 border-red-200">
+                              <Badge variant="outline" className="text-red-600 border-red-200 whitespace-nowrap">
                                 <FileText className="h-3 w-3 mr-1" />
                                 Not Taken
                               </Badge>
