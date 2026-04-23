@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useMemo, useState } from "react"
-import { Link } from "react-router-dom"
 
 import SelectBatch from "@/components/Batch/SelectBatch"
 import SearchInputField from "@/components/CommonSearch/SearchInputField"
@@ -8,6 +7,7 @@ import EduCPagination from "@/components/EduCPagination/EduCPagination"
 import Loading from "@/components/Loading"
 import SelectStudentClass from "@/components/studentClass/SelectStudentClass"
 import studentImage from "../../../assets/default.jpg"
+import SendMessage from "@/page/Student/View/SendMessage/SendMessage"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -23,7 +23,7 @@ import {
 
 import { useGetAllStudentQuery } from "@/redux/api/studentApi/studentApi"
 
-import { ChevronsRight, CreditCard, Eye, FileText, Filter, SquarePen, Users, X } from "lucide-react"
+import { ChevronsRight, CreditCard, FileText, Filter, Users, X } from "lucide-react"
 
 const PaymentStatus = () => {
   // Pagination, search, and filter state
@@ -338,24 +338,8 @@ const PaymentStatus = () => {
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center justify-center gap-1">
-                            <Link to={`/view-student/${student.id}`}>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-8 w-8 p-0 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                              >
-                                <Eye className="h-4 w-4" />
-                              </Button>
-                            </Link>
-                            <Link to={`/update-student/${student.id}`}>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-8 w-8 p-0 text-green-600 hover:text-green-700 hover:bg-green-50"
-                              >
-                                <SquarePen className="h-4 w-4" />
-                              </Button>
-                            </Link>
+                            <SendMessage student={student} />
+                            
 
                           </div>
                         </TableCell>
