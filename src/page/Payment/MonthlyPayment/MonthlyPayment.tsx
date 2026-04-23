@@ -131,6 +131,7 @@ const MonthlyPayment = () => {
                 <TableHead>Full Name</TableHead>
                 <TableHead className="hidden md:table-cell">Std Id</TableHead>
                 <TableHead className="hidden md:table-cell">Phone</TableHead>
+                <TableHead className="hidden md:table-cell">Class</TableHead>
                 <TableHead>Action</TableHead>
               </TableRow>
             </TableHeader>
@@ -157,6 +158,7 @@ const MonthlyPayment = () => {
                     </TableCell>
                     <TableCell data-label="Std Id" className="hidden md:table-cell">{student.studentId}</TableCell>
                     <TableCell data-label="Phone" className="hidden md:table-cell">{student.phone}</TableCell>
+                    <TableCell data-label="Class" className="hidden md:table-cell">{student.className || "N/A"}</TableCell>
                     <TableCell data-label="Action">
                       <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2">
                         <Button

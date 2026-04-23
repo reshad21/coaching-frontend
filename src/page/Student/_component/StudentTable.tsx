@@ -143,7 +143,7 @@ const StudentTable = ({ students, onDelete }: StudentTableProps) => {
               {/* ✅ Class - Hidden on mobile and tablet */}
               <TableCell className="hidden md:table-cell">
                 <Badge variant="secondary" className="text-xs">
-                  {student?.className || student.Class?.className || "N/A"}
+                  {student?.className || "N/A"}
                 </Badge>
               </TableCell>
 
