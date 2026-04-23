@@ -10,7 +10,7 @@ import { RootState } from "../store";
 export const baseApi = createApi({
   reducerPath: "baseApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://coaching-backend-olive.vercel.app/api",
+    baseUrl: "https://coaching-backend-vert.vercel.app/api",
     // baseUrl: "http://localhost:3000/api",
     credentials: "include",
     prepareHeaders: (
