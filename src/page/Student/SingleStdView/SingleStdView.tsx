@@ -80,10 +80,10 @@ const SingleStdView = () => {
               <div className="grid sm:grid-cols-2 gap-6">
                 <InfoCard
                   label="Class"
-                  value={studentData?.data?.className || studentData?.data?.Class?.className}
+                  value={studentData?.data?.className}
                   icon={<GraduationCap className="w-4 h-4" />}
                 />
-                <InfoCard label="Batch" value={studentData?.data?.Batch?.batchName || studentData?.data?.batchName} icon={<Users className="w-4 h-4" />} />
+                <InfoCard label="Batch" value={studentData?.data?.batchName} icon={<Users className="w-4 h-4" />} />
               </div>
             </div>
 

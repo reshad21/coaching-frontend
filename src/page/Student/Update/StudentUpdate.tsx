@@ -35,6 +35,7 @@ type TStudentFormData = {
   batchId: string;
   className: string;
   shiftName: string;
+  batchName: string;
 };
 
 type TBatch = {
@@ -64,8 +65,17 @@ const StudentUpdate = () => {
     if (batchInfo?.data) {
       form.setValue("className", batchInfo.data.Class?.className || "");
       form.setValue("shiftName", batchInfo.data.Shift?.shiftName || "");
+      form.setValue("batchName", batchInfo.data.batchName || "");
+    } else {
+      // Find batchName manually from batchData if batchInfo is empty or disconnected
+      const selectedBatch = batchData?.data?.find(
+        (b: any) => b.id === batchId
+      );
+      if (selectedBatch) {
+        form.setValue("batchName", selectedBatch.batchName || "");
+      }
     }
-  }, [batchInfo?.data, form]);
+  }, [batchInfo?.data, batchData?.data, batchId, form]);
 
   useEffect(() => {
     if (student?.data) {
@@ -84,6 +94,7 @@ const StudentUpdate = () => {
         batchId: student?.data?.batchId || "",
         className: student?.data?.className || student?.data?.Class?.className || "",
         shiftName: student?.data?.shiftName || student?.data?.Shift?.shiftName || "",
+        batchName: student?.data?.batchName || student?.data?.Batch?.batchName || "",
       });
     }
   }, [student?.data, reset]);
@@ -107,6 +118,7 @@ const StudentUpdate = () => {
     formData.append("batchId", data.batchId);
     formData.append("className", data.className);
     formData.append("shiftName", data.shiftName);
+    formData.append("batchName", data.batchName);
 
     const payload = Object.fromEntries(formData);
     const res: any = await updateStudent({
