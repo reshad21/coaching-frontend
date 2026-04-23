@@ -13,6 +13,13 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 import { useGetAllStudentQuery } from "@/redux/api/studentApi/studentApi"
 
@@ -24,6 +31,7 @@ const PaymentStatus = () => {
   const [search, setSearch] = useState("")
   const [selectedBatch, setSelectedBatch] = useState("")
   const [selectClass, setSelectedClass] = useState("")
+  const [paymentStatus, setPaymentStatus] = useState("")
 
   // Query params memoized
   const queryParams = useMemo(() => {
@@ -63,7 +71,20 @@ const PaymentStatus = () => {
     }
   }, [students?.data])
 
-  const hasActiveFilters = search || selectedBatch || selectClass
+  const filteredStudents = useMemo(() => {
+    if (!students?.data) return []
+    if (!paymentStatus) return students.data
+
+    const currentMonth = new Date().toLocaleString("default", { month: "long" })
+    return students.data.filter((student: any) => {
+      const hasPaid = student?.Payment?.some((p: any) => p.month === currentMonth)
+      if (paymentStatus === "paid") return hasPaid
+      if (paymentStatus === "unpaid") return !hasPaid
+      return true
+    })
+  }, [students?.data, paymentStatus])
+
+  const hasActiveFilters = search || selectedBatch || selectClass || paymentStatus
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30 p-6">
@@ -155,18 +176,28 @@ const PaymentStatus = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
               <SearchInputField value={search} onChange={setSearch} onSearch={setSearch} />
               <SelectBatch value={selectedBatch} onChange={setSelectedBatch} />
               <SelectStudentClass value={selectClass} onChange={setSelectedClass} />
+              <Select value={paymentStatus} onValueChange={setPaymentStatus}>
+                <SelectTrigger className="w-full h-10 border-slate-200">
+                  <SelectValue placeholder="Payment Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="paid">Paid</SelectItem>
+                  <SelectItem value="unpaid">Pending</SelectItem>
+                </SelectContent>
+              </Select>
               <Button
                 onClick={() => {
                   setSearch("")
                   setSelectedBatch("")
                   setSelectedClass("")
+                  setPaymentStatus("")
                 }}
                 variant="outline"
-                className="w-full flex items-center gap-2 hover:bg-slate-50"
+                className="w-full h-10 flex items-center justify-center gap-2 hover:bg-slate-50 border-slate-200"
                 disabled={!hasActiveFilters}
               >
                 <X className="h-4 w-4" />
@@ -192,6 +223,11 @@ const PaymentStatus = () => {
                     Class: {selectClass}
                   </Badge>
                 )}
+                {paymentStatus && (
+                  <Badge variant="secondary" className="text-xs">
+                    Payment: {paymentStatus === 'paid' ? 'Paid' : 'Pending'}
+                  </Badge>
+                )}
               </div>
             )}
           </CardContent>
@@ -200,7 +236,7 @@ const PaymentStatus = () => {
         {/* Loading */}
         {isLoading && <Loading />}
 
-        {!isLoading && students?.data?.length > 0 ? (
+        {!isLoading && filteredStudents?.length > 0 ? (
           <Card className="border-0 shadow-sm bg-white/70 backdrop-blur-sm">
             <CardHeader>
               <CardTitle className="text-lg font-semibold text-slate-900">Student Payment Status</CardTitle>
@@ -221,7 +257,7 @@ const PaymentStatus = () => {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {students?.data?.map((student: any, index: number) => (
+                    {filteredStudents.map((student: any, index: number) => (
                       <TableRow key={student.id} className="hover:bg-slate-50/50 transition-colors">
                         <TableCell className="font-medium text-slate-600">{(page - 1) * 10 + index + 1}</TableCell>
                         <TableCell>
