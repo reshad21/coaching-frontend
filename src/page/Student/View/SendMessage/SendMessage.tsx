@@ -20,7 +20,7 @@ type FormValues = {
   message: string;
 };
 
-const SendMessage = ({ student }: any) => {
+const SendMessage = ({ student, onSuccess }: any) => {
   const [open, setOpen] = useState(false);
   const [sendMessage] = useSendSingleMessageMutation();
 
@@ -41,6 +41,9 @@ const SendMessage = ({ student }: any) => {
         toast.success(`Message send to ${student?.firstName} successfully`);
         reset();
         setOpen(false);
+        if (onSuccess) {
+          onSuccess();
+        }
       }
     } catch (error) {
       console.error("Failed to send message:", error);

@@ -23,7 +23,8 @@ import {
 
 import { useGetAllStudentQuery } from "@/redux/api/studentApi/studentApi"
 
-import { ChevronsRight, CreditCard, FileText, Filter, Users, X } from "lucide-react"
+import { ChevronsRight, CreditCard, Eye, FileText, Filter, SquarePen, Users, X } from "lucide-react"
+import { Link } from "react-router-dom"
 
 const PaymentStatus = () => {
   // Pagination, search, and filter state
@@ -32,6 +33,7 @@ const PaymentStatus = () => {
   const [selectedBatch, setSelectedBatch] = useState("")
   const [selectClass, setSelectedClass] = useState("")
   const [paymentStatus, setPaymentStatus] = useState("")
+  const [sentMessages, setSentMessages] = useState<Record<string, boolean>>({})
 
   // Query params memoized
   const queryParams = useMemo(() => {
@@ -337,10 +339,34 @@ const PaymentStatus = () => {
                           })()}
                         </TableCell>
                         <TableCell>
-                          <div className="flex items-center justify-center gap-1">
-                            <SendMessage student={student} />
-                            
-
+                          <div className="flex items-center justify-center gap-1 relative">
+                            {sentMessages[student.id] && (
+                              <Badge variant="secondary" className="absolute -top-3 -right-2 px-1 py-0 text-[10px] bg-green-100 text-green-700 border-green-200 z-10 scale-90">
+                                Sent
+                              </Badge>
+                            )}
+                            <SendMessage 
+                              student={student} 
+                              onSuccess={() => setSentMessages(prev => ({ ...prev, [student.id]: true }))} 
+                            />
+                            <Link to={`/view-student/${student.id}`}>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-8 w-8 p-0 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
+                              >
+                                <Eye className="h-4 w-4" />
+                              </Button>
+                            </Link>
+                            <Link to={`/update-student/${student.id}`}>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="h-8 w-8 p-0 text-green-600 hover:text-green-700 hover:bg-green-50"
+                              >
+                                <SquarePen className="h-4 w-4" />
+                              </Button>
+                            </Link>
                           </div>
                         </TableCell>
                       </TableRow>
