@@ -238,6 +238,18 @@ const StudentUpdate = () => {
               />
 
               <SelectFieldWrapper
+                name="batchId"
+                label="BATCH"
+                options={
+                  batchData?.data?.map((batch: TBatch) => ({
+                    value: batch.id,
+                    name: batch.batchName,
+                  })) || []
+                }
+                control={form.control}
+              />
+              
+              <SelectFieldWrapper
                 name="className"
                 label="CLASS"
                 options={
@@ -275,17 +287,6 @@ const StudentUpdate = () => {
                 control={form.control}
               />
 
-              <SelectFieldWrapper
-                name="batchId"
-                label="BATCH"
-                options={
-                  batchData?.data?.map((batch: TBatch) => ({
-                    value: batch.id,
-                    name: batch.batchName,
-                  })) || []
-                }
-                control={form.control}
-              />
             </div>
 
             <Button
