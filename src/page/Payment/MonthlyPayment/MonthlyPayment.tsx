@@ -2,10 +2,10 @@
 import { FormFieldWrapper } from "@/components/common/FormFieldWrapper";
 import { SelectFieldWrapper } from "@/components/common/SelectFieldWrapper";
 import SearchInputField from "@/components/CommonSearch/SearchInputField";
-import EduCPagination from "@/components/EduCPagination/EduCPagination";
 import Loading from "@/components/Loading";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
+import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -17,7 +17,7 @@ import {
 import { useSendSingleMessageMutation } from "@/redux/api/auth/message/message";
 import { useAddPaymentMutation } from "@/redux/api/payment/paymentApi";
 import { useGetAllStudentQuery } from "@/redux/api/studentApi/studentApi";
-import { ChevronRight, DollarSign, Eye, Plus, RotateCcw } from "lucide-react";
+import { ChevronRight, DollarSign, Eye, Plus, RotateCcw, Check, X } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -25,17 +25,22 @@ import { Link } from "react-router-dom";
 import studentImage from "../../../assets/default.jpg";
 
 const MonthlyPayment = () => {
-  const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
+  const [filterMonth, setFilterMonth] = useState("");
   const [openFormFor, setOpenFormFor] = useState<string | null>(null);
   const [customMessage, setCustomMessage] = useState("");
   const [sendMessage] = useSendSingleMessageMutation();
 
-  const { data: students, isLoading } = useGetAllStudentQuery([
-    { name: "limit", value: 10 },
-    { name: "page", value: page },
+  const queryParams: any[] = [
+    { name: "limit", value: 99999 },
     { name: "search", value: search },
-  ]);
+  ];
+
+  if (filterMonth) {
+    queryParams.push({ name: "unpaidMonth", value: filterMonth });
+  }
+
+  const { data: students, isLoading } = useGetAllStudentQuery(queryParams);
 
   const [addPayment] = useAddPaymentMutation();
 
@@ -103,14 +108,38 @@ const MonthlyPayment = () => {
       </div>
 
       {/* ✅ Responsive Search & Filter */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 sm:gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2 sm:gap-3">
         <SearchInputField
           value={search}
           onChange={setSearch}
           onSearch={setSearch}
         />
+        <select
+          value={filterMonth}
+          onChange={(e) => {
+            setFilterMonth(e.target.value);
+          }}
+          className="px-3 py-2 border border-input rounded-md bg-background text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+        >
+          <option value="">All Months</option>
+          <option value="January">January</option>
+          <option value="February">February</option>
+          <option value="March">March</option>
+          <option value="April">April</option>
+          <option value="May">May</option>
+          <option value="June">June</option>
+          <option value="July">July</option>
+          <option value="August">August</option>
+          <option value="September">September</option>
+          <option value="October">October</option>
+          <option value="November">November</option>
+          <option value="December">December</option>
+        </select>
         <Button
-          onClick={() => setSearch("")}
+          onClick={() => {
+            setSearch("");
+            setFilterMonth("");
+          }}
           className="w-full sm:w-auto bg-primary text-white text-sm sm:text-base"
         >
           <RotateCcw className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
@@ -132,6 +161,7 @@ const MonthlyPayment = () => {
                 <TableHead className="hidden md:table-cell">Std Id</TableHead>
                 <TableHead className="hidden md:table-cell">Phone</TableHead>
                 <TableHead className="hidden md:table-cell">Class</TableHead>
+                <TableHead className="text-center">Payment Status</TableHead>
                 <TableHead>Action</TableHead>
               </TableRow>
             </TableHeader>
@@ -159,6 +189,31 @@ const MonthlyPayment = () => {
                     <TableCell data-label="Std Id" className="hidden md:table-cell">{student.studentId}</TableCell>
                     <TableCell data-label="Phone" className="hidden md:table-cell">{student.phone}</TableCell>
                     <TableCell data-label="Class" className="hidden md:table-cell">{student.className || "N/A"}</TableCell>
+                    <TableCell data-label="Payment Status" className="text-center">
+                      {filterMonth ? (
+                        (() => {
+                          const hasPaidForMonth = student?.Payment?.some(
+                            (payment: any) => payment.month === filterMonth
+                          );
+                          return hasPaidForMonth ? (
+                            <Badge className="bg-green-100 text-green-800 hover:bg-green-200 flex items-center justify-center gap-1 mx-auto w-fit">
+                              <Check className="w-3 h-3" />
+                              Paid
+                            </Badge>
+                          ) : (
+                            <Badge className="bg-red-100 text-red-800 hover:bg-red-200 flex items-center justify-center gap-1 mx-auto w-fit">
+                              <X className="w-3 h-3" />
+                              Not Paid
+                            </Badge>
+                          );
+                        })()
+                      ) : (
+                        <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-200 flex items-center justify-center gap-1 mx-auto w-fit">
+                          <span>—</span>
+                          No Filter
+                        </Badge>
+                      )}
+                    </TableCell>
                     <TableCell data-label="Action">
                       <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2">
                         <Button
@@ -203,7 +258,7 @@ const MonthlyPayment = () => {
                   {/* ✅ Responsive Collapsible Form Row */}
                   {openFormFor === student.studentId && (
                     <TableRow>
-                      <TableCell colSpan={5} className="p-2 sm:p-4">
+                      <TableCell colSpan={7} className="p-2 sm:p-4">
                         <Form {...form}>
                           <form
                             onSubmit={form.handleSubmit(onSubmit)}
@@ -286,16 +341,6 @@ const MonthlyPayment = () => {
         </div>
       ) : (
         <p className="text-center text-muted-foreground mt-10 text-sm sm:text-base">No data found</p>
-      )}
-
-      {/* ✅ Responsive Pagination */}
-      {students?.meta?.total > students?.meta?.limit && (
-        <EduCPagination
-          page={page}
-          setPage={setPage}
-          totalPages={students?.meta?.totalPages}
-          className="mt-4 flex justify-end text-xs sm:text-base"
-        />
       )}
     </div>
   );
