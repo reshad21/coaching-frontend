@@ -90,7 +90,7 @@ export function PaymentDashboard() {
         {/* ✅ Back button now flows in-layout instead of absolute positioning */}
         <div className="flex items-center gap-4">
           <Button
-            onClick={() => navigate(-1)}
+            onClick={() => navigate("/monthly-payment", { state: { focusStudentId: id } })}
             className="flex justify-center items-center text-blue-600 hover:text-blue-700 border-blue-100 hover:border-blue-200 transition rounded-full shrink-0"
             variant="outline"
             size="icon"

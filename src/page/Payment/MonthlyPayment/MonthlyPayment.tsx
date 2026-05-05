@@ -21,7 +21,7 @@ import { ChevronRight, DollarSign, Eye, Plus, RotateCcw, Check, X } from "lucide
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import studentImage from "../../../assets/default.jpg";
 
 const MonthlyPayment = () => {
@@ -31,6 +31,7 @@ const MonthlyPayment = () => {
   const [openFormFor, setOpenFormFor] = useState<string | null>(null);
   const [customMessage, setCustomMessage] = useState("");
   const [sendMessage] = useSendSingleMessageMutation();
+  const location = useLocation();
 
   const queryParams: any[] = [
     { name: "limit", value: 99999 },
@@ -38,34 +39,43 @@ const MonthlyPayment = () => {
   ];
 
   const { data: students, isLoading } = useGetAllStudentQuery(queryParams);
+  const focusStudentId = (location.state as { focusStudentId?: string } | null)?.focusStudentId;
 
   const filteredStudents = useMemo(() => {
     const allStudents = students?.data ?? [];
 
-    if (!filterMonth) {
-      return allStudents;
+    const monthFilteredStudents = !filterMonth
+      ? allStudents
+      : allStudents.filter((student: any) => {
+          const hasPaidForMonth = student?.Payment?.some(
+            (payment: any) => payment.month === filterMonth
+          );
+
+          if (!filterStatus) {
+            return true;
+          }
+
+          if (filterStatus === "paid") {
+            return hasPaidForMonth;
+          }
+
+          if (filterStatus === "unpaid") {
+            return !hasPaidForMonth;
+          }
+
+          return true;
+        });
+
+    if (!focusStudentId) {
+      return monthFilteredStudents;
     }
 
-    return allStudents.filter((student: any) => {
-      const hasPaidForMonth = student?.Payment?.some(
-        (payment: any) => payment.month === filterMonth
-      );
-
-      if (!filterStatus) {
-        return true;
-      }
-
-      if (filterStatus === "paid") {
-        return hasPaidForMonth;
-      }
-
-      if (filterStatus === "unpaid") {
-        return !hasPaidForMonth;
-      }
-
-      return true;
+    return [...monthFilteredStudents].sort((a: any, b: any) => {
+      if (a.id === focusStudentId) return -1;
+      if (b.id === focusStudentId) return 1;
+      return 0;
     });
-  }, [students?.data, filterMonth, filterStatus]);
+  }, [students?.data, filterMonth, filterStatus, focusStudentId]);
 
   const [addPayment] = useAddPaymentMutation();
 
@@ -205,7 +215,10 @@ const MonthlyPayment = () => {
             <TableBody>
               {filteredStudents?.map((student: any, index: number) => (
                 <>
-                  <TableRow key={student.id}>
+                  <TableRow
+                    key={student.id}
+                    className={focusStudentId === student.id ? "bg-amber-50 border-l-4 border-amber-600" : ""}
+                  >
                     <TableCell data-label="SL No." className="hidden sm:table-cell">{index + 1}</TableCell>
                     <TableCell data-label="Full Name">
                       <div className="flex items-center gap-2">
