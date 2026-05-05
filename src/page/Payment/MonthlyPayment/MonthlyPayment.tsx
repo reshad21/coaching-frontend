@@ -18,7 +18,7 @@ import { useSendSingleMessageMutation } from "@/redux/api/auth/message/message";
 import { useAddPaymentMutation } from "@/redux/api/payment/paymentApi";
 import { useGetAllStudentQuery } from "@/redux/api/studentApi/studentApi";
 import { ChevronRight, DollarSign, Eye, Plus, RotateCcw, Check, X } from "lucide-react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
@@ -27,6 +27,7 @@ import studentImage from "../../../assets/default.jpg";
 const MonthlyPayment = () => {
   const [search, setSearch] = useState("");
   const [filterMonth, setFilterMonth] = useState("");
+  const [filterStatus, setFilterStatus] = useState("");
   const [openFormFor, setOpenFormFor] = useState<string | null>(null);
   const [customMessage, setCustomMessage] = useState("");
   const [sendMessage] = useSendSingleMessageMutation();
@@ -36,11 +37,35 @@ const MonthlyPayment = () => {
     { name: "search", value: search },
   ];
 
-  if (filterMonth) {
-    queryParams.push({ name: "unpaidMonth", value: filterMonth });
-  }
-
   const { data: students, isLoading } = useGetAllStudentQuery(queryParams);
+
+  const filteredStudents = useMemo(() => {
+    const allStudents = students?.data ?? [];
+
+    if (!filterMonth) {
+      return allStudents;
+    }
+
+    return allStudents.filter((student: any) => {
+      const hasPaidForMonth = student?.Payment?.some(
+        (payment: any) => payment.month === filterMonth
+      );
+
+      if (!filterStatus) {
+        return true;
+      }
+
+      if (filterStatus === "paid") {
+        return hasPaidForMonth;
+      }
+
+      if (filterStatus === "unpaid") {
+        return !hasPaidForMonth;
+      }
+
+      return true;
+    });
+  }, [students?.data, filterMonth, filterStatus]);
 
   const [addPayment] = useAddPaymentMutation();
 
@@ -118,6 +143,7 @@ const MonthlyPayment = () => {
           value={filterMonth}
           onChange={(e) => {
             setFilterMonth(e.target.value);
+            setFilterStatus("");
           }}
           className="px-3 py-2 border border-input rounded-md bg-background text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
         >
@@ -135,10 +161,21 @@ const MonthlyPayment = () => {
           <option value="November">November</option>
           <option value="December">December</option>
         </select>
+        <select
+          value={filterStatus}
+          onChange={(e) => setFilterStatus(e.target.value)}
+          disabled={!filterMonth}
+          className="px-3 py-2 border border-input rounded-md bg-background text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          <option value="">Payment Status</option>
+          <option value="paid">Paid</option>
+          <option value="unpaid">Not Paid</option>
+        </select>
         <Button
           onClick={() => {
             setSearch("");
             setFilterMonth("");
+            setFilterStatus("");
           }}
           className="w-full sm:w-auto bg-primary text-white text-sm sm:text-base"
         >
@@ -151,7 +188,7 @@ const MonthlyPayment = () => {
       {/* ✅ Responsive Table */}
       {isLoading ? (
         <Loading />
-      ) : students?.data?.length > 0 ? (
+      ) : filteredStudents?.length > 0 ? (
         <div className="border rounded-lg overflow-hidden">
           <Table>
             <TableHeader>
@@ -166,7 +203,7 @@ const MonthlyPayment = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {students?.data?.map((student: any, index: number) => (
+              {filteredStudents?.map((student: any, index: number) => (
                 <>
                   <TableRow key={student.id}>
                     <TableCell data-label="SL No." className="hidden sm:table-cell">{index + 1}</TableCell>
