@@ -1,68 +1,152 @@
+import { useState } from "react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card } from "@/components/ui/card"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import BatchMessage from "./BatchMessage/BatchMessage"
 import ClassMessage from "./ClassMessage/ClassMessage"
 import Shift from "./Shift/Shift"
 import All from "./All/All"
 
+interface TabItem {
+  value: string
+  label: string
+  shortLabel: string
+  component: React.ReactNode
+}
+
 const Message = () => {
+  const [activeTab, setActiveTab] = useState("batch")
+
+  const tabs: TabItem[] = [
+    {
+      value: "batch",
+      label: "Batch Message",
+      shortLabel: "Batch",
+      component: <BatchMessage />,
+    },
+    {
+      value: "class",
+      label: "Class Message",
+      shortLabel: "Class",
+      component: <ClassMessage />,
+    },
+    {
+      value: "shift",
+      label: "Shift Message",
+      shortLabel: "Shift",
+      component: <Shift />,
+    },
+    {
+      value: "all",
+      label: "All Students",
+      shortLabel: "All",
+      component: <All />,
+    },
+  ]
+
   return (
-    <div className="w-full max-w-6xl mx-auto p-3 sm:p-6">
-      <div className="mb-6 sm:mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">Messages</h1>
-        <p className="text-xs sm:text-sm text-muted-foreground">Send messages to different groups of students</p>
-      </div>
-
-      <Card className="p-3 sm:p-6">
-        <Tabs defaultValue="batch" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 mb-6 sm:mb-8 bg-muted/50 p-1 rounded-lg gap-1">
-            <TabsTrigger
-              value="batch"
-              className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm rounded-md"
-            >
-              <span className="hidden sm:inline">Batch Message</span>
-              <span className="sm:hidden">Batch</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="class"
-              className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm rounded-md"
-            >
-              <span className="hidden sm:inline">Class Message</span>
-              <span className="sm:hidden">Class</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="shift"
-              className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm rounded-md"
-            >
-              <span className="hidden sm:inline">Shift Message</span>
-              <span className="sm:hidden">Shift</span>
-            </TabsTrigger>
-            <TabsTrigger
-              value="all"
-              className="py-2 sm:py-3 px-2 sm:px-4 text-xs sm:text-sm font-medium transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm rounded-md hidden sm:block"
-            >
-              All Students
-            </TabsTrigger>
-          </TabsList>
-
-          <div className="border-t border-border mb-6"></div>
-
-          <div className="min-h-[400px]">
-            <TabsContent value="batch" className="mt-0">
-              <BatchMessage />
-            </TabsContent>
-            <TabsContent value="class" className="mt-0">
-              <ClassMessage />
-            </TabsContent>
-            <TabsContent value="shift" className="mt-0">
-              <Shift />
-            </TabsContent>
-            <TabsContent value="all" className="mt-0">
-              <All />
-            </TabsContent>
+    <div className="min-h-screen bg-background">
+      <div className="w-full px-2 py-3 xs:px-3 xs:py-4 sm:px-4 sm:py-6 md:px-6 md:py-8 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          {/* Header Section */}
+          <div className="mb-3 xs:mb-4 sm:mb-6 md:mb-8 space-y-1">
+            <h1 className="text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold text-foreground leading-tight break-words">
+              Messages
+            </h1>
+            <p className="text-xs sm:text-sm md:text-base text-muted-foreground">
+              Send messages to different groups of students
+            </p>
           </div>
-        </Tabs>
-      </Card>
+
+          {/* Main Card */}
+          <Card className="overflow-hidden shadow-sm border border-border/50">
+            <div className="p-2 xs:p-3 sm:p-4 md:p-6 lg:p-8">
+              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                {/* ============ MOBILE VIEW (< 640px) ============ */}
+                <div className="block sm:hidden space-y-3">
+                  {/* Mobile Dropdown */}
+                  <div>
+                    <label className="block text-xs font-semibold text-foreground mb-2">
+                      Message Type
+                    </label>
+                    <Select value={activeTab} onValueChange={setActiveTab}>
+                      <SelectTrigger className="w-full h-10 text-xs font-medium bg-background border border-input">
+                        <SelectValue placeholder="Select..." />
+                      </SelectTrigger>
+                      <SelectContent className="max-h-[280px] w-[calc(100vw-16px)]">
+                        {tabs.map((tab) => (
+                          <SelectItem key={tab.value} value={tab.value} className="text-xs">
+                            <span className="font-medium">{tab.label}</span>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Divider */}
+                  <div className="h-px bg-border/50"></div>
+                </div>
+
+                {/* ============ TABLET VIEW (640px - 1023px) ============ */}
+                <div className="hidden sm:block lg:hidden mb-3 xs:mb-4 -mx-2 xs:-mx-3 sm:-mx-4 px-2 xs:px-3 sm:px-4">
+                  <div className="overflow-x-auto">
+                    <TabsList className="inline-flex gap-1 sm:gap-1.5 bg-muted/40 p-1 sm:p-1.5 rounded-lg w-auto">
+                      {tabs.map((tab) => (
+                        <TabsTrigger
+                          key={tab.value}
+                          value={tab.value}
+                          className="py-1.5 sm:py-2 px-2 sm:px-3 text-2xs sm:text-xs font-medium rounded-md whitespace-nowrap transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm hover:bg-muted/70 active:scale-95"
+                        >
+                          {tab.shortLabel}
+                        </TabsTrigger>
+                      ))}
+                    </TabsList>
+                  </div>
+                  <div className="h-px bg-border/50 mt-3"></div>
+                </div>
+
+                {/* ============ DESKTOP VIEW (>= 1024px) ============ */}
+                <div className="hidden lg:block mb-6">
+                  <TabsList className="grid w-full grid-cols-4 gap-2 bg-muted/40 p-1.5 rounded-lg">
+                    {tabs.map((tab) => (
+                      <TabsTrigger
+                        key={tab.value}
+                        value={tab.value}
+                        className="py-2.5 px-4 text-sm font-medium rounded-md transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md hover:bg-muted/70 active:scale-95"
+                      >
+                        {tab.label}
+                      </TabsTrigger>
+                    ))}
+                  </TabsList>
+                  <div className="h-px bg-border/50 mt-6"></div>
+                </div>
+
+                {/* ============ CONTENT AREA ============ */}
+                <div className="min-h-[280px] xs:min-h-[320px] sm:min-h-[400px] md:min-h-[500px] lg:min-h-[600px]">
+                  {tabs.map((tab) => (
+                    <TabsContent
+                      key={tab.value}
+                      value={tab.value}
+                      className="mt-0 data-[state=active]:animate-in data-[state=active]:fade-in-50 duration-300"
+                    >
+                      {/* Content wrapper with proper spacing for all devices */}
+                      <div className="space-y-2 xs:space-y-3 sm:space-y-4 md:space-y-6 lg:space-y-8 pb-4">
+                        {tab.component}
+                      </div>
+                    </TabsContent>
+                  ))}
+                </div>
+              </Tabs>
+            </div>
+          </Card>
+        </div>
+      </div>
     </div>
   )
 }
