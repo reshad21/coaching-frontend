@@ -47,7 +47,7 @@ const ClassCreate = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="w-full sm:w-auto gap-2 text-white text-xs sm:text-sm h-9 sm:h-10">
+        <Button variant="primaryGradient" className="w-full sm:w-auto gap-2 text-white text-xs sm:text-sm h-9 sm:h-10">
           <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
           <span className="hidden sm:inline">CREATE CLASS</span>
           <span className="sm:hidden">New Class</span>
@@ -88,7 +88,7 @@ const ClassCreate = () => {
             >
               Cancel
             </Button>
-            <Button type="submit" className="w-full sm:w-auto text-xs sm:text-sm h-9 sm:h-10">
+            <Button type="submit" variant="primaryGradient" className="w-full sm:w-auto text-xs sm:text-sm h-9 sm:h-10">
               Save Class
             </Button>
           </DialogFooter>

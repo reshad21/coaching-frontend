@@ -291,7 +291,8 @@ const StudentUpdate = () => {
 
             <Button
               type="submit"
-              className="w-full bg-primary hover:bg-green-800 text-white flex items-center justify-center gap-2 py-2 px-4 rounded-md transition"
+              variant="primaryGradient"
+              className="w-full flex items-center justify-center gap-2 py-2 px-4 rounded-md transition"
             >
               <Plus className="w-5 h-5" />
               Update Student

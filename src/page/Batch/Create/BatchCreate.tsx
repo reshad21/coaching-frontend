@@ -46,7 +46,7 @@ const BatchCreate = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="gap-2 text-white">
+        <Button variant="primaryGradient" className="gap-2 text-white">
           <Plus className="h-4 w-4" />
           Add New Batch
         </Button>
@@ -108,7 +108,7 @@ const BatchCreate = () => {
             </div>
           </div>
           <DialogFooter>
-            <Button className="text-white" type="submit">
+            <Button variant="primaryGradient" className="text-white" type="submit">
               CREATE BATCH
             </Button>
           </DialogFooter>

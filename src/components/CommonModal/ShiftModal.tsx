@@ -167,7 +167,8 @@ function ShiftFormModal({
         </Button>
         <Button
           type="submit"
-          className="flex-1 sm:flex-none bg-green-600 hover:bg-green-700 text-white shadow-sm"
+          variant="primaryGradient"
+          className="flex-1 sm:flex-none"
           disabled={isLoading}
         >
           {isLoading ? "Updating..." : "Update Shift"}

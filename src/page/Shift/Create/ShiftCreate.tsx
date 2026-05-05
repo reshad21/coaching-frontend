@@ -65,7 +65,7 @@ const ShiftCreate = () => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="w-full sm:w-auto gap-2 bg-primary hover:bg-primary/90 text-white shadow-sm text-sm sm:text-base">
+        <Button variant="primaryGradient" className="w-full sm:w-auto gap-2 text-white shadow-sm text-sm sm:text-base">
           <Plus className="h-3 w-3 sm:h-4 sm:w-4" />
           <span className="hidden sm:inline">CREATE SHIFT</span>
           <span className="sm:hidden">New Shift</span>
@@ -160,7 +160,8 @@ const ShiftCreate = () => {
             </Button>
             <Button
               type="submit"
-              className="w-full sm:w-auto bg-primary hover:bg-primary/90 text-white text-xs sm:text-sm"
+              variant="primaryGradient"
+              className="w-full sm:w-auto text-xs sm:text-sm"
             >
               Create Shift
             </Button>

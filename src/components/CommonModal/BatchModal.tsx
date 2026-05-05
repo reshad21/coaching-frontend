@@ -90,7 +90,8 @@ function BatchFormModal({
         />
         <Button
           type="submit"
-          className="w-full bg-green-700 hover:bg-green-800 text-white"
+          variant="primaryGradient"
+          className="w-full"
         >
           UPDATE BATCH
         </Button>

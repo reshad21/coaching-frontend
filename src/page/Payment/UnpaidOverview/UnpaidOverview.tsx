@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import Swal from "sweetalert2";
 import toast from "react-hot-toast";
 import { AlertCircle, Download, Send, Trash2, Users, PhoneCall, Settings } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 export default function UnpaidOverview() {
   const [selectedBatch, setSelectedBatch] = useState("");
@@ -523,13 +524,14 @@ export default function UnpaidOverview() {
                 Track and manage student payment records
               </p>
             </div>
-            <button
+            <Button
               onClick={handleDownloadPdf}
-              className="button-primary flex items-center justify-center gap-2 w-full md:w-auto"
+              variant="primaryGradient"
+              className="flex items-center justify-center gap-2 w-full md:w-auto"
             >
               <Download size={20} />
               Download Report
-            </button>
+            </Button>
           </div>
 
           {/* Stats Section */}
@@ -621,15 +623,16 @@ export default function UnpaidOverview() {
                   <Trash2 size={18} />
                   Clear Message
                 </button>
-                <button
+                <Button
                   type="button"
                   onClick={handleSendBulkMessage}
+                  variant="primaryGradient"
                   disabled={isSendingBulkMessage || dueStudentsWithPhone.length === 0}
-                  className="button-primary flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Send size={18} />
                   {isSendingBulkMessage ? "Sending..." : `Send to ${dueStudentsWithPhone.length}`}
-                </button>
+                </Button>
               </div>
             </div>
           </div>

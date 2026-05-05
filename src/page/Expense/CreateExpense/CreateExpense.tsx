@@ -107,8 +107,9 @@ export const CreateExpense = () => {
                 <div className="flex justify-end pt-4">
                   <Button
                     type="submit"
+                    variant="primaryGradient"
                     size="lg"
-                    className="min-w-[200px] bg-primary hover:bg-primary/90 text-white font-semibold"
+                    className="min-w-[200px]"
                   >
                     Create Expense Record
                   </Button>

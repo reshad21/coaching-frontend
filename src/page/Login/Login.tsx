@@ -110,7 +110,7 @@ const Login = () => {
             </div>
           </CardContent>
           <CardFooter className="px-4 sm:px-6 pb-4 sm:pb-6 pt-4 sm:pt-6">
-            <Button type="submit" className="w-full py-2 sm:py-3 text-sm sm:text-base font-semibold rounded-lg shadow-sm bg-primary hover:bg-primary/90 transition-colors text-white">
+            <Button type="submit" variant="primaryGradient" className="w-full py-2 sm:py-3 text-sm sm:text-base font-semibold rounded-lg shadow-sm">
               Login
             </Button>
           </CardFooter>
