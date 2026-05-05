@@ -7,16 +7,23 @@ import { Card } from "@/components/ui/card";
 import Loading from "@/components/Loading";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
+import { useSendSingleMessageMutation } from "@/redux/api/auth/message/message";
 import UnpaidOverviewFilters from "./_component/UnpaidOverviewFilters";
+import { Label } from "@/components/ui/label";
+import Swal from "sweetalert2";
+import toast from "react-hot-toast";
 
 export default function UnpaidOverview() {
   const [selectedBatch, setSelectedBatch] = useState("");
   const [selectClass, setSelectClass] = useState("");
   const [shift, setShift] = useState("");
+  const [bulkMessage, setBulkMessage] = useState("");
+  const [isSendingBulkMessage, setIsSendingBulkMessage] = useState(false);
 
   const { data: studentsRes, isLoading } = useGetAllStudentQuery([
     { name: "limit", value: 99999 },
   ]);
+  const [sendSingleMessage] = useSendSingleMessageMutation();
 
   const currentMonth = new Date().toLocaleString("default", { month: "long" });
   const currentMonthIndex = months.indexOf(currentMonth);
@@ -62,6 +69,71 @@ export default function UnpaidOverview() {
     setShift("");
   };
 
+  const dueStudentsWithPhone = useMemo(() => {
+    return filteredOverview.filter((student: any) => Boolean(student.phone));
+  }, [filteredOverview]);
+
+  const handleSendBulkMessage = async () => {
+    if (!bulkMessage.trim()) {
+      toast.error("please write Message");
+      return;
+    }
+
+    if (dueStudentsWithPhone.length === 0) {
+      toast.error("No due students with phone numbers found");
+      return;
+    }
+
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: `Send this message to ${dueStudentsWithPhone.length} due student${dueStudentsWithPhone.length === 1 ? "" : "s"}?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#03A791",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, send message!",
+    });
+
+    if (!result.isConfirmed) return;
+
+    setIsSendingBulkMessage(true);
+
+    try {
+      let successCount = 0;
+      let failedCount = 0;
+
+      for (const student of dueStudentsWithPhone) {
+        try {
+          const response = await sendSingleMessage({
+            message: bulkMessage,
+            number: student.phone,
+          }).unwrap();
+
+          if (response?.data?.response_code == 202) {
+            successCount += 1;
+          } else {
+            failedCount += 1;
+          }
+        } catch {
+          failedCount += 1;
+        }
+      }
+
+      if (successCount > 0) {
+        toast.success(`Message sent to ${successCount} due student${successCount === 1 ? "" : "s"}`);
+      }
+      if (failedCount > 0) {
+        toast.error(`Failed to send to ${failedCount} student${failedCount === 1 ? "" : "s"}`);
+      }
+
+      if (successCount > 0 && failedCount === 0) {
+        setBulkMessage("");
+      }
+    } finally {
+      setIsSendingBulkMessage(false);
+    }
+  };
+
   const printRef = useRef<HTMLDivElement | null>(null);
 
   const handleDownloadPdf = async () => {
@@ -79,15 +151,15 @@ export default function UnpaidOverview() {
   if (isLoading) return <Loading />;
 
   return (
-    <div className="p-4">
-      <div className="flex items-center justify-between mb-4">
-        <div>
+    <div className="w-full min-w-0 overflow-x-hidden p-4">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
           <h2 className="text-2xl font-semibold">Unpaid Overview</h2>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="mt-1 text-sm text-muted-foreground">
             {filteredOverview.length} student{filteredOverview.length === 1 ? "" : "s"} with due records
           </p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
           <Button onClick={handleDownloadPdf} className="bg-primary text-white">
             Download PDF
           </Button>
@@ -106,12 +178,58 @@ export default function UnpaidOverview() {
         />
       </div>
 
+      <Card className="mb-4 min-w-0 p-4">
+        <div className="space-y-3">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
+            <div className="min-w-0">
+              <h3 className="text-sm font-semibold">Send message to all due students</h3>
+              <p className="text-xs text-muted-foreground">
+                The message will be sent to every filtered student with a due payment and phone number.
+              </p>
+            </div>
+            <span className="text-xs text-muted-foreground sm:text-right sm:whitespace-nowrap">
+              {dueStudentsWithPhone.length} recipient{dueStudentsWithPhone.length === 1 ? "" : "s"}
+            </span>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="bulk-message">Message</Label>
+            <textarea
+              id="bulk-message"
+              value={bulkMessage}
+              onChange={(e) => setBulkMessage(e.target.value)}
+              placeholder="Write the message you want to send to all due students"
+              className="border p-3 rounded w-full shadow-sm min-h-[120px] focus:ring-2 focus:ring-primary focus:border-transparent text-sm"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
+            <Button
+              type="button"
+              onClick={() => setBulkMessage("")}
+              variant="outline"
+              disabled={!bulkMessage || isSendingBulkMessage}
+            >
+              Clear Message
+            </Button>
+            <Button
+              type="button"
+              onClick={handleSendBulkMessage}
+              className="bg-primary text-white"
+              disabled={isSendingBulkMessage || dueStudentsWithPhone.length === 0}
+            >
+              {isSendingBulkMessage ? "Sending..." : "Send to All Due Students"}
+            </Button>
+          </div>
+        </div>
+      </Card>
+
       <div ref={printRef}>
-        <Card className="p-4">
-          <div className="overflow-x-auto">
+        <Card className="min-w-0 overflow-hidden p-4">
+          <div className="max-h-[60vh] overflow-auto sm:max-h-[65vh] lg:max-h-[70vh]">
             <table className="w-full table-auto border-collapse">
               <thead>
-                <tr className="bg-muted/50 text-sm">
+                <tr className="sticky top-0 z-10 bg-muted/50 text-sm">
                   <th className="text-left p-2">#</th>
                   <th className="text-left p-2">Student</th>
                   <th className="text-left p-2 hidden sm:table-cell">ID</th>
