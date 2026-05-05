@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useMemo, useRef } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useGetAllStudentQuery } from "@/redux/api/studentApi/studentApi";
 import { months } from "@/constants/months";
 import { Button } from "@/components/ui/button";
@@ -7,13 +7,19 @@ import { Card } from "@/components/ui/card";
 import Loading from "@/components/Loading";
 import { jsPDF } from "jspdf";
 import html2canvas from "html2canvas";
+import UnpaidOverviewFilters from "./_component/UnpaidOverviewFilters";
 
 export default function UnpaidOverview() {
+  const [selectedBatch, setSelectedBatch] = useState("");
+  const [selectClass, setSelectClass] = useState("");
+  const [shift, setShift] = useState("");
+
   const { data: studentsRes, isLoading } = useGetAllStudentQuery([
     { name: "limit", value: 99999 },
   ]);
 
   const currentMonth = new Date().toLocaleString("default", { month: "long" });
+  const currentMonthIndex = months.indexOf(currentMonth);
 
   const overview = useMemo(() => {
     const allStudents = studentsRes?.data ?? [];
@@ -21,7 +27,8 @@ export default function UnpaidOverview() {
     return allStudents
       .map((s: any) => {
         const paidMonths = (s?.Payment || []).map((p: any) => p.month);
-        const unpaid = months.filter((m) => !paidMonths.includes(m));
+        const dueMonths = currentMonthIndex >= 0 ? months.slice(0, currentMonthIndex + 1) : months;
+        const unpaid = dueMonths.filter((m) => !paidMonths.includes(m));
         // Only mark the current month as the special highlighted unpaid month.
         const nextUnpaid = !paidMonths.includes(currentMonth) ? currentMonth : undefined;
         return {
@@ -29,13 +36,31 @@ export default function UnpaidOverview() {
           name: `${s.firstName || ""} ${s.lastName || ""}`.trim(),
           studentId: s.studentId,
           className: s.className,
+          batchName: s.batchName || s.Batch?.batchName || "",
+          shiftName: s.shiftName || s.Shift?.shiftName || "",
           phone: s.phone,
           unpaidMonths: unpaid,
           nextUnpaidMonth: nextUnpaid,
         };
       })
       .filter((r: any) => r.unpaidMonths.length > 0);
-  }, [studentsRes?.data, currentMonth]);
+  }, [studentsRes?.data, currentMonth, currentMonthIndex]);
+
+  const filteredOverview = useMemo(() => {
+    return overview.filter((row: any) => {
+      const matchesBatch = selectedBatch ? row.batchName === selectedBatch : true;
+      const matchesClass = selectClass ? row.className === selectClass : true;
+      const matchesShift = shift ? row.shiftName === shift : true;
+
+      return matchesBatch && matchesClass && matchesShift;
+    });
+  }, [overview, selectedBatch, selectClass, shift]);
+
+  const clearFilters = () => {
+    setSelectedBatch("");
+    setSelectClass("");
+    setShift("");
+  };
 
   const printRef = useRef<HTMLDivElement | null>(null);
 
@@ -56,12 +81,29 @@ export default function UnpaidOverview() {
   return (
     <div className="p-4">
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl font-semibold">Unpaid Overview</h2>
+        <div>
+          <h2 className="text-2xl font-semibold">Unpaid Overview</h2>
+          <p className="text-sm text-muted-foreground mt-1">
+            {filteredOverview.length} student{filteredOverview.length === 1 ? "" : "s"} with due records
+          </p>
+        </div>
         <div className="flex items-center gap-2">
           <Button onClick={handleDownloadPdf} className="bg-primary text-white">
             Download PDF
           </Button>
         </div>
+      </div>
+
+      <div className="mb-4">
+        <UnpaidOverviewFilters
+          selectedBatch={selectedBatch}
+          selectClass={selectClass}
+          shift={shift}
+          onBatchChange={setSelectedBatch}
+          onClassChange={setSelectClass}
+          onShiftChange={setShift}
+          onClearFilters={clearFilters}
+        />
       </div>
 
       <div ref={printRef}>
@@ -75,11 +117,11 @@ export default function UnpaidOverview() {
                   <th className="text-left p-2 hidden sm:table-cell">ID</th>
                   <th className="text-left p-2 hidden sm:table-cell">Class</th>
                   <th className="text-left p-2 hidden sm:table-cell">Phone</th>
-                  <th className="text-left p-2">Unpaid Months</th>
+                  <th className="text-left p-2">Due Months</th>
                 </tr>
               </thead>
               <tbody>
-                {overview.map((row: any, idx: number) => (
+                {filteredOverview.map((row: any, idx: number) => (
                   <tr key={row.id} className="border-t align-top">
                     <td className="p-2 align-top w-6">{idx + 1}</td>
                     <td className="p-2 align-top">
@@ -87,6 +129,8 @@ export default function UnpaidOverview() {
                       <div className="text-xs text-muted-foreground mt-1 block sm:hidden">
                         <div>Id: {row.studentId || "-"}</div>
                         <div>Class: {row.className || "-"}</div>
+                        <div>Batch: {row.batchName || "-"}</div>
+                        <div>Shift: {row.shiftName || "-"}</div>
                         <div>Phone: {row.phone || "-"}</div>
                       </div>
                     </td>
@@ -117,10 +161,10 @@ export default function UnpaidOverview() {
                     </td>
                   </tr>
                 ))}
-                {overview.length === 0 && (
+                {filteredOverview.length === 0 && (
                   <tr>
                     <td colSpan={6} className="p-4 text-center text-sm text-muted-foreground">
-                      No unpaid records found
+                      No due records found
                     </td>
                   </tr>
                 )}
