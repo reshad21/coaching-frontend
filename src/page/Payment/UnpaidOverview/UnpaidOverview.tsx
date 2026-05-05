@@ -151,9 +151,33 @@ export default function UnpaidOverview() {
   if (isLoading) return <Loading />;
 
   return (
-    <div className="w-full min-w-0 overflow-x-hidden p-4">
+    <div className="w-full p-4">
+      <style>{`
+        .table-scroll-container::-webkit-scrollbar {
+          height: 8px;
+          width: 8px;
+        }
+        .table-scroll-container::-webkit-scrollbar-track {
+          background: #f1f1f1;
+          border-radius: 6px;
+        }
+        .table-scroll-container::-webkit-scrollbar-thumb {
+          background: #cbd5e1;
+          border-radius: 6px;
+          border: 2px solid #f1f1f1;
+        }
+        .table-scroll-container::-webkit-scrollbar-thumb:hover {
+          background: #94a3b8;
+        }
+        /* Firefox */
+        .table-scroll-container {
+          scrollbar-width: thin;
+          scrollbar-color: #cbd5e1 #f1f1f1;
+        }
+      `}</style>
+
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="min-w-0">
+        <div>
           <h2 className="text-2xl font-semibold">Unpaid Overview</h2>
           <p className="mt-1 text-sm text-muted-foreground">
             {filteredOverview.length} student{filteredOverview.length === 1 ? "" : "s"} with due records
@@ -178,10 +202,10 @@ export default function UnpaidOverview() {
         />
       </div>
 
-      <Card className="mb-4 min-w-0 p-4">
+      <Card className="mb-4 p-4">
         <div className="space-y-3">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-3">
-            <div className="min-w-0">
+            <div>
               <h3 className="text-sm font-semibold">Send message to all due students</h3>
               <p className="text-xs text-muted-foreground">
                 The message will be sent to every filtered student with a due payment and phone number.
@@ -225,26 +249,26 @@ export default function UnpaidOverview() {
       </Card>
 
       <div ref={printRef}>
-        <Card className="min-w-0 overflow-hidden p-4">
-          <div className="max-h-[60vh] overflow-auto sm:max-h-[65vh] lg:max-h-[70vh]">
-            <table className="w-full table-auto border-collapse">
+        <Card className="overflow-hidden p-4">
+          <div className="table-scroll-container overflow-x-auto overflow-y-auto max-h-[60vh] sm:max-h-[65vh] lg:max-h-[70vh]">
+            <table className="w-full table-auto border-collapse min-w-max">
               <thead>
-                <tr className="sticky top-0 z-10 bg-muted/50 text-sm">
-                  <th className="text-left p-2">#</th>
-                  <th className="text-left p-2">Student</th>
-                  <th className="text-left p-2 hidden sm:table-cell">ID</th>
-                  <th className="text-left p-2 hidden sm:table-cell">Class</th>
-                  <th className="text-left p-2 hidden sm:table-cell">Phone</th>
-                  <th className="text-left p-2">Due Months</th>
+                <tr className="sticky top-0 z-10 bg-muted/50 text-sm bg-white">
+                  <th className="text-left p-3 font-semibold text-gray-700">#</th>
+                  <th className="text-left p-3 font-semibold text-gray-700">Student</th>
+                  <th className="text-left p-3 font-semibold text-gray-700 hidden sm:table-cell">ID</th>
+                  <th className="text-left p-3 font-semibold text-gray-700 hidden sm:table-cell">Class</th>
+                  <th className="text-left p-3 font-semibold text-gray-700 hidden sm:table-cell">Phone</th>
+                  <th className="text-left p-3 font-semibold text-gray-700">Due Months</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredOverview.map((row: any, idx: number) => (
-                  <tr key={row.id} className="border-t align-top">
-                    <td className="p-2 align-top w-6">{idx + 1}</td>
-                    <td className="p-2 align-top">
-                      <div className="font-medium">{row.name || "-"}</div>
-                      <div className="text-xs text-muted-foreground mt-1 block sm:hidden">
+                  <tr key={row.id} className="border-t hover:bg-gray-50 transition-colors">
+                    <td className="p-3 text-sm w-8">{idx + 1}</td>
+                    <td className="p-3 text-sm">
+                      <div className="font-medium text-gray-900">{row.name || "-"}</div>
+                      <div className="text-xs text-muted-foreground mt-1 block sm:hidden space-y-1">
                         <div>Id: {row.studentId || "-"}</div>
                         <div>Class: {row.className || "-"}</div>
                         <div>Batch: {row.batchName || "-"}</div>
@@ -252,10 +276,10 @@ export default function UnpaidOverview() {
                         <div>Phone: {row.phone || "-"}</div>
                       </div>
                     </td>
-                    <td className="p-2 align-top hidden sm:table-cell">{row.studentId || "-"}</td>
-                    <td className="p-2 align-top hidden sm:table-cell">{row.className || "-"}</td>
-                    <td className="p-2 align-top hidden sm:table-cell">{row.phone || "-"}</td>
-                    <td className="p-2 align-top">
+                    <td className="p-3 text-sm hidden sm:table-cell text-gray-700">{row.studentId || "-"}</td>
+                    <td className="p-3 text-sm hidden sm:table-cell text-gray-700">{row.className || "-"}</td>
+                    <td className="p-3 text-sm hidden sm:table-cell text-gray-700">{row.phone || "-"}</td>
+                    <td className="p-3 text-sm">
                       <div className="flex flex-wrap gap-2">
                         {row.unpaidMonths.map((m: string) => {
                           const mIdx = months.indexOf(m);
@@ -263,10 +287,10 @@ export default function UnpaidOverview() {
                           const isOverdue = mIdx < currentIdx;
                           const isCurrent = mIdx === currentIdx && m === row.nextUnpaidMonth;
                           const classes = isCurrent
-                            ? "px-2 py-1 bg-amber-100 text-amber-800 rounded text-xs sm:text-sm"
+                            ? "px-3 py-1.5 bg-amber-100 text-amber-800 rounded font-medium text-xs sm:text-sm whitespace-nowrap"
                             : isOverdue
-                            ? "px-2 py-1 bg-red-200 text-red-900 rounded text-xs sm:text-sm"
-                            : "px-2 py-1 bg-gray-100 text-gray-700 rounded text-xs sm:text-sm";
+                            ? "px-3 py-1.5 bg-red-100 text-red-800 rounded font-medium text-xs sm:text-sm whitespace-nowrap"
+                            : "px-3 py-1.5 bg-gray-100 text-gray-700 rounded font-medium text-xs sm:text-sm whitespace-nowrap";
                           const title = isCurrent ? "Current unpaid month" : isOverdue ? "Overdue unpaid month" : undefined;
 
                           return (
@@ -281,7 +305,7 @@ export default function UnpaidOverview() {
                 ))}
                 {filteredOverview.length === 0 && (
                   <tr>
-                    <td colSpan={6} className="p-4 text-center text-sm text-muted-foreground">
+                    <td colSpan={6} className="p-6 text-center text-sm text-muted-foreground">
                       No due records found
                     </td>
                   </tr>
