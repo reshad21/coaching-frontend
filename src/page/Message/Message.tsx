@@ -101,7 +101,13 @@ const Message = () => {
                         <TabsTrigger
                           key={tab.value}
                           value={tab.value}
-                          className="py-1.5 sm:py-2 px-2 sm:px-3 text-2xs sm:text-xs font-medium rounded-md whitespace-nowrap transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-sm hover:bg-muted/70 active:scale-95"
+                           className="py-1.5 sm:py-2 px-2 sm:px-3 text-2xs sm:text-xs font-medium rounded-md whitespace-nowrap transition-all duration-200 hover:bg-muted/70 active:scale-95"
+                           style={{
+                             background: activeTab === tab.value ? "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)" : "transparent",
+                             color: activeTab === tab.value ? "white" : "inherit",
+                             fontWeight: activeTab === tab.value ? "600" : "500",
+                             boxShadow: activeTab === tab.value ? "0 2px 8px rgba(6, 182, 212, 0.2)" : "none",
+                           }}
                         >
                           {tab.shortLabel}
                         </TabsTrigger>
@@ -118,7 +124,13 @@ const Message = () => {
                       <TabsTrigger
                         key={tab.value}
                         value={tab.value}
-                        className="py-2.5 px-4 text-sm font-medium rounded-md transition-all duration-200 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:shadow-md hover:bg-muted/70 active:scale-95"
+                         className="py-2.5 px-4 text-sm font-medium rounded-md transition-all duration-200 hover:bg-muted/70 active:scale-95"
+                         style={{
+                           background: activeTab === tab.value ? "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)" : "transparent",
+                           color: activeTab === tab.value ? "white" : "inherit",
+                           fontWeight: activeTab === tab.value ? "600" : "500",
+                           boxShadow: activeTab === tab.value ? "0 4px 12px rgba(6, 182, 212, 0.3)" : "none",
+                         }}
                       >
                         {tab.label}
                       </TabsTrigger>

@@ -77,7 +77,8 @@ const BatchMessage = () => {
               ))}
             </select>
             <Button
-              className="w-full mt-2 sm:mt-4 text-white text-xs sm:text-sm h-9 sm:h-10"
+              variant="primaryGradient"
+              className="w-full mt-2 sm:mt-4 text-xs sm:text-sm h-9 sm:h-10"
               // disabled={!selectedBatch}
               onClick={(e) => handelSendMessage(e)}
             >

@@ -51,7 +51,8 @@ const All = () => {
               className="border p-2 sm:p-3 rounded w-full shadow-sm text-xs sm:text-sm min-h-[120px] sm:min-h-[150px] focus:ring-2 focus:ring-primary focus:border-transparent"
             />
             <Button
-              className="w-full mt-2 sm:mt-4 text-white text-xs sm:text-sm h-9 sm:h-10"
+              variant="primaryGradient"
+              className="w-full mt-2 sm:mt-4 text-xs sm:text-sm h-9 sm:h-10"
               // disabled={!selectedBatch}
               onClick={(e) => handelSendMessage(e)}
             >

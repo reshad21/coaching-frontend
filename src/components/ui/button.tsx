@@ -5,22 +5,22 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground shadow hover:bg-primary/90",
+          "bg-primary text-primary-foreground shadow hover:bg-primary/90 transition-colors",
         destructive:
-          "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
+          "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90 transition-colors",
         outline:
-          "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground",
+          "border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground transition-colors",
         secondary:
-          "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
+          "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 transition-colors",
+        ghost: "hover:bg-accent hover:text-accent-foreground transition-colors",
+        link: "text-primary underline-offset-4 hover:underline transition-colors",
         primaryGradient:
-          "bg-gradient-to-r from-cyan-500 to-cyan-600 text-white font-semibold shadow-lg hover:shadow-xl hover:from-cyan-600 hover:to-cyan-700 active:shadow-md transition-all duration-300 rounded-xl",
+          "rounded-xl",
       },
       size: {
         default: "h-9 px-4 py-2",
@@ -45,9 +45,33 @@ export interface ButtonProps
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
+    
+    // Apply inline styles for primaryGradient variant
+    const isGradient = variant === "primaryGradient"
+    const style = isGradient ? {
+      background: "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)",
+      color: "white",
+      fontWeight: "600",
+      boxShadow: "0 4px 15px rgba(6, 182, 212, 0.3)",
+      transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+    } : {}
+    
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
+        style={style}
+        onMouseEnter={(e) => {
+          if (isGradient) {
+            e.currentTarget.style.transform = "translateY(-2px)"
+            e.currentTarget.style.boxShadow = "0 8px 25px rgba(6, 182, 212, 0.4)"
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (isGradient) {
+            e.currentTarget.style.transform = "translateY(0)"
+            e.currentTarget.style.boxShadow = "0 4px 15px rgba(6, 182, 212, 0.3)"
+          }
+        }}
         ref={ref}
         {...props}
       />
