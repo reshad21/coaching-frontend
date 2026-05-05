@@ -127,6 +127,12 @@ export const navMain = [
         parent: "Payment",
       },
       featureAccess["admin"]?.includes(1) && {
+        title: "Unpaid Overview",
+        url: "/unpaid-overview",
+        isShow: true,
+        parent: "Payment",
+      },
+      featureAccess["admin"]?.includes(1) && {
         title: "Payment History",
         url: "/payment-status",
         isShow: true,

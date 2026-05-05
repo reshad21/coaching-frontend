@@ -15,6 +15,7 @@ import Message from "@/page/Message/Message";
 import MonthlyPayment from "@/page/Payment/MonthlyPayment/MonthlyPayment";
 import PaymentDetails from "@/page/Payment/PaymentDetails/PaymentDetails";
 import PaymentStatus from "@/page/Payment/PaymentStatus/PaymentStatus";
+import UnpaidOverview from "@/page/Payment/UnpaidOverview/UnpaidOverview";
 import ShiftCreate from "@/page/Shift/Create/ShiftCreate";
 import ShiftUpdate from "@/page/Shift/Update/ShiftUpdate";
 import ShiftView from "@/page/Shift/View/ShiftView";
@@ -49,6 +50,7 @@ const componentMapping: Record<string, React.ElementType> = {
   // payment routes
   "/payment/:id": PaymentDetails,
   "/monthly-payment": MonthlyPayment,
+  "/unpaid-overview": UnpaidOverview,
   "/payment-status": PaymentStatus,
   "/balance-status": BalanceStatus,
 
