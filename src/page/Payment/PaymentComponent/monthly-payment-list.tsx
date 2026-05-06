@@ -18,7 +18,7 @@ export function MonthlyPaymentList({ paymentsByMonth, onEditPayment }: MonthlyPa
         <div className="divide-y">
           {months.map((month) => {
             const payment = paymentsByMonth[month]
-            const paid = !!payment
+            const paid = !!payment && payment.amount > 0
 
             return (
               <div key={month} className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors">

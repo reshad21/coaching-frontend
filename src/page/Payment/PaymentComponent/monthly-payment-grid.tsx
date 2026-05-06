@@ -16,7 +16,7 @@ export function MonthlyPaymentGrid({
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
       {months.map((month) => {
         const payment = paymentsByMonth[month];
-        const paid = !!payment;
+        const paid = !!payment && payment.amount > 0;
 
         return (
           <Card
@@ -30,7 +30,7 @@ export function MonthlyPaymentGrid({
                 paid ? "bg-green-50" : "bg-muted/50"
               } relative`}
             >
-              {payment && month && (
+              {month && (
                 <SquarePen
                   className="absolute top-2 right-2 h-5 w-5 text-muted-foreground cursor-pointer hover:text-primary transition"
                   onClick={() => onEditPayment(month, payment)}

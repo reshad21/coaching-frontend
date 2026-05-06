@@ -30,7 +30,7 @@ export function PaymentEditModal({ isOpen, onClose, month, payment, onSave }: Ed
   const handleSave = async () => {
     const numericAmount = Number.parseFloat(amount)
 
-    if (isNaN(numericAmount) || numericAmount <= 0) {
+    if (isNaN(numericAmount) || numericAmount < 0) {
       alert("Please enter a valid amount")
       return
     }
