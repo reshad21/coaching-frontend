@@ -40,7 +40,10 @@ export default function Dashboard() {
       <AppSidebar />
 
       {/* ✅ Responsive Header: Mobile-friendly padding, responsive font sizes, and flexible layout */}
-      <header className="fixed top-0 left-0 w-full bg-primary shadow-md h-16 flex items-center justify-between px-3 sm:px-6 z-50">
+      <header
+        className="fixed top-0 left-0 w-full shadow-md h-16 flex items-center justify-between px-3 sm:px-6 z-50"
+        style={{ background: "linear-gradient(180deg, #0d7a99 0%, #0f9ab5 50%, #17a2b8 100%)" }}
+      >
         <div className="flex items-center gap-2 sm:gap-4 min-w-0">
           <img src={logo} alt="Logo" className="h-8 sm:h-10 w-auto flex-shrink-0" />
           <SidebarTrigger className="h-8 sm:h-9 w-8 sm:w-9 rounded-lg bg-white/10 hover:bg-white/20 text-white border-none transition-all duration-200 ease-in-out hover:scale-105 flex items-center justify-center flex-shrink-0">

@@ -29,7 +29,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar collapsible="icon" {...props} className="shadow-2xl mt-[4rem] overflow-hidden ">
       <SidebarContent
         className="p-3"
-        style={{ background: "#163A8A" }}
+        style={{ background: "linear-gradient(180deg, #0d7a99 0%, #0f9ab5 50%, #17a2b8 100%)" }}
       >
         <div
           className="flex justify-start items-center ps-3 sm:ps-5 gap-2 mt-4 cursor-pointer hover:bg-white/10 rounded-md p-2 transition-all duration-200"
