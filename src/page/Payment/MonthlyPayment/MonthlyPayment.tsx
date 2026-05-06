@@ -90,7 +90,18 @@ const MonthlyPayment = () => {
     },
   });
 
-  const onSubmit = async (data: any) => {
+  const onSubmit = async (data: any, studentPayments: any[] = []) => {
+    if (data.title === "Monthly") {
+      const alreadyPaidMonth = studentPayments.some(
+        (payment: any) => payment.month === data.month && Number(payment.amount) > 0
+      );
+
+      if (alreadyPaidMonth && Number(data.amount) > 0) {
+        toast.error("Payment already taken this month");
+        return;
+      }
+    }
+
     const payload = {
       studentId: data.studentId,
       month: data.month,
@@ -311,7 +322,7 @@ const MonthlyPayment = () => {
                       <TableCell colSpan={7} className="p-2 sm:p-4">
                         <Form {...form}>
                           <form
-                            onSubmit={form.handleSubmit(onSubmit)}
+                            onSubmit={form.handleSubmit((data) => onSubmit(data, student.Payment || []))}
                             className="p-3 sm:p-4 bg-muted rounded-md"
                           >
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4">

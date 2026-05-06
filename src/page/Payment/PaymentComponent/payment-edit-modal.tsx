@@ -116,7 +116,7 @@ export function PaymentEditModal({ isOpen, onClose, month, payment, onSave }: Ed
           <Button variant="outline" onClick={handleClose} disabled={isLoading}>
             Cancel
           </Button>
-          <Button onClick={handleSave} disabled={isLoading}>
+          <Button onClick={handleSave} disabled={isLoading} variant="primaryGradient">
             {isLoading ? "Saving..." : payment ? "Update Payment" : "Add Payment"}
           </Button>
         </DialogFooter>
