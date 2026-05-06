@@ -28,6 +28,7 @@ const data = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const navigate = useNavigate();
   const { state } = useSidebar();
+  const currentYear = new Date().getFullYear();
 
   const handleNavigate = () => {
     navigate("/");
@@ -67,7 +68,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           className="py-4 sm:py-5 px-3 sm:px-4 border-t border-white/30 flex-shrink-0 relative z-20"
         >
           <p className="text-xs sm:text-sm text-white text-center break-words leading-relaxed font-semibold">
-            copyright@2024 | All rights reserved by Educational Management System
+            copyright@{currentYear} | All rights reserved by Educational Management System
           </p>
           <p className="text-xs sm:text-sm text-white text-center break-words leading-relaxed font-semibold">
             Developed by{" "}

@@ -62,36 +62,38 @@ export default function Dashboard() {
 
   return (
     // ✅ overflow-x-hidden on the provider kills the page-level x scroll
-    <SidebarProvider className="min-h-screen overflow-x-hidden">
-      <AppSidebar />
+    <div className="min-h-screen overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(186,230,253,0.65),_transparent_35%),linear-gradient(180deg,_#ffffff_0%,_#f8fcff_45%,_#eef8ff_100%)]">
+      <SidebarProvider className="min-h-screen overflow-x-hidden bg-transparent">
+        <AppSidebar />
 
-      {/* ✅ Responsive Header: Mobile-friendly padding, responsive font sizes, and flexible layout */}
-      <header
-        className="fixed top-0 left-0 w-full shadow-md h-16 flex items-center justify-between px-3 sm:px-6 z-50"
-        style={{ background: "linear-gradient(180deg, #0d7a99 0%, #0f9ab5 50%, #17a2b8 100%)" }}
-      >
-        <div className="flex items-center gap-2 sm:gap-4 min-w-0">
-          <img src={logo} alt="Logo" className="h-8 sm:h-10 w-auto flex-shrink-0" />
-          <CustomSidebarTrigger />
+        {/* ✅ Responsive Header: Mobile-friendly padding, responsive font sizes, and flexible layout */}
+        <header
+          className="fixed top-0 left-0 w-full shadow-md h-16 flex items-center justify-between px-3 sm:px-6 z-50"
+          style={{ background: "linear-gradient(180deg, #0d7a99 0%, #0f9ab5 50%, #17a2b8 100%)" }}
+        >
+          <div className="flex items-center gap-2 sm:gap-4 min-w-0">
+            <img src={logo} alt="Logo" className="h-8 sm:h-10 w-auto flex-shrink-0" />
+            <CustomSidebarTrigger />
+          </div>
+
+          {/* ✅ Responsive brand name: Hidden on mobile, visible on sm and up */}
+          <div className="absolute left-1/2 transform -translate-x-1/2 hidden sm:block">
+            <h1 className="text-white text-sm sm:text-lg md:text-xl font-bold tracking-wide whitespace-nowrap px-4">
+              {brandName}
+            </h1>
+          </div>
+
+          <div className="w-16 sm:w-[120px]"></div>
+        </header>
+
+        <div className="flex w-full min-w-0 overflow-x-hidden">
+          <SidebarInset className="bg-transparent" />
+          {/* ✅ Responsive main: Adjusted margin-top for smaller screens, responsive spacing */}
+          <main className="w-full min-w-0 overflow-x-hidden mt-16 bg-transparent">
+            <Outlet />
+          </main>
         </div>
-
-        {/* ✅ Responsive brand name: Hidden on mobile, visible on sm and up */}
-        <div className="absolute left-1/2 transform -translate-x-1/2 hidden sm:block">
-          <h1 className="text-white text-sm sm:text-lg md:text-xl font-bold tracking-wide whitespace-nowrap px-4">
-            {brandName}
-          </h1>
-        </div>
-
-        <div className="w-16 sm:w-[120px]"></div>
-      </header>
-
-      <div className="flex w-full min-w-0 overflow-x-hidden">
-        <SidebarInset />
-        {/* ✅ Responsive main: Adjusted margin-top for smaller screens, responsive spacing */}
-        <main className="w-full min-w-0 overflow-x-hidden mt-16">
-          <Outlet />
-        </main>
-      </div>
-    </SidebarProvider>
+      </SidebarProvider>
+    </div>
   );
 }
