@@ -104,7 +104,7 @@ const StudentPDFGenerator = ({
   };
 
   return (
-    <Button className={`text-white ${className}`} onClick={handleDownloadPDF}>
+    <Button className={`text-white ${className}`} onClick={handleDownloadPDF} variant="primaryGradient">
       Download PDF
     </Button>
   );
