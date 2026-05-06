@@ -1,6 +1,8 @@
 "use client";
 
-import { ChevronRight, LogOut, type LucideIcon } from "lucide-react";
+import * as React from "react";
+
+import { ChevronDown, LogOut, type LucideIcon } from "lucide-react";
 
 import {
   Collapsible,
@@ -9,7 +11,6 @@ import {
 } from "@/components/ui/collapsible";
 import {
   SidebarGroup,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -38,7 +39,9 @@ export function NavMain({
 }) {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  // const location = useLocation();  
+  const [openItem, setOpenItem] = React.useState<string | null>(
+    items.find((item) => item.isActive)?.title ?? null
+  );
 
 
   return (
@@ -49,7 +52,8 @@ export function NavMain({
           <Collapsible
             key={item.title}
             asChild
-            defaultOpen={item.isActive}
+            open={openItem === item.title}
+            onOpenChange={(open) => setOpenItem(open ? item.title : null)}
             className="group/collapsible"
           >
             <SidebarMenuItem>
@@ -57,7 +61,7 @@ export function NavMain({
                 <SidebarMenuButton tooltip={item.title}>
                   {item.icon && <item.icon className="text-white" />}
                   <span className="text-white">{item.title}</span>
-                  <ChevronRight className="ml-auto text-white/70 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                  <ChevronDown className="ml-auto text-white/70 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-180" />
                 </SidebarMenuButton>
               </CollapsibleTrigger>
               <CollapsibleContent>
@@ -80,16 +84,14 @@ export function NavMain({
           </Collapsible>
         ))}
       </SidebarMenu>
-      <SidebarGroupLabel
-        onClick={() => HandelLogout(navigate, dispatch)}
-        className="cursor-pointer text-xs"
-      >
-        <span>
-          {" "}
-          <LogOut className="pe-2" />{" "}
-        </span>
-        <span>Log out</span>
-      </SidebarGroupLabel>
+      <SidebarMenuItem>
+        <SidebarMenuButton asChild onClick={() => HandelLogout(navigate, dispatch)}>
+          <button type="button" className="w-full flex items-center gap-3">
+            <LogOut className="w-5 h-5 text-white" />
+            <span className="text-white">Log out</span>
+          </button>
+        </SidebarMenuButton>
+      </SidebarMenuItem>
     </SidebarGroup>
   );
 }

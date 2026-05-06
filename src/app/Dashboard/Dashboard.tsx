@@ -2,13 +2,39 @@ import { AppSidebar } from "@/components/app-sidebar";
 import {
   SidebarInset,
   SidebarProvider,
-  SidebarTrigger,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { useGetSiteSettingQuery } from "@/redux/api/siteSettingApi/siteSettingApi";
 import { Outlet } from "react-router-dom";
 import defaultLogo from "@/assets/logo.svg";
 import { Menu } from "lucide-react";
 import { useEffect } from "react";
+
+function ToggleIcon() {
+  const { state } = useSidebar();
+  return (
+    <Menu
+      className={`h-4 sm:h-5 w-4 sm:w-5 transform transition-transform duration-200 ${
+        state === "collapsed" ? "rotate-180" : "rotate-0"
+      }`}
+    />
+  );
+}
+
+function CustomSidebarTrigger() {
+  const { toggleSidebar } = useSidebar();
+
+  return (
+    <button
+      onClick={toggleSidebar}
+      className="h-8 sm:h-9 w-8 sm:w-9 rounded-lg bg-white/10 hover:bg-white/20 text-white border-none transition-all duration-200 ease-in-out hover:scale-105 flex items-center justify-center flex-shrink-0 cursor-pointer"
+      aria-label="Toggle sidebar"
+      type="button"
+    >
+      <ToggleIcon />
+    </button>
+  );
+}
 
 export default function Dashboard() {
   const { data: siteSettingData } = useGetSiteSettingQuery(undefined);
@@ -46,9 +72,7 @@ export default function Dashboard() {
       >
         <div className="flex items-center gap-2 sm:gap-4 min-w-0">
           <img src={logo} alt="Logo" className="h-8 sm:h-10 w-auto flex-shrink-0" />
-          <SidebarTrigger className="h-8 sm:h-9 w-8 sm:w-9 rounded-lg bg-white/10 hover:bg-white/20 text-white border-none transition-all duration-200 ease-in-out hover:scale-105 flex items-center justify-center flex-shrink-0">
-            <Menu className="h-4 sm:h-5 w-4 sm:w-5" />
-          </SidebarTrigger>
+          <CustomSidebarTrigger />
         </div>
 
         {/* ✅ Responsive brand name: Hidden on mobile, visible on sm and up */}

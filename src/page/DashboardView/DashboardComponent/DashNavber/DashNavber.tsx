@@ -12,25 +12,25 @@ const DashNavber = () => {
       </div>
       <div className="ml-auto flex gap-2">
         <Link to="/create-student">
-          <Button size="sm" variant="outline">
+          <Button size="sm"  variant="primaryGradient">
             <Users className="mr-2 h-4 w-4" />
             Add Student
           </Button>
         </Link>
         <Link to="/batch">
-          <Button size="sm" variant="outline">
+          <Button size="sm"  variant="primaryGradient">
             <GraduationCap className="mr-2 h-4 w-4" />
             Add Batch
           </Button>
         </Link>
         <Link to="/class">
-          <Button size="sm" variant="outline">
+          <Button size="sm" variant="primaryGradient">
             <BookOpen className="mr-2 h-4 w-4" />
             Add Class
           </Button>
         </Link>
         <Link to="/shift">
-          <Button size="sm" variant="outline">
+          <Button size="sm" variant="primaryGradient">
             <Clock className="mr-2 h-4 w-4" />
             Add Shift
           </Button>
