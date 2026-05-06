@@ -8,7 +8,7 @@ export function DashboardOverview() {
       <DashNavber />
       <div className="space-y-6">
 
-        <div className="">
+        <div className="mx-3 sm:mx-6">
           <StudentChart />
         </div>
 

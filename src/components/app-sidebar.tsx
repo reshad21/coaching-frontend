@@ -26,12 +26,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   };
   // ✅ Responsive Sidebar: Proper spacing for mobile and desktop
   return (
-    <Sidebar collapsible="icon" {...props} className="shadow-xl  mt-[4rem]">
-      <SidebarContent className="bg-[#ffffff]">
-        <div className="flex justify-start items-center ps-3 sm:ps-5 gap-2 mt-4 cursor-pointer hover:bg-gray-100 rounded-lg p-1 transition-colors" onClick={handleNavigate}>
-          <LayoutDashboard className="size-[20px] font-semibold flex-shrink-0"/>
+    <Sidebar collapsible="icon" {...props} className="shadow-2xl mt-[4rem] overflow-hidden ">
+      <SidebarContent
+        className="p-3"
+        style={{ background: "#163A8A" }}
+      >
+        <div
+          className="flex justify-start items-center ps-3 sm:ps-5 gap-2 mt-4 cursor-pointer hover:bg-white/10 rounded-md p-2 transition-all duration-200"
+          onClick={handleNavigate}
+        >
+          <LayoutDashboard className="w-5 h-5 text-white flex-shrink-0" />
           {state === "expanded" && (
-            <div className="text-xs font-semibold text-gray-700 truncate">
+            <div className="text-sm font-semibold text-white truncate">
               Dashboard
             </div>
           )}
@@ -40,8 +46,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
       </SidebarContent>
 
-      <SidebarFooter className="bg-[#ffffff] border-t border-gray-200 p-3 sm:p-4">
-        <p className="text-xs text-gray-500 text-center break-words">
+      <SidebarFooter className="bg-transparent p-3 sm:p-4">
+        <p className="text-xs text-white/90 text-center break-words">
           copyright@www.webspiderbd.com
         </p>
       </SidebarFooter>
