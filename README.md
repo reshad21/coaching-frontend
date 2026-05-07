@@ -57,3 +57,16 @@ This project is licensed under the MIT License.
 ## Contact
 For any queries or contributions, reach out at [your email] or visit [your GitHub profile].
 
+## Login credentials
+  {
+    name: "Super Admin",
+    email: "coaching.managment@gmail.com",
+    phone: "01700000001",
+    password: "Admin@123",
+  },
+  {
+    name: "Second Admin",
+    email: "admin2@gmail.com",
+    phone: "01700000002",
+    password: "Admin@123",
+  },
