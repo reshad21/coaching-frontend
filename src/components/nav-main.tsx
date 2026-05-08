@@ -18,9 +18,9 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar";
-import { Link, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "@/redux/hooks";
 import { HandelLogout } from "@/utils/handelLogOut";
+import { Link, useNavigate } from "react-router-dom";
 
 export function NavMain({
   items,
@@ -84,7 +84,7 @@ export function NavMain({
           </Collapsible>
         ))}
       </SidebarMenu>
-      <SidebarMenuItem>
+      <SidebarMenuItem className="!list-none !before:hidden !after:hidden">
         <SidebarMenuButton asChild onClick={() => HandelLogout(navigate, dispatch)}>
           <button type="button" className="w-full flex items-center gap-3">
             <LogOut className="w-5 h-5 text-white" />

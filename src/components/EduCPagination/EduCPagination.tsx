@@ -47,7 +47,7 @@ const EduCPagination = ({ page, setPage, totalPages = 100, className }: TGmPagin
       <button
         onClick={() => currentPage > 1 && setPage(currentPage - 1)}
         disabled={currentPage <= 1}
-        className="px-3 py-1 border text-sm rounded-l-md bg-gray-50 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="px-3 py-1 border text-sm rounded-l-md bg-white hover:bg-primary hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
         Previous
       </button>
@@ -60,9 +60,10 @@ const EduCPagination = ({ page, setPage, totalPages = 100, className }: TGmPagin
           <button
             key={pageNum}
             onClick={() => setPage(pageNum)}
-            className={`px-3 py-1 text-sm border-t border-b border-r ${
-              currentPage === pageNum ? "bg-primary text-white" : "bg-white hover:bg-gray-100"
-            }`}
+            className={`px-3 py-1 text-sm border-t border-b border-r transition-colors ${currentPage === pageNum
+                ? "bg-primary text-white"
+                : "bg-white hover:bg-primary hover:text-white"
+              }`}
           >
             {pageNum}
           </button>
@@ -71,7 +72,7 @@ const EduCPagination = ({ page, setPage, totalPages = 100, className }: TGmPagin
       <button
         onClick={() => currentPage < totalPages && setPage(currentPage + 1)}
         disabled={currentPage >= totalPages}
-        className="px-3 py-1 text-sm border-t border-b border-r rounded-r-md bg-gray-50 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
+        className="px-3 py-1 text-sm border-t border-b border-r rounded-r-md bg-white hover:bg-primary hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
         Next
       </button>
