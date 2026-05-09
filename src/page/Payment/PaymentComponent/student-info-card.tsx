@@ -1,6 +1,8 @@
+
 import { Avatar } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { StudentInfo } from "@/types/payment";
+import { User } from "lucide-react";
 
 interface StudentInfoCardProps {
   studentInfo: StudentInfo;
@@ -16,12 +18,8 @@ export function StudentInfoCard({ studentInfo }: StudentInfoCardProps) {
       </CardHeader>
       <CardContent className="flex items-center gap-4">
         <Avatar>
-          <div className="flex h-full w-full items-center justify-center bg-muted text-xl font-semibold">
-            <img
-              src={`${studentInfo.image}`}
-              alt={`${studentInfo.firstName} ${studentInfo.lastName}`}
-              className="size-10 rounded-sm object-cover"
-            />
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary shadow-md">
+            <User className="h-8 w-8 text-white" />
           </div>
         </Avatar>
         <div className="flex flex-col gap-1">

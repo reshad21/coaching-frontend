@@ -153,7 +153,14 @@ export function PaymentDashboard() {
           </TabsContent>
         </Tabs>
 
-        <ModelTestPayments modelTestPayments={modelTestPayments} />
+        <ModelTestPayments
+          modelTestPayments={modelTestPayments}
+          onEditPayment={(payment) => {
+            setSelectedMonth("Model Test");
+            setSelectedPayment(payment);
+            setIsEditModalOpen(true);
+          }}
+        />
 
         <PaymentEditModal
           isOpen={isEditModalOpen}
