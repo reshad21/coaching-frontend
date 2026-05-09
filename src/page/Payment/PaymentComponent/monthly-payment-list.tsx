@@ -2,9 +2,9 @@
 
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
-import { CheckCircle, SquarePen, XCircle } from "lucide-react"
-import type { Payment } from "@/types/payment"
 import { months } from "@/constants/months"
+import type { Payment } from "@/types/payment"
+import { CheckCircle, SquarePen, XCircle } from "lucide-react"
 
 interface MonthlyPaymentListProps {
   paymentsByMonth: Record<string, Payment>
