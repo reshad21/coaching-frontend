@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useMemo, useState } from "react";
-import { useGetAllStudentQuery } from "@/redux/api/studentApi/studentApi";
-import { months } from "@/constants/months";
 import Loading from "@/components/Loading";
-import { jsPDF } from "jspdf";
-import { useSendSingleMessageMutation } from "@/redux/api/auth/message/message";
-import UnpaidOverviewFilters from "./_component/UnpaidOverviewFilters";
-import { Label } from "@/components/ui/label";
-import Swal from "sweetalert2";
-import toast from "react-hot-toast";
-import { AlertCircle, Download, Send, Trash2, Users, PhoneCall, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { months } from "@/constants/months";
+import { useSendSingleMessageMutation } from "@/redux/api/auth/message/message";
+import { useGetAllStudentQuery } from "@/redux/api/studentApi/studentApi";
+import { jsPDF } from "jspdf";
+import { AlertCircle, Download, PhoneCall, Send, Settings, Trash2, Users } from "lucide-react";
+import { useMemo, useState } from "react";
+import toast from "react-hot-toast";
+import Swal from "sweetalert2";
+import UnpaidOverviewFilters from "./_component/UnpaidOverviewFilters";
 
 export default function UnpaidOverview() {
   const [selectedBatch, setSelectedBatch] = useState("");
@@ -517,7 +517,7 @@ export default function UnpaidOverview() {
         <div className="mb-8 animate-slide-in-down">
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-8">
             <div>
-              <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
+              <h1 className="text-4xl md:text-5xl font-bold text-slate-700 mb-2">
                 Unpaid Overview
               </h1>
               <p className="text-gray-600 text-lg">
@@ -573,7 +573,7 @@ export default function UnpaidOverview() {
         {/* Filters Section */}
         <div className="mb-6 animate-slide-in-up">
           <div className="card-modern">
-            <h3 className="text-lg font-bold text-gray-900 mb-4">Filters</h3>
+            <h3 className="text-lg font-bold text-slate-700 mb-4">Filters</h3>
             <UnpaidOverviewFilters
               selectedBatch={selectedBatch}
               selectClass={selectClass}
@@ -591,7 +591,7 @@ export default function UnpaidOverview() {
           <div className="card-modern">
             <div className="flex items-start justify-between mb-6">
               <div>
-                <h3 className="text-xl font-bold text-gray-900">Send Bulk Message</h3>
+                <h3 className="text-xl font-bold text-slate-700">Send Bulk Message</h3>
                 <p className="text-gray-600 text-sm mt-1">
                   {dueStudentsWithPhone.length} student{dueStudentsWithPhone.length !== 1 ? "s" : ""} ready to receive messages
                 </p>
@@ -601,7 +601,7 @@ export default function UnpaidOverview() {
 
             <div className="space-y-4">
               <div>
-                <Label htmlFor="bulk-message" className="text-gray-900 font-semibold block mb-3">
+                <Label htmlFor="bulk-message" className="text-slate-700 font-semibold block mb-3">
                   Message Content
                 </Label>
                 <textarea
@@ -609,7 +609,7 @@ export default function UnpaidOverview() {
                   value={bulkMessage}
                   onChange={(e) => setBulkMessage(e.target.value)}
                   placeholder="Type your message here... (e.g., 'Dear Student, please pay your pending dues...')"
-                  className="w-full border border-gray-300 rounded-12 p-4 text-gray-900 placeholder-gray-400 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 resize-none min-h-[120px] transition-all duration-200"
+                  className="w-full border border-gray-300 rounded-12 p-4 text-slate-700 placeholder-gray-400 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20 resize-none min-h-[120px] transition-all duration-200"
                 />
               </div>
 
@@ -641,7 +641,7 @@ export default function UnpaidOverview() {
         {/* Table Section */}
         <div className="animate-slide-in-up">
           <div className="card-modern">
-            <h3 className="text-xl font-bold text-gray-900 mb-6">Student Details</h3>
+            <h3 className="text-xl font-bold text-slate-700 mb-6">Student Details</h3>
             <div className="table-scroll-container overflow-x-auto overflow-y-auto max-h-[60vh] sm:max-h-[65vh] lg:max-h-[70vh] rounded-lg border border-gray-200">
               <table className="w-full table-auto border-collapse min-w-max">
                 <thead>
@@ -657,18 +657,18 @@ export default function UnpaidOverview() {
                 <tbody>
                   {filteredOverview.map((row: any, idx: number) => (
                     <tr key={row.id} className="table-row-hover">
-                      <td className="p-4 text-gray-900 text-sm font-semibold">{idx + 1}</td>
+                      <td className="p-4 text-slate-700 text-sm font-semibold">{idx + 1}</td>
                       <td className="p-4">
-                        <div className="font-semibold text-gray-900">{row.name || "-"}</div>
+                        <div className="font-semibold text-slate-700">{row.name || "-"}</div>
                         <div className="text-xs text-gray-500 mt-2 space-y-1 sm:hidden">
                           <div>ID: {row.studentId || "-"}</div>
                           <div>Class: {row.className || "-"}</div>
                           <div>Phone: {row.phone || "-"}</div>
                         </div>
                       </td>
-                      <td className="p-4 text-gray-700 text-sm hidden sm:table-cell">{row.studentId || "-"}</td>
-                      <td className="p-4 text-gray-700 text-sm hidden sm:table-cell">{row.className || "-"}</td>
-                      <td className="p-4 text-gray-700 text-sm hidden md:table-cell">{row.phone || "-"}</td>
+                      <td className="p-4 text-slate-700 text-sm hidden sm:table-cell">{row.studentId || "-"}</td>
+                      <td className="p-4 text-slate-700 text-sm hidden sm:table-cell">{row.className || "-"}</td>
+                      <td className="p-4 text-slate-700 text-sm hidden md:table-cell">{row.phone || "-"}</td>
                       <td className="p-4">
                         <div className="flex flex-wrap gap-2">
                           {row.unpaidMonths.map((m: string) => {

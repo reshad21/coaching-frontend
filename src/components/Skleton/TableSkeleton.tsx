@@ -25,7 +25,7 @@ const TableSkeleton = () => {
               "Action",
             ].map((header, idx) => (
               <TableHead key={idx}>
-                <span className="text-slate-600 font-bold">{header}</span>
+                <span className="text-slate-700 font-bold">{header}</span>
               </TableHead>
             ))}
           </TableRow>

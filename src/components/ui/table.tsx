@@ -88,7 +88,7 @@ const TableCell = React.forwardRef<
   <td
     ref={ref}
     className={cn(
-      "p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] before:content-[attr(data-label)] before:block before:font-semibold before:text-gray-700 before:mb-1 before:text-xs sm:before:content-none flex justify-between sm:table-cell",
+      "p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] before:content-[attr(data-label)] before:block before:font-semibold before:text-slate-700 before:mb-1 before:text-xs sm:before:content-none flex justify-between sm:table-cell",
       className
     )}
     {...props}
@@ -109,12 +109,7 @@ const TableCaption = React.forwardRef<
 TableCaption.displayName = "TableCaption"
 
 export {
-  Table,
-  TableHeader,
-  TableBody,
-  TableFooter,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableCaption,
+  Table, TableBody, TableCaption, TableCell, TableFooter,
+  TableHead, TableHeader, TableRow
 }
+

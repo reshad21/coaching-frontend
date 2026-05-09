@@ -6,13 +6,12 @@ import SearchInputField from "@/components/CommonSearch/SearchInputField"
 import EduCPagination from "@/components/EduCPagination/EduCPagination"
 import Loading from "@/components/Loading"
 import SelectStudentClass from "@/components/studentClass/SelectStudentClass"
-import studentImage from "../../../assets/default.jpg"
 import SendMessage from "@/page/Student/View/SendMessage/SendMessage"
+import studentImage from "../../../assets/default.jpg"
 
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import {
   Select,
   SelectContent,
@@ -20,6 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
 import { useGetAllStudentQuery } from "@/redux/api/studentApi/studentApi"
 
@@ -97,15 +97,15 @@ const PaymentStatus = () => {
             <ChevronsRight className="mx-2 h-4 w-4" />
             <span>Payment Management</span>
             <ChevronsRight className="mx-2 h-4 w-4" />
-            <span className="text-slate-900">Payment Overview</span>
+            <span className="text-slate-700">Payment Overview</span>
           </div>
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Payment Overview</h1>
-              <p className="text-slate-600 mt-1">Monitor student payment status and model test progress</p>
+              <h1 className="text-3xl font-bold text-slate-700 tracking-tight">Payment Overview</h1>
+              <p className="text-slate-700 mt-1">Monitor student payment status and model test progress</p>
             </div>
             <div className="flex items-center gap-3">
-              <Badge variant="outline" className="text-slate-600">
+              <Badge variant="outline" className="text-slate-700">
                 {students?.meta?.total || 0} Total Students
               </Badge>
             </div>
@@ -117,8 +117,8 @@ const PaymentStatus = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Total Students</p>
-                  <p className="text-2xl font-bold text-slate-900">{summaryStats.total}</p>
+                  <p className="text-sm font-medium text-slate-700">Total Students</p>
+                  <p className="text-2xl font-bold text-slate-700">{summaryStats.total}</p>
                 </div>
                 <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center">
                   <Users className="h-6 w-6 text-blue-600" />
@@ -131,7 +131,7 @@ const PaymentStatus = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Paid This Month</p>
+                  <p className="text-sm font-medium text-slate-700">Paid This Month</p>
                   <p className="text-2xl font-bold text-green-600">{summaryStats.paid}</p>
                 </div>
                 <div className="h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center">
@@ -145,7 +145,7 @@ const PaymentStatus = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Pending Payment</p>
+                  <p className="text-sm font-medium text-slate-700">Pending Payment</p>
                   <p className="text-2xl font-bold text-red-600">{summaryStats.unpaid}</p>
                 </div>
                 <div className="h-12 w-12 bg-red-100 rounded-lg flex items-center justify-center">
@@ -159,7 +159,7 @@ const PaymentStatus = () => {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-600">Model Test Passed</p>
+                  <p className="text-sm font-medium text-slate-700">Model Test Passed</p>
                   <p className="text-2xl font-bold text-purple-600">{summaryStats.modelTestPassed}</p>
                 </div>
                 <div className="h-12 w-12 bg-purple-100 rounded-lg flex items-center justify-center">
@@ -209,7 +209,7 @@ const PaymentStatus = () => {
 
             {hasActiveFilters && (
               <div className="flex flex-wrap gap-2 pt-2 border-t">
-                <span className="text-sm text-slate-600 font-medium">Active filters:</span>
+                <span className="text-sm text-slate-700 font-medium">Active filters:</span>
                 {search && (
                   <Badge variant="secondary" className="text-xs">
                     Search: {search}
@@ -261,7 +261,7 @@ const PaymentStatus = () => {
                   <TableBody>
                     {filteredStudents.map((student: any, index: number) => (
                       <TableRow key={student.id} className="hover:bg-slate-50/50 transition-colors">
-                        <TableCell className="font-medium text-slate-600">{(page - 1) * 10 + index + 1}</TableCell>
+                        <TableCell className="font-medium text-slate-700">{(page - 1) * 10 + index + 1}</TableCell>
                         <TableCell>
                           <div className="flex items-center gap-3">
                             <div className="relative">
@@ -284,7 +284,7 @@ const PaymentStatus = () => {
                             {student.studentId}
                           </Badge>
                         </TableCell>
-                        <TableCell className="text-slate-600 whitespace-nowrap">{student.phone}</TableCell>
+                        <TableCell className="text-slate-700 whitespace-nowrap">{student.phone}</TableCell>
                         <TableCell>
                           {student.Batch?.batchName ? (
                             <Badge variant="secondary" className="text-xs">
@@ -345,9 +345,9 @@ const PaymentStatus = () => {
                                 Sent
                               </Badge>
                             )}
-                            <SendMessage 
-                              student={student} 
-                              onSuccess={() => setSentMessages(prev => ({ ...prev, [student.id]: true }))} 
+                            <SendMessage
+                              student={student}
+                              onSuccess={() => setSentMessages(prev => ({ ...prev, [student.id]: true }))}
                             />
                             <Link to={`/view-student/${student.id}`}>
                               <Button
@@ -400,7 +400,7 @@ const PaymentStatus = () => {
 
         {students?.meta?.total > students?.meta?.limit && (
           <div className="flex justify-between items-center">
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-slate-700">
               Showing {(page - 1) * 10 + 1} to {Math.min(page * 10, students.meta.total)} of {students.meta.total}{" "}
               students
             </p>

@@ -26,7 +26,7 @@ export const BatchModal = ({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogContent className="max-w-[425px]">
         <DialogHeader>
-          <DialogTitle className="text-center text-slate-800 font-semibold">
+          <DialogTitle className="text-center text-slate-700 font-semibold">
             UPDATE BATCH NAME
           </DialogTitle>
         </DialogHeader>

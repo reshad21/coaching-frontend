@@ -100,7 +100,7 @@ export function PaymentDashboard() {
 
           {/* ✅ Title moved next to back button — cleaner layout */}
           <div className="flex flex-col gap-1">
-            <h1 className="text-3xl font-bold tracking-tight">
+            <h1 className="text-3xl font-bold text-slate-700">
               Payment Dashboard
             </h1>
             <p className="text-muted-foreground text-sm">
@@ -113,7 +113,7 @@ export function PaymentDashboard() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
           <StudentInfoCard studentInfo={studentInfo} />
           <PaymentProgressCard
             paidMonths={paidMonths}
@@ -130,8 +130,9 @@ export function PaymentDashboard() {
 
         {/* Payment History Tabs */}
         <Tabs defaultValue="grid" className="w-full">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold">Monthly Payment History</h2>
+          <div className="flex items-center gap-3 mb-6">
+            <h2 className="text-sm font-semibold uppercase tracking-widest text-slate-500">Monthly Payment History</h2>
+            <div className="flex-1 h-px bg-slate-200" />
             <TabsList>
               <TabsTrigger value="grid">Grid View</TabsTrigger>
               <TabsTrigger value="list">List View</TabsTrigger>

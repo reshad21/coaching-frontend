@@ -1,19 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import logo from "@/assets/logo.svg";
 import { FormFieldWrapper } from "@/components/common/FormFieldWrapper";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { 
-  useGetSiteSettingQuery, 
-  useCreateSiteSettingMutation, 
-  useUpdateSiteSettingMutation 
+import {
+  useCreateSiteSettingMutation,
+  useGetSiteSettingQuery,
+  useUpdateSiteSettingMutation
 } from "@/redux/api/siteSettingApi/siteSettingApi";
 import { uploadImageToImgbb } from "@/utils/uploadImageToImgbb";
-import { ChevronRight, Settings, Upload, Image, Loader2 } from "lucide-react";
+import { ChevronRight, Image, Loader2, Settings, Upload } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm, useFormContext } from "react-hook-form";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
-import logo from "@/assets/logo.svg";
 
 // Image Upload Component (reusable for logo and favicon)
 const ImageUploadField = ({
@@ -64,7 +64,7 @@ const ImageUploadField = ({
 
   return (
     <div className="w-full space-y-2">
-      <label htmlFor={inputId} className="block text-sm font-medium text-gray-700">
+      <label htmlFor={inputId} className="block text-sm font-medium text-slate-700">
         {label}
       </label>
       <div className="flex items-center gap-4">
@@ -133,7 +133,7 @@ const SiteSettingPage = () => {
   const onSubmit = async (data: any) => {
     let logoUrl = existingSetting?.logo || "";
     let faviconUrl = existingSetting?.favicon || "";
-    
+
     // Only upload if new file is selected
     if (data.logo && data.logo instanceof File) {
       logoUrl = await uploadImageToImgbb(data.logo);
@@ -154,9 +154,9 @@ const SiteSettingPage = () => {
     let res;
     if (isEditMode) {
       // Update existing setting
-      res = await updateSiteSetting({ 
-        id: existingSetting.id, 
-        data: siteSettingPayload 
+      res = await updateSiteSetting({
+        id: existingSetting.id,
+        data: siteSettingPayload
       });
     } else {
       // Create new setting
@@ -204,8 +204,8 @@ const SiteSettingPage = () => {
           <div>
             <h1 className="text-3xl font-bold text-foreground mb-2">Site Settings</h1>
             <p className="text-muted-foreground">
-              {isEditMode 
-                ? "Update your site's branding including logo, favicon and brand name." 
+              {isEditMode
+                ? "Update your site's branding including logo, favicon and brand name."
                 : "Configure your site's branding including logo, favicon and brand name."}
             </p>
           </div>
@@ -242,8 +242,8 @@ const SiteSettingPage = () => {
                   <p className="text-sm text-muted-foreground mb-4">
                     Upload your organization's logo. This will be displayed in the header and other branded areas.
                   </p>
-                  <ImageUploadField 
-                    name="logo" 
+                  <ImageUploadField
+                    name="logo"
                     label="Upload Logo"
                     inputId="logo-upload"
                     defaultUrl={existingSetting?.logo}
@@ -262,8 +262,8 @@ const SiteSettingPage = () => {
                   <p className="text-sm text-muted-foreground mb-4">
                     Upload a favicon for your site. This small icon appears in browser tabs and bookmarks.
                   </p>
-                  <ImageUploadField 
-                    name="favicon" 
+                  <ImageUploadField
+                    name="favicon"
                     label="Upload Favicon"
                     inputId="favicon-upload"
                     defaultUrl={existingSetting?.favicon}
@@ -279,10 +279,10 @@ const SiteSettingPage = () => {
                   <h2 className="text-lg font-semibold text-foreground mb-4">Header Preview</h2>
                   <div className="bg-primary rounded-lg p-4 flex items-center gap-4">
                     <div className="h-10 w-10 bg-white rounded-lg flex items-center justify-center p-1">
-                      <img 
-                        src={existingSetting?.logo || logo} 
-                        alt="Logo" 
-                        className="h-full w-auto object-contain" 
+                      <img
+                        src={existingSetting?.logo || logo}
+                        alt="Logo"
+                        className="h-full w-auto object-contain"
                       />
                     </div>
                     <span className="text-white text-xl font-bold tracking-wide">
@@ -296,16 +296,16 @@ const SiteSettingPage = () => {
 
                 {/* Submit Button */}
                 <div className="flex justify-end gap-4">
-                  <Button 
-                    type="button" 
-                    variant="outline" 
+                  <Button
+                    type="button"
+                    variant="outline"
                     onClick={() => form.reset()}
                     disabled={isSubmitting}
                   >
                     Reset
                   </Button>
-                  <Button 
-                    type="submit" 
+                  <Button
+                    type="submit"
                     variant="primaryGradient"
                     disabled={isSubmitting}
                   >

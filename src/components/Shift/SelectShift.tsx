@@ -27,7 +27,7 @@ const SelectShift = ({
         <SelectGroup>
           {shiftData?.data?.map((item: any) => (
             <SelectItem key={item.id} value={item.shiftName}>
-              <span className="text-slate-800 font-semibold">
+              <span className="text-slate-700 font-semibold">
                 {item.shiftName}
               </span>
             </SelectItem>

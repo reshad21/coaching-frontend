@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
@@ -6,15 +7,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { useGetAllBatchQuery } from "@/redux/api/batch/batchApi";
 import {
   BookOpen,
   Clock,
   GraduationCap,
-  Users,
   Layers,
   TrendingUp,
+  Users,
 } from "lucide-react";
 import BatchDetailsSkeleton from "./BatchDetailsSkeleton";
 
@@ -31,7 +31,7 @@ const BATCH_GRADIENTS = [
 const BatchDetails = () => {
   const { data: batchData, isLoading } = useGetAllBatchQuery(undefined);
   const batches = batchData?.data || [];
-  
+
   // Calculate totals
   const totalStudents = batches.reduce((acc: number, batch: any) => acc + (batch?.students?.length || 0), 0);
   const totalBatches = batches.length;
@@ -75,7 +75,7 @@ const BatchDetails = () => {
               {batches?.map((batch: any, index: number) => {
                 const colorScheme = BATCH_GRADIENTS[index % BATCH_GRADIENTS.length];
                 const studentCount = batch?.students?.length || 0;
-                
+
                 return (
                   <div
                     key={index}
@@ -83,7 +83,7 @@ const BatchDetails = () => {
                   >
                     {/* Decorative background element */}
                     <div className="absolute -right-4 -top-4 h-24 w-24 rounded-full bg-gradient-to-br from-white/40 to-white/10 blur-2xl group-hover:scale-150 transition-transform duration-500" />
-                    
+
                     {/* Header with batch name */}
                     <div className="relative flex items-center justify-between mb-3 gap-2">
                       <div className="flex items-center gap-2.5 min-w-0 flex-1">
@@ -101,7 +101,7 @@ const BatchDetails = () => {
                         Active
                       </Badge>
                     </div>
-                    
+
                     {/* Info Grid */}
                     <div className="relative grid grid-cols-2 gap-3 mt-4">
                       {/* Class Info */}
@@ -112,7 +112,7 @@ const BatchDetails = () => {
                           <p className="text-sm font-bold text-slate-700 truncate" title={batch?.Class?.className}>{batch?.Class?.className}</p>
                         </div>
                       </div>
-                      
+
                       {/* Shift Info */}
                       <div className="flex items-center gap-2 p-2.5 bg-white/60 rounded-lg backdrop-blur-sm min-w-0">
                         <Clock className="h-4 w-4 text-amber-500 flex-shrink-0" />
@@ -122,12 +122,12 @@ const BatchDetails = () => {
                         </div>
                       </div>
                     </div>
-                    
+
                     {/* Student Count Footer */}
                     <div className="relative flex items-center justify-between mt-4 pt-3 border-t border-slate-200/50">
                       <div className="flex items-center gap-2">
                         <Users className="h-4 w-4 text-slate-400 flex-shrink-0" />
-                        <span className="text-sm text-slate-600 whitespace-nowrap">Total Students</span>
+                        <span className="text-sm text-slate-700 whitespace-nowrap">Total Students</span>
                       </div>
                       <div className="flex items-center gap-1.5">
                         <span className="text-lg font-bold text-slate-800">{studentCount}</span>
@@ -140,7 +140,7 @@ const BatchDetails = () => {
                 );
               })}
             </div>
-            
+
             {/* Empty State */}
             {batches.length === 0 && (
               <div className="flex flex-col items-center justify-center py-12 text-center">

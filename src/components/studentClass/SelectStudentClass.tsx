@@ -27,7 +27,7 @@ const SelectStudentClass = ({
         <SelectGroup>
           {classData?.data?.map((item: any) => (
             <SelectItem key={item.id} value={item.className}>
-              <span className="text-slate-800 font-semibold">
+              <span className="text-slate-700 font-semibold">
                 {item.className}
               </span>
             </SelectItem>

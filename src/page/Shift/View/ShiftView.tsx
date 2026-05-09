@@ -2,15 +2,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { ShiftModal } from "@/components/CommonModal/ShiftModal"
+import Loading from "@/components/Loading"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { useDeleteShiftMutation, useGetAllShiftQuery } from "@/redux/api/shiftApi/shiftApi"
-import { Edit, Trash2, Clock } from "lucide-react"
+import { Clock, Edit, Trash2 } from "lucide-react"
 import { useState } from "react"
 import toast from "react-hot-toast"
 import Swal from "sweetalert2"
 import ShiftCreate from "../Create/ShiftCreate"
-import Loading from "@/components/Loading"
 
 const ShiftView = () => {
   // * Modal state
@@ -64,8 +64,8 @@ const ShiftView = () => {
                 <Clock className="h-6 w-6 sm:h-8 sm:w-8 text-blue-600" />
               </div>
               <div className="min-w-0">
-                <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 tracking-tight truncate">Shift Management</h1>
-                <p className="text-xs sm:text-sm text-slate-600 mt-1 hidden sm:block">Manage and organize work shifts efficiently</p>
+                <h1 className="text-2xl sm:text-3xl font-bold text-slate-700 tracking-tight truncate">Shift Management</h1>
+                <p className="text-xs sm:text-sm text-slate-700 mt-1 hidden sm:block">Manage and organize work shifts efficiently</p>
               </div>
             </div>
             <div className="w-full sm:w-auto">
@@ -86,8 +86,8 @@ const ShiftView = () => {
               <div className="bg-slate-50 border-b border-slate-200 px-4 sm:px-6 py-3 sm:py-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4 sm:gap-6">
-                    <div className="text-xs sm:text-sm text-slate-600">
-                      Total Shifts: <span className="font-semibold text-slate-900">{shift.data.length}</span>
+                    <div className="text-xs sm:text-sm text-slate-700">
+                      Total Shifts: <span className="font-semibold text-slate-700">{shift.data.length}</span>
                     </div>
                   </div>
                 </div>
@@ -118,7 +118,7 @@ const ShiftView = () => {
                               <Clock className="h-3 w-3 sm:h-4 sm:w-4 text-blue-600" />
                             </div>
                             <div className="min-w-0">
-                              <div className="font-semibold text-slate-900 text-xs sm:text-sm truncate">{shiftItem.shiftName}</div>
+                              <div className="font-semibold text-slate-700 text-xs sm:text-sm truncate">{shiftItem.shiftName}</div>
                               <div className="text-xs text-slate-500 hidden sm:block">Work Shift</div>
                             </div>
                           </div>
@@ -157,7 +157,7 @@ const ShiftView = () => {
               <div className="p-3 sm:p-4 bg-slate-100 rounded-full mb-4">
                 <Clock className="h-8 w-8 sm:h-12 sm:w-12 text-slate-400" />
               </div>
-              <h3 className="text-base sm:text-lg font-semibold text-slate-900 mb-2">No shifts found</h3>
+              <h3 className="text-base sm:text-lg font-semibold text-slate-700 mb-2">No shifts found</h3>
               <p className="text-xs sm:text-sm text-slate-500 text-center mb-6 max-w-md">
                 Get started by creating your first shift to organize work schedules effectively.
               </p>

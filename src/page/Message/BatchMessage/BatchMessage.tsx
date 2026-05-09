@@ -24,7 +24,7 @@ const BatchMessage = () => {
     if (!message) {
       return toast.error("please write Message");
     }
-    if (!selectedBatch ) {
+    if (!selectedBatch) {
       return toast.error("please Select Batch");
     }
 
@@ -43,7 +43,7 @@ const BatchMessage = () => {
           message,
         }).unwrap();
         console.log(res);
-        
+
         if (res?.data?.response_code == 202) {
           toast.success("Message send successfully");
         }
@@ -60,15 +60,14 @@ const BatchMessage = () => {
           <form className="space-y-3 sm:space-y-4">
             <select
               {...form.register("batch")}
-              className={`border p-2 sm:p-3 rounded w-full shadow-sm text-sm sm:text-base leading-tight font-medium text-slate-700 bg-white h-10 sm:h-11 focus:ring-2 focus:ring-primary focus:border-transparent ${
-                selectedBatch ? "cursor-pointer border-gray-400" : ""
-              }`}
+              className={`border p-2 sm:p-3 rounded w-full shadow-sm text-sm sm:text-base leading-tight font-medium text-slate-700 bg-white h-10 sm:h-11 focus:ring-2 focus:ring-primary focus:border-transparent ${selectedBatch ? "cursor-pointer border-gray-400" : ""
+                }`}
             >
               <option value="" className="text-slate-400">
                 Select Batch
               </option>
               {batches?.map((item: any) => (
-                <option key={item.value} value={item.value} className="text-slate-800">
+                <option key={item.value} value={item.value} className="text-slate-700">
                   {item.name}
                 </option>
               ))}

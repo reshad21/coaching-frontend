@@ -1,12 +1,5 @@
-import { Badge } from "@/components/ui/badge";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { CheckCircle2, Clock } from "lucide-react";
 
 interface PaymentProgressCardProps {
   paidMonths: number;
@@ -21,32 +14,59 @@ export function PaymentProgressCard({
   paidPercentage,
   nextUnpaidMonth,
 }: PaymentProgressCardProps) {
+  const isCompleted = paidPercentage === 100;
+
   return (
-    <Card>
-      <CardHeader className="pb-2">
-        <CardTitle className="text-sm font-medium">Payment Progress</CardTitle>
-        <CardDescription>
-          {paidMonths} of {totalMonths} months paid
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-2">
+    <Card className="h-full relative overflow-hidden rounded-xl border border-blue-200/70 bg-gradient-to-br from-blue-100 via-white to-purple-100 shadow-sm flex flex-col">
+      <CardHeader className="pt-5 pb-3 px-5">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium">
-            {paidPercentage}% Complete
+          <div className="flex items-center gap-2.5">
+            <span className="inline-flex items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-purple-500 p-1.5 shadow-sm">
+              {isCompleted
+                ? <CheckCircle2 className="h-3.5 w-3.5 text-white" strokeWidth={2.5} />
+                : <Clock className="h-3.5 w-3.5 text-white" strokeWidth={2.5} />
+              }
+            </span>
+            <span className="text-xs font-semibold uppercase tracking-wider text-blue-700">
+              Payment Progress
+            </span>
+          </div>
+          <span className={`text-xs font-semibold px-2.5 py-1 rounded-full border ${
+            isCompleted
+              ? "bg-green-50 text-green-600 border-green-200"
+              : "bg-blue-50 text-blue-600 border-blue-200"
+          }`}>
+            {isCompleted ? "Completed" : "In Progress"}
           </span>
-          <Badge variant={paidPercentage === 100 ? "default" : "outline"}>
-            {paidPercentage === 100 ? "Completed" : "In Progress"}
-          </Badge>
         </div>
-        <div className="w-full h-2 rounded-full bg-gray-200 overflow-hidden">
+      </CardHeader>
+
+      <CardContent className="px-5 pb-4 pt-0 space-y-3 flex-1">
+        <div className="flex items-end justify-between">
+          <p className="text-2xl font-bold tracking-tight text-slate-700 leading-none">
+            {paidPercentage}%
+            <span className="text-sm font-medium text-slate-400 ml-1">complete</span>
+          </p>
+          <p className="text-xs text-slate-400">
+            <span className="font-medium text-slate-500">{paidMonths}</span> of{" "}
+            <span className="font-medium text-slate-500">{totalMonths}</span> months paid
+          </p>
+        </div>
+        <div className="w-full h-2 rounded-full bg-blue-100/80 overflow-hidden">
           <div
-            className="h-full bg-green-500 transition-all duration-500"
+            className={`h-full rounded-full transition-all duration-500 ${
+              isCompleted
+                ? "bg-gradient-to-r from-green-400 to-green-500"
+                : "bg-gradient-to-r from-blue-400 to-purple-400"
+            }`}
             style={{ width: `${paidPercentage}%` }}
           />
         </div>
       </CardContent>
-      <CardFooter className="pt-0">
-        <p className="text-sm text-muted-foreground">
+
+      <CardFooter className="px-5 pb-5 pt-0 mt-auto">
+        <p className="text-xs text-slate-400 flex items-center gap-1.5">
+          <span className={`inline-block h-1.5 w-1.5 rounded-full ${isCompleted ? "bg-green-400" : "bg-blue-400"}`} />
           {nextUnpaidMonth
             ? `Next payment due: ${nextUnpaidMonth}`
             : "All payments completed"}

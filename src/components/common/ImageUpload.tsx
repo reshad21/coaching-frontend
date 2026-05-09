@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { useFormContext } from "react-hook-form";
 import profileImg from "@/assets/default.jpg";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { useFormContext } from "react-hook-form";
 
 interface ImageUploadProps {
   name: string;
@@ -35,7 +35,7 @@ export const ImageUpload = ({
 
   return (
     <div className="w-full space-y-2">
-      <label htmlFor="image-upload" className="block text-sm font-medium text-gray-700">
+      <label htmlFor="image-upload" className="block text-sm font-medium text-slate-700">
         Upload Profile Picture
       </label>
       <div className="flex items-center gap-4">

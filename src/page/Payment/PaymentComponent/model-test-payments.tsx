@@ -62,7 +62,7 @@ export function ModelTestPayments({ modelTestPayments, onEditPayment }: ModelTes
                 {payment.amount.toLocaleString("en-BD", { minimumFractionDigits: 2 })} TK
               </p>
 
-              <div className="flex items-center gap-1.5 text-xs text-slate-600">
+              <div className="flex items-center gap-1.5 text-xs text-slate-700">
                 <CalendarIcon className="h-3 w-3 text-blue-400 shrink-0" />
                 <span>
                   {new Date(payment.createdAt).toLocaleString("en-US", {

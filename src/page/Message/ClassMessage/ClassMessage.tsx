@@ -24,7 +24,7 @@ const ClassMessage = () => {
     if (!message) {
       return toast.error("please write Message");
     }
-    if (!selectedClass ) {
+    if (!selectedClass) {
       return toast.error("please Select Class");
     }
 
@@ -50,7 +50,7 @@ const ClassMessage = () => {
         }
         console.log(selectedClass);
         console.log(message);
-        
+
       }
     });
   };
@@ -61,15 +61,14 @@ const ClassMessage = () => {
           <form className="space-y-3 sm:space-y-4">
             <select
               {...form.register("class")}
-              className={`border p-2 sm:p-3 rounded w-full shadow-sm text-sm sm:text-base leading-tight font-medium text-slate-700 bg-white h-10 sm:h-11 focus:ring-2 focus:ring-primary focus:border-transparent ${
-                selectedClass ? "cursor-pointer border-gray-400" : ""
-              }`}
+              className={`border p-2 sm:p-3 rounded w-full shadow-sm text-sm sm:text-base leading-tight font-medium text-slate-700 bg-white h-10 sm:h-11 focus:ring-2 focus:ring-primary focus:border-transparent ${selectedClass ? "cursor-pointer border-gray-400" : ""
+                }`}
             >
               <option value="" className="text-slate-400">
                 Select Class
               </option>
               {batches?.map((item: any) => (
-                <option key={item.value} value={item.value} className="text-slate-800">
+                <option key={item.value} value={item.value} className="text-slate-700">
                   {item.name}
                 </option>
               ))}

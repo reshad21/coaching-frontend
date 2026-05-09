@@ -54,13 +54,13 @@ export function MonthlyPaymentGrid({
                 </p>
               ) : (
                 <div className="flex flex-col items-center justify-center gap-2 py-4 rounded-lg">
-                  
+
                   <span className="text-base font-semibold text-slate-500">No Payment</span>
                   <span className="text-xs text-slate-400">Payment not received for this month</span>
                 </div>
               )}
               {paid && (
-                <div className="flex items-center gap-1.5 text-xs text-slate-600">
+                <div className="flex items-center gap-1.5 text-xs text-slate-700">
                   <CalendarIcon className="h-3 w-3 text-blue-400 shrink-0" />
                   <span>
                     {new Date(payment.createdAt).toLocaleDateString("en-US", {
