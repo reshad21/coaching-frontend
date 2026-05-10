@@ -65,7 +65,7 @@ const Message = () => {
           </div>
 
           {/* Main Card */}
-          <Card className="overflow-hidden shadow-sm border border-border/50">
+          <Card className="overflow-hidden shadow-none border-0 bg-transparent">
             <div className="p-2 xs:p-3 sm:p-4 md:p-6 lg:p-8">
               <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 {/* ============ MOBILE VIEW (< 640px) ============ */}
@@ -76,10 +76,10 @@ const Message = () => {
                       Message Type
                     </label>
                     <Select value={activeTab} onValueChange={setActiveTab}>
-                      <SelectTrigger className="w-full h-10 text-xs font-medium bg-background border border-input">
+                      <SelectTrigger className="w-full h-10 text-xs font-medium bg-background mb-3">
                         <SelectValue placeholder="Select..." />
                       </SelectTrigger>
-                      <SelectContent className="max-h-[280px] w-[calc(100vw-16px)]">
+                      <SelectContent className="max-h-[280px] w-[var(--radix-select-trigger-width)] min-w-0">
                         {tabs.map((tab) => (
                           <SelectItem key={tab.value} value={tab.value} className="text-xs">
                             <span className="font-medium">{tab.label}</span>
@@ -88,9 +88,6 @@ const Message = () => {
                       </SelectContent>
                     </Select>
                   </div>
-
-                  {/* Divider */}
-                  <div className="h-px bg-border/50"></div>
                 </div>
 
                 {/* ============ TABLET VIEW (640px - 1023px) ============ */}
@@ -101,9 +98,9 @@ const Message = () => {
                         <TabsTrigger
                           key={tab.value}
                           value={tab.value}
-                           className="py-1.5 sm:py-2 px-2 sm:px-3 text-2xs sm:text-xs font-medium rounded-md whitespace-nowrap transition-all duration-200 hover:bg-muted/70 active:scale-95"
+                           className="py-1.5 sm:py-2 px-2 sm:px-3 text-2xs sm:text-xs font-medium rounded-md whitespace-nowrap transition-all duration-200 hover:bg-muted/70 active:scale-95 bg-background/90 data-[state=active]:text-white"
                            style={{
-                             background: activeTab === tab.value ? "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)" : "transparent",
+                             background: activeTab === tab.value ? "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)" : undefined,
                              color: activeTab === tab.value ? "white" : "inherit",
                              fontWeight: activeTab === tab.value ? "600" : "500",
                              boxShadow: activeTab === tab.value ? "0 2px 8px rgba(6, 182, 212, 0.2)" : "none",
@@ -114,7 +111,6 @@ const Message = () => {
                       ))}
                     </TabsList>
                   </div>
-                  <div className="h-px bg-border/50 mt-3"></div>
                 </div>
 
                 {/* ============ DESKTOP VIEW (>= 1024px) ============ */}
@@ -124,9 +120,9 @@ const Message = () => {
                       <TabsTrigger
                         key={tab.value}
                         value={tab.value}
-                         className="py-2.5 px-4 text-sm font-medium rounded-md transition-all duration-200 hover:bg-muted/70 active:scale-95"
+                         className="py-2.5 px-4 text-sm font-medium rounded-md transition-all duration-200 hover:bg-muted/70 active:scale-95 bg-background/90 data-[state=active]:text-white"
                          style={{
-                           background: activeTab === tab.value ? "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)" : "transparent",
+                           background: activeTab === tab.value ? "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)" : undefined,
                            color: activeTab === tab.value ? "white" : "inherit",
                            fontWeight: activeTab === tab.value ? "600" : "500",
                            boxShadow: activeTab === tab.value ? "0 4px 12px rgba(6, 182, 212, 0.3)" : "none",
@@ -136,7 +132,6 @@ const Message = () => {
                       </TabsTrigger>
                     ))}
                   </TabsList>
-                  <div className="h-px bg-border/50 mt-6"></div>
                 </div>
 
                 {/* ============ CONTENT AREA ============ */}

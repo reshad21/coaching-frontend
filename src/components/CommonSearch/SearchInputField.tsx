@@ -30,14 +30,14 @@ export default function SearchInputField({
           placeholder="Searching here..."
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="rounded-r-none border-r-0 pr-10 focus-visible:ring-0 focus-visible:ring-offset-0"
+          className="rounded-r-none border-r-0 pr-10 bg-white focus-visible:ring-0 focus-visible:ring-offset-0"
         />
       </div>
       <Button
         type="submit"
         variant="outline"
         size="icon"
-        className="rounded-l-none border-l-0 bg-transparent hover:bg-gray-50"
+        className="rounded-l-none border-l-0 bg-white hover:bg-gray-50"
       >
         <Search className="h-4 w-4 text-gray-500" />
         <span className="sr-only">Search</span>

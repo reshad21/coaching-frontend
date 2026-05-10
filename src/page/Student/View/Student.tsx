@@ -118,8 +118,8 @@ const Student = () => {
                   : "No students have been added yet. Add your first student to get started."}
               </p>
               {hasActiveFilters && (
-                <Button onClick={clearFilters} variant="outline" size="sm" className="mt-4 bg-transparent">
-                  <RotateCcw className="w-4 h-4 mr-2" />
+                <Button variant="primaryGradient" onClick={clearFilters} size="sm" className="w-fit px-3 sm:px-4 text-sm sm:text-base">
+                  <RotateCcw className="w-3 sm:w-4 h-3 sm:h-4 mr-1 sm:mr-2 flex-shrink-0" />
                   Clear Filters
                 </Button>
               )}

@@ -1,4 +1,3 @@
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { ShiftModal } from "@/components/CommonModal/ShiftModal"
@@ -75,7 +74,7 @@ const ShiftView = () => {
         </div>
 
         {/* Content Section */}
-        <div className="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
           {isLoading ? (
             <div className="flex items-center justify-center py-16">
               <Loading />
@@ -93,8 +92,56 @@ const ShiftView = () => {
                 </div>
               </div>
 
-              {/* Table */}
-              <div className="overflow-x-auto">
+              {/* Mobile: Card Layout, Tablet+: Table Layout */}
+              <div className="sm:hidden p-4 space-y-3">
+                {/* Mobile Card View */}
+                {shift?.data?.map((shiftItem: any, index: number) => (
+                  <div key={shiftItem.id} className="bg-slate-50 rounded-lg p-4 border border-slate-200">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="flex items-center justify-center h-8 w-8 bg-blue-100 rounded-lg flex-shrink-0">
+                          <span className="text-xs font-bold text-blue-600">{String(index + 1).padStart(2, "0")}</span>
+                        </div>
+                        <div>
+                          <div className="font-semibold text-slate-700 text-sm">{shiftItem.shiftName}</div>
+                          <div className="text-xs text-slate-500 mt-1">Work Shift</div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {shiftItem.startTime && shiftItem.endTime && (
+                      <div className="mb-4 flex items-center gap-2 text-blue-600 text-sm bg-blue-50 p-2 rounded-md">
+                        <Clock className="h-4 w-4 flex-shrink-0" />
+                        <span className="font-medium">{shiftItem.startTime} - {shiftItem.endTime}</span>
+                      </div>
+                    )}
+                    
+                    <div className="flex gap-2 justify-end pt-2 border-t border-slate-200">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-8 px-3 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50 border-blue-200 hover:border-blue-300 transition-all duration-200 bg-transparent"
+                        onClick={() => handleUpdateClick(shiftItem)}
+                      >
+                        <Edit className="h-4 w-4" />
+                        <span className="ml-1">Edit</span>
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-8 px-3 text-xs text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200 hover:border-red-300 transition-all duration-200 bg-transparent"
+                        onClick={() => handleDelete(shiftItem.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        <span className="ml-1">Delete</span>
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop Table View */}
+              <div className="hidden sm:block overflow-x-auto">
                 <Table>
                   <TableHeader>
                     <TableRow className="bg-slate-50/50 hover:bg-slate-50/50 border-b border-slate-200">

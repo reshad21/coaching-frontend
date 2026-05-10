@@ -48,8 +48,8 @@ const UnpaidOverviewFilters = ({
           <SelectShift value={shift} onChange={onShiftChange} />
           <Button
             onClick={onClearFilters}
-            variant="outline"
-            className="w-full border-border bg-primary text-white cursor-pointer text-sm"
+            variant="primaryGradient"
+            className="w-fit px-3 sm:px-4 text-sm sm:text-base"
             disabled={!hasActiveFilters}
             size="sm"
           >

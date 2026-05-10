@@ -47,7 +47,7 @@ const EduCPagination = ({ page, setPage, totalPages = 100, className }: TGmPagin
       <button
         onClick={() => currentPage > 1 && setPage(currentPage - 1)}
         disabled={currentPage <= 1}
-        className="px-3 py-1 border text-sm rounded-l-md bg-white hover:bg-primary hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="px-3 py-1 border text-sm rounded-l-md bg-white hover:bg-sky-400 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
         Previous
       </button>
@@ -61,8 +61,8 @@ const EduCPagination = ({ page, setPage, totalPages = 100, className }: TGmPagin
             key={pageNum}
             onClick={() => setPage(pageNum)}
             className={`px-3 py-1 text-sm border-t border-b border-r transition-colors ${currentPage === pageNum
-                ? "bg-primary text-white"
-                : "bg-white hover:bg-primary hover:text-white"
+                ? "bg-sky-400 text-white"
+                : "bg-white hover:bg-sky-500 hover:text-white"
               }`}
           >
             {pageNum}
@@ -72,7 +72,7 @@ const EduCPagination = ({ page, setPage, totalPages = 100, className }: TGmPagin
       <button
         onClick={() => currentPage < totalPages && setPage(currentPage + 1)}
         disabled={currentPage >= totalPages}
-        className="px-3 py-1 text-sm border-t border-b border-r rounded-r-md bg-white hover:bg-primary hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        className="px-3 py-1 text-sm border-t border-b border-r rounded-r-md bg-white hover:bg-sky-500 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
       >
         Next
       </button>

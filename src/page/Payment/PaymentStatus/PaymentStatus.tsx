@@ -198,8 +198,8 @@ const PaymentStatus = () => {
                   setSelectedClass("")
                   setPaymentStatus("")
                 }}
-                variant="outline"
-                className="w-full h-10 flex items-center justify-center gap-2 hover:bg-slate-50 border-slate-200"
+                variant="primaryGradient"
+                className="w-fit px-3 sm:px-4 text-sm sm:text-base"
                 disabled={!hasActiveFilters}
               >
                 <X className="h-4 w-4" />

@@ -68,42 +68,79 @@ const ClassView = () => {
           {isLoading ? (
             <Loading />
           ) : classData && classData.length > 0 ? (
-            <div className="rounded-lg border border-border overflow-x-auto">
-              <Table>
-                <TableHeader className="bg-muted/50">
-                  <TableRow className="hover:bg-muted/50">
-                    <TableHead className="w-12 sm:w-20 font-semibold text-xs sm:text-sm text-foreground py-3 px-3 sm:px-6">#</TableHead>
-                    <TableHead className="font-semibold text-xs sm:text-sm text-foreground py-3 px-3 sm:px-6">Class Name</TableHead>
-                    <TableHead className="text-right font-semibold text-xs sm:text-sm text-foreground w-16 sm:w-[120px] py-3 px-3 sm:px-6">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {classData?.map((classItem: any, index: number) => (
-                    <TableRow key={classItem.id} className="border-b hover:bg-muted/30 transition-colors duration-200">
-                      <TableCell className="font-medium text-xs sm:text-sm text-muted-foreground py-3 px-3 sm:px-6">
-                        {String(index + 1).padStart(2, "0")}
-                      </TableCell>
-                      <TableCell className="font-medium text-xs sm:text-sm text-foreground py-3 px-3 sm:px-6">
-                        {classItem.className}
-                      </TableCell>
-                      <TableCell className="text-right py-3 px-3 sm:px-6">
-                        <div className="flex justify-end">
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors duration-200"
-                            onClick={() => handleDelete(classItem.id)}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                            <span className="sr-only">Delete class</span>
-                          </Button>
+            <>
+              {/* Mobile: Card Layout */}
+              <div className="sm:hidden space-y-3">
+                {classData?.map((classItem: any, index: number) => (
+                  <div
+                    key={classItem.id}
+                    className="bg-muted/20 rounded-lg border border-border p-4 hover:bg-muted/30 transition-colors duration-200"
+                  >
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className="flex-shrink-0 h-8 w-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                            <span className="text-xs font-bold text-primary">
+                              {String(index + 1).padStart(2, "0")}
+                            </span>
+                          </div>
+                          <h3 className="text-sm font-semibold text-foreground truncate">
+                            {classItem.className}
+                          </h3>
                         </div>
-                      </TableCell>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        className="h-8 w-8 p-0 flex-shrink-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors duration-200"
+                        onClick={() => handleDelete(classItem.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        <span className="sr-only">Delete class</span>
+                      </Button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop: Table Layout */}
+              <div className="hidden sm:block rounded-lg border border-border overflow-x-auto">
+                <Table>
+                  <TableHeader className="bg-muted/50">
+                    <TableRow className="hover:bg-muted/50">
+                      <TableHead className="w-12 sm:w-20 font-semibold text-xs sm:text-sm text-foreground py-3 px-3 sm:px-6">#</TableHead>
+                      <TableHead className="font-semibold text-xs sm:text-sm text-foreground py-3 px-3 sm:px-6">Class Name</TableHead>
+                      <TableHead className="text-right font-semibold text-xs sm:text-sm text-foreground w-16 sm:w-[120px] py-3 px-3 sm:px-6">Actions</TableHead>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
+                  </TableHeader>
+                  <TableBody>
+                    {classData?.map((classItem: any, index: number) => (
+                      <TableRow key={classItem.id} className="border-b hover:bg-muted/30 transition-colors duration-200">
+                        <TableCell className="font-medium text-xs sm:text-sm text-muted-foreground py-3 px-3 sm:px-6">
+                          {String(index + 1).padStart(2, "0")}
+                        </TableCell>
+                        <TableCell className="font-medium text-xs sm:text-sm text-foreground py-3 px-3 sm:px-6">
+                          {classItem.className}
+                        </TableCell>
+                        <TableCell className="text-right py-3 px-3 sm:px-6">
+                          <div className="flex justify-end">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors duration-200"
+                              onClick={() => handleDelete(classItem.id)}
+                            >
+                              <Trash2 className="h-4 w-4" />
+                              <span className="sr-only">Delete class</span>
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </>
           ) : (
             /* Enhanced empty state with better visual design */
             <div className="flex flex-col items-center justify-center py-8 sm:py-12 px-4 sm:px-6 text-center">

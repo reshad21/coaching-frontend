@@ -198,10 +198,11 @@ const MonthlyPayment = () => {
             setFilterMonth("");
             setFilterStatus("");
           }}
-          className="w-full sm:w-auto bg-primary text-white text-sm sm:text-base"
+          className="w-fit px-3 sm:px-4 text-sm sm:text-base"
+          variant="primaryGradient"
         >
           <RotateCcw className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-          <span className="hidden sm:inline">Clear Filter</span>
+          <span className="hidden sm:inline">Clear Filters</span>
           <span className="sm:hidden">Clear</span>
         </Button>
       </div>
@@ -384,6 +385,7 @@ const MonthlyPayment = () => {
                               )}
                             </div>
                             <Button
+                            variant="primaryGradient"
                               type="submit"
                               className="w-full sm:w-auto bg-primary hover:bg-cyan-800 text-white flex items-center justify-center gap-2 py-2 px-3 sm:px-4 rounded-md transition text-sm sm:text-base"
                             >
