@@ -170,12 +170,25 @@ const MonthlyPayment = () => {
       ? parseFloat((totalAmount / monthsToPay.length).toFixed(2))
       : totalAmount;
 
-    const payloads = monthsToPay.map((m) => ({
-      studentId: data.studentId,
-      month: m,
-      amount: averageAmount,
-      title: data.title,
-    }));
+    // Create payment payloads
+    let payloads;
+    if (monthsToPay.length > 0) {
+      // For Monthly and ModelTest with months selected
+      payloads = monthsToPay.map((m) => ({
+        studentId: data.studentId,
+        month: m,
+        amount: averageAmount,
+        title: data.title,
+      }));
+    } else {
+      // For ModelTest and Others without months (single payment)
+      payloads = [{
+        studentId: data.studentId,
+        month: null,
+        amount: totalAmount,
+        title: data.title,
+      }];
+    }
 
     let allSuccess = true;
 
@@ -196,7 +209,9 @@ const MonthlyPayment = () => {
       const monthText = monthsToPay.length > 1 ? monthsToPay.join(", ") : monthsToPay[0] || "";
       const breakdownText = monthsToPay.length > 1 
         ? `${monthsToPay.length} months @ $${averageAmount} each` 
-        : `$${averageAmount}`;
+        : monthsToPay.length === 1
+        ? `$${averageAmount}`
+        : `$${totalAmount}`;
       
       toast.success(`Payment(s) added successfully!\n${breakdownText}`);
 
@@ -431,8 +446,8 @@ const MonthlyPayment = () => {
                                 control={form.control}
                               />
 
-                              {/* Month selector - visible for Monthly and ModelTest payments */}
-                              {(form.watch("title") === "Monthly" || form.watch("title") === "ModelTest") && (
+                              {/* Month selector - visible only for Monthly payments */}
+                              {form.watch("title") === "Monthly" && (
                                 <div>
                                   <SelectFieldWrapper
                                     name="tmpMonth"

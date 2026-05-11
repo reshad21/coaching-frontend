@@ -23,7 +23,7 @@ export function usePaymentCalculations(payments: Payment[]) {
       (month) => !paymentsByMonth[month] && months.indexOf(month) >= months.indexOf(currentMonth),
     )
 
-    const modelTestPayments = payments.filter((payment) => payment.title === "ModelTest")
+    const modelTestPayments = payments.filter((payment) => payment.title?.toLowerCase() === "modeltest")
 
     return {
       paymentsByMonth,

@@ -1,22 +1,26 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import type { Payment } from "@/types/payment";
-import { CalendarDays, DollarSign, TrendingUp } from "lucide-react";
+import { CalendarDays, DollarSign, TrendingUp, BookOpen } from "lucide-react";
 
 interface PaymentSummaryCardProps {
   totalPaid: number;
   currentMonth: string;
   paymentsByMonth: Record<string, Payment>;
+  modelTestPayments?: Payment[];
 }
 
 export function PaymentSummaryCard({
   totalPaid,
   currentMonth,
   paymentsByMonth,
+  modelTestPayments = [],
 }: PaymentSummaryCardProps) {
   const isCurrentMonthPaid = !!paymentsByMonth[currentMonth];
   const paidMonthCount = Object.values(paymentsByMonth).filter(
     (payment) => payment && payment.amount > 0
   ).length;
+  
+  const modelTestTotal = modelTestPayments.reduce((sum, payment) => sum + (payment.amount || 0), 0);
 
   return (
     <Card className="h-full relative overflow-hidden rounded-xl border border-blue-200/70 bg-gradient-to-br from-blue-100 via-white to-purple-100 shadow-sm flex flex-col">
@@ -71,6 +75,20 @@ export function PaymentSummaryCard({
             {isCurrentMonthPaid ? "Paid" : "Unpaid"}
           </span>
         </div>
+
+        {modelTestTotal > 0 && (
+          <div className="rounded-lg bg-white/60 border border-blue-100 px-4 py-3 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center justify-center rounded-md bg-purple-50 border border-purple-100 p-1.5">
+                <BookOpen className="h-3.5 w-3.5 text-purple-500" strokeWidth={2} />
+              </span>
+              <span className="text-xs font-medium text-slate-500">Model Test</span>
+            </div>
+            <span className="text-xl font-bold tracking-tight text-slate-700">
+              ${modelTestTotal.toFixed(2)}
+            </span>
+          </div>
+        )}
       </CardContent>
     </Card>
   );

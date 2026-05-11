@@ -1,11 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { CheckCircle2, Clock } from "lucide-react";
+import { months } from "@/constants/months";
 
 interface PaymentProgressCardProps {
   paidMonths: number;
   totalMonths: number;
   paidPercentage: number;
   nextUnpaidMonth: string | undefined;
+  paymentsByMonth?: Record<string, any>;
 }
 
 export function PaymentProgressCard({
@@ -13,8 +16,10 @@ export function PaymentProgressCard({
   totalMonths,
   paidPercentage,
   nextUnpaidMonth,
+  paymentsByMonth = {},
 }: PaymentProgressCardProps) {
   const isCompleted = paidPercentage === 100;
+
 
   return (
     <Card className="h-full relative overflow-hidden rounded-xl border border-blue-200/70 bg-gradient-to-br from-blue-100 via-white to-purple-100 shadow-sm flex flex-col">
@@ -41,7 +46,7 @@ export function PaymentProgressCard({
         </div>
       </CardHeader>
 
-      <CardContent className="px-5 pb-4 pt-0 space-y-3 flex-1">
+      <CardContent className="px-5 pb-4 pt-0 space-y-4 flex-1">
         <div className="flex items-end justify-between">
           <p className="text-2xl font-bold tracking-tight text-slate-700 leading-none">
             {paidPercentage}%
@@ -61,6 +66,32 @@ export function PaymentProgressCard({
             }`}
             style={{ width: `${paidPercentage}%` }}
           />
+        </div>
+
+        {/* Month Grid Visualization */}
+        <div className="mt-4 space-y-2">
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-semibold text-slate-600">Month Status</p>
+            <p className="text-xs text-slate-400">{paidMonths} Paid</p>
+          </div>
+          <div className="grid grid-cols-6 gap-1.5">
+            {months.map((month) => {
+              const isPaid = !!paymentsByMonth[month];
+              return (
+                <div
+                  key={month}
+                  className={`aspect-square rounded-md flex items-center justify-center text-[10px] font-semibold transition-all duration-300 ${
+                    isPaid
+                      ? "bg-gradient-to-br from-blue-400 to-purple-500 text-white shadow-md hover:shadow-lg"
+                      : "bg-slate-100 text-slate-400 border border-slate-200"
+                  }`}
+                  title={`${month}: ${isPaid ? "Paid" : "Unpaid"}`}
+                >
+                  {month.slice(0, 3)}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </CardContent>
 

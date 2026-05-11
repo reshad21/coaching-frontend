@@ -114,17 +114,22 @@ export function PaymentDashboard() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
-          <StudentInfoCard studentInfo={studentInfo} />
+          <StudentInfoCard
+            studentInfo={studentInfo}
+            totalPaid={totalPaid}
+          />
           <PaymentProgressCard
             paidMonths={paidMonths}
             totalMonths={totalMonths}
             paidPercentage={paidPercentage}
             nextUnpaidMonth={nextUnpaidMonth}
+            paymentsByMonth={paymentsByMonth}
           />
           <PaymentSummaryCard
             totalPaid={totalPaid}
             currentMonth={currentMonth}
             paymentsByMonth={paymentsByMonth}
+            modelTestPayments={modelTestPayments}
           />
         </div>
 

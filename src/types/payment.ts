@@ -12,6 +12,14 @@ export type StudentInfo = {
   studentId: string
   batchName: string
   image: string
+  phone?: string
+  guardianName?: string
+  className?: string
+  schedule?: string
+  enrollmentDate?: string
+  status?: string
+  email?: string
+  address?: string
 }
 
 export type PaymentData = {
