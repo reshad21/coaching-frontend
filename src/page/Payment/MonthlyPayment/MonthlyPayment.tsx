@@ -437,6 +437,7 @@ const MonthlyPayment = () => {
                                   <SelectFieldWrapper
                                     name="tmpMonth"
                                     label="Add Month"
+                                    required={form.watch("title") === "Monthly"}
                                     options={
                                       getMonthOptions(student).filter((opt) => {
                                         // hide months already selected in the chips
