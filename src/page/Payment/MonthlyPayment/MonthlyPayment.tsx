@@ -80,6 +80,7 @@ const MonthlyPayment = () => {
   const [addPayment] = useAddPaymentMutation();
   
   const [selectedMonths, setSelectedMonths] = useState<string[]>([]);
+  const [validationErrors, setValidationErrors] = useState<{ [key: string]: string }>({});
 
   const form = useForm({
     defaultValues: {
@@ -109,15 +110,47 @@ const MonthlyPayment = () => {
     "December",
   ];
   const currentMonthIndex = new Date().getMonth(); // 0-based
-  // recompute month options so months already selected become disabled
-  const monthOptions = monthNames.map((m, i) => ({
-    value: m,
-    name: m,
-    disabled: i > currentMonthIndex || selectedMonths.includes(m),
-  }));
+  const currentMonth = monthNames[currentMonthIndex];
+  const previousMonth = monthNames[currentMonthIndex === 0 ? 11 : currentMonthIndex - 1];
+
+  // Helper function to generate month options based on student payment history
+  const getMonthOptions = (student: any) => {
+    const studentPayments = student?.Payment || [];
+    const currentAndPreviousPaid = 
+      studentPayments.some((p: any) => p.month === currentMonth && Number(p.amount) > 0) &&
+      studentPayments.some((p: any) => p.month === previousMonth && Number(p.amount) > 0);
+
+    return monthNames.map((m, i) => ({
+      value: m,
+      name: m,
+      disabled: 
+        // disable future months unless both current and previous are paid
+        (i > currentMonthIndex && !currentAndPreviousPaid) || 
+        selectedMonths.includes(m),
+    }));
+  };
 
   const onSubmit = async (data: any, studentPayments: any[] = []) => {
     const monthsToPay = selectedMonths.length ? selectedMonths : data.month ? [data.month] : [];
+    const errors: { [key: string]: string } = {};
+
+    // Validate that months are selected only for Monthly payments
+    if (data.title === "Monthly" && !monthsToPay.length) {
+      errors.months = "Month is not selected";
+    }
+
+    if (!data.amount || Number(data.amount) <= 0) {
+      errors.amount = "Please enter a valid amount";
+    }
+
+    // If validation errors exist, display them and return
+    if (Object.keys(errors).length > 0) {
+      setValidationErrors(errors);
+      return;
+    }
+
+    // Clear validation errors if all pass
+    setValidationErrors({});
 
     if (data.title === "Monthly") {
       // prevent paying same month twice
@@ -131,20 +164,25 @@ const MonthlyPayment = () => {
       }
     }
 
+    // Calculate average amount per month
+    const totalAmount = Number(data.amount);
+    const averageAmount = monthsToPay.length > 0 
+      ? parseFloat((totalAmount / monthsToPay.length).toFixed(2))
+      : totalAmount;
+
     const payloads = monthsToPay.map((m) => ({
       studentId: data.studentId,
       month: m,
-      amount: Number(data.amount),
+      amount: averageAmount,
       title: data.title,
     }));
 
     let allSuccess = true;
-    let lastMessage = "";
 
     for (const payload of payloads) {
       const res: any = await addPayment(payload).unwrap();
       if (res?.statusCode == 200) {
-        lastMessage = res?.message || "Payment added successfully";
+        // payment successful
       } else {
         allSuccess = false;
       }
@@ -154,9 +192,14 @@ const MonthlyPayment = () => {
       form.reset();
       setSelectedMonths([]);
       setOpenFormFor(null);
-      toast.success(lastMessage || "Payment(s) added successfully");
-
+      
       const monthText = monthsToPay.length > 1 ? monthsToPay.join(", ") : monthsToPay[0] || "";
+      const breakdownText = monthsToPay.length > 1 
+        ? `${monthsToPay.length} months @ $${averageAmount} each` 
+        : `$${averageAmount}`;
+      
+      toast.success(`Payment(s) added successfully!\n${breakdownText}`);
+
       let message = "";
       if (data.title === "Monthly") {
         message = `Dear ${data?.firstName}, your monthly fee for ${monthText} has been successfully paid.\n\nThank you for staying with EDUCARE!`;
@@ -166,13 +209,18 @@ const MonthlyPayment = () => {
         message = customMessage || `Dear ${data?.firstName}, your payment has been received.`;
       }
 
-      const response = await sendMessage({
-        message,
-        number: data?.phone,
-      }).unwrap();
+      try {
+        const response = await sendMessage({
+          message,
+          number: data?.phone,
+        }).unwrap();
 
-      if (response?.data?.response_code == 202) {
-        toast.success(`Message sent to ${data?.firstName} successfully`);
+        if (response?.data?.response_code == 202) {
+          toast.success(`Message sent to ${data?.firstName} successfully`);
+        }
+      } catch (error) {
+        console.error("Error sending message:", error);
+        toast.error("Payment added but message failed to send");
       }
     } else {
       toast.error("Failed to add one or more payments");
@@ -328,6 +376,8 @@ const MonthlyPayment = () => {
                             form.setValue("studentId", student.id);
                             form.setValue("phone", student.phone);
                             form.setValue("firstName", student.firstName);
+                            setValidationErrors({});
+                            setSelectedMonths([]);
                             setOpenFormFor((prev) =>
                               prev === student.studentId
                                 ? null
@@ -366,12 +416,13 @@ const MonthlyPayment = () => {
                         <Form {...form}>
                           <form
                             onSubmit={form.handleSubmit((data) => onSubmit(data, student.Payment || []))}
-                            className="p-3 sm:p-4 bg-muted rounded-md"
+                            className="p-3 sm:p-4 bg-slate-100 rounded-md"
                           >
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4">
+                            <div className="grid grid-cols-1 gap-3 sm:gap-4 mb-4">
                               <SelectFieldWrapper
                                 name="title"
                                 label="Payment Title"
+                                required={true}
                                 options={[
                                   { value: "Monthly", name: "Monthly" },
                                   { value: "ModelTest", name: "Model Test" },
@@ -379,29 +430,26 @@ const MonthlyPayment = () => {
                                 ]}
                                 control={form.control}
                               />
-                              <FormFieldWrapper
-                                name="amount"
-                                label="Amount"
-                                placeholder="Enter amount"
-                                type="number"
-                              />
-                              <div>
-                                <SelectFieldWrapper
-                                  name="tmpMonth"
-                                  label="Add Month"
-                                  options={
-                                    monthOptions.filter((opt) => {
-                                      // hide months already selected in the chips
-                                      if (selectedMonths.includes(opt.value)) return false;
-                                      // hide months the student already paid for
-                                      const hasPaid = (student?.Payment || []).some(
-                                        (p: any) => p.month === opt.value && Number(p.amount) > 0
-                                      );
-                                      if (hasPaid) return false;
-                                      return true;
-                                    })
-                                  }
-                                  control={form.control}
+
+                              {/* Month selector - visible for Monthly and ModelTest payments */}
+                              {(form.watch("title") === "Monthly" || form.watch("title") === "ModelTest") && (
+                                <div>
+                                  <SelectFieldWrapper
+                                    name="tmpMonth"
+                                    label="Add Month"
+                                    options={
+                                      getMonthOptions(student).filter((opt) => {
+                                        // hide months already selected in the chips
+                                        if (selectedMonths.includes(opt.value)) return false;
+                                        // hide months the student already paid for
+                                        const hasPaid = (student?.Payment || []).some(
+                                          (p: any) => p.month === opt.value && Number(p.amount) > 0
+                                        );
+                                        if (hasPaid) return false;
+                                        return true;
+                                      })
+                                    }
+                                    control={form.control}
                                   onChange={(val: string) => {
                                     if (!val) return;
                                     // add if not already selected
@@ -414,32 +462,39 @@ const MonthlyPayment = () => {
                                 {/* Selected month chips */}
                                 <div className="mt-2 flex flex-wrap gap-2">
                                   {selectedMonths.map((m) => (
-                                    <Badge key={m} className="flex items-center gap-2 text-white bg-primary hover:bg-primary/80">
-                                      <span>{m}</span>
+                                    <Badge key={m} className="flex items-center gap-2 text-white bg-orange-600 hover:bg-orange-600/80 px-2 py-1 rounded-md">
+                                      <span className="font-medium">{m}</span>
                                       <button
                                         type="button"
                                         onClick={() => setSelectedMonths((prev) => prev.filter((x) => x !== m))}
-                                        className="opacity-70 hover:opacity-100"
+                                        className="ml-1 inline-flex items-center justify-center h-4 w-4 rounded-md bg-white text-orange-600 hover:bg-orange-600 hover:text-white shadow-sm transition"
                                         aria-label={`Remove ${m}`}
+                                        title={`Remove ${m}`}
                                       >
-                                        <X className="w-3 h-3" />
+                                        <X className="w-4 h-4" />
                                       </button>
                                     </Badge>
                                   ))}
                                 </div>
-                              </div>
-                              {form.watch("title") === "Monthly" && (
-                                <div className="col-span-1 sm:col-span-2 text-green-700 font-medium text-sm">
-                                  This is your monthly payment message.
+                                {validationErrors.months && (
+                                  <p className="text-red-600 text-sm mt-2">{validationErrors.months}</p>
+                                )}
                                 </div>
                               )}
-                              {form.watch("title") === "ModelTest" && (
-                                <div className="col-span-1 sm:col-span-2 text-blue-700 font-medium text-sm">
-                                  This is your model test payment message.
-                                </div>
+
+                              {/* Amount field - placed after month selector */}
+                              <FormFieldWrapper
+                                name="amount"
+                                label="Amount"
+                                required={true}
+                                placeholder="Enter amount"
+                                type="number"
+                              />
+                              {validationErrors.amount && (
+                                <p className="text-red-600 text-sm -mt-2">{validationErrors.amount}</p>
                               )}
                               {form.watch("title") === "Others" && (
-                                <div className="col-span-1 sm:col-span-2">
+                                <div>
                                   <input
                                     type="text"
                                     className="w-full p-2 border rounded text-sm"
@@ -450,6 +505,37 @@ const MonthlyPayment = () => {
                                 </div>
                               )}
                             </div>
+
+                            {/* Payment Breakdown Section */}
+                            {selectedMonths.length > 0 && form.watch("amount") && (
+                              <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
+                                <h4 className="font-semibold text-sm text-blue-900 mb-3">Payment Breakdown</h4>
+                                <div className="grid grid-cols-3 gap-2 mb-4 text-sm">
+                                  <div>
+                                    <p className="text-gray-600 text-xs">Total Amount</p>
+                                    <p className="font-bold text-blue-900">{Number(form.watch("amount")).toFixed(2)}TK</p>
+                                  </div>
+                                  <div>
+                                    <p className="text-gray-600 text-xs">Months Selected</p>
+                                    <p className="font-bold text-blue-900">{selectedMonths.length}</p>
+                                  </div>
+                                  <div>
+                                    <p className="text-gray-600 text-xs">Amount per Month</p>
+                                    <p className="font-bold text-blue-900">{(Number(form.watch("amount")) / selectedMonths.length).toFixed(2)}TK</p>
+                                  </div>
+                                </div>
+                                <p className="text-xs text-gray-600 mb-2">Distribution:</p>
+                                <div className="space-y-1 text-xs">
+                                  {selectedMonths.map((month) => (
+                                    <div key={month} className="flex justify-between items-center p-2 bg-white rounded border border-blue-100">
+                                      <span className="text-gray-700">{month}</span>
+                                      <span className="font-semibold text-blue-900">{(Number(form.watch("amount")) / selectedMonths.length).toFixed(2)}TK</span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
                             <Button
                             variant="primaryGradient"
                               type="submit"

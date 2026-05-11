@@ -25,6 +25,7 @@ export const SelectFieldWrapper = ({
   options,
   control,
   rules,
+  required,
   onChange,
 }: SelectFieldWrapperProps) => {
   return (
@@ -34,8 +35,11 @@ export const SelectFieldWrapper = ({
       rules={rules}
       render={({ field }) => (
         <FormItem>
-          {/* ✅ Responsive label sizing */}
-          <FormLabel className="text-xs sm:text-sm">{label}</FormLabel>
+          {/* ✅ Responsive label sizing with optional required indicator */}
+          <FormLabel className="text-xs sm:text-sm">
+            {label}
+            {required && <span className="text-red-600 ml-1">*</span>}
+          </FormLabel>
           <Select
             value={field.value}
             onValueChange={(value) => {

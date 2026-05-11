@@ -29,8 +29,11 @@ export const FormFieldWrapper = ({
       }}
       render={({ field }) => (
         <FormItem>
-          {/* ✅ Responsive label sizing */}
-          <FormLabel className="text-xs sm:text-sm">{label}</FormLabel>
+          {/* ✅ Responsive label sizing with optional required indicator */}
+          <FormLabel className="text-xs sm:text-sm">
+            {label}
+            {required && <span className="text-red-600 ml-1">*</span>}
+          </FormLabel>
           <FormControl>
             {isPassword ? (
               <div className="relative">
