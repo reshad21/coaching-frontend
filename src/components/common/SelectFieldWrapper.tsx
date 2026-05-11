@@ -6,6 +6,7 @@ import { Controller } from "react-hook-form";
 type Option = {
   value: string;
   name: string;
+  disabled?: boolean;
 };
 
 interface SelectFieldWrapperProps {
@@ -49,7 +50,12 @@ export const SelectFieldWrapper = ({
             </FormControl>
             <SelectContent className="bg-white text-xs sm:text-sm">
               {options.map((option) => (
-                <SelectItem key={option.value} value={option.value} className="text-xs sm:text-sm">
+                <SelectItem
+                  key={option.value}
+                  value={option.value}
+                  disabled={option.disabled}
+                  className="text-xs sm:text-sm"
+                >
                   {option.name}
                 </SelectItem>
               ))}

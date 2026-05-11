@@ -78,6 +78,8 @@ const MonthlyPayment = () => {
   }, [students?.data, filterMonth, filterStatus, focusStudentId]);
 
   const [addPayment] = useAddPaymentMutation();
+  
+  const [selectedMonths, setSelectedMonths] = useState<string[]>([]);
 
   const form = useForm({
     defaultValues: {
@@ -85,45 +87,85 @@ const MonthlyPayment = () => {
       firstName: "",
       phone: "",
       month: "",
+      tmpMonth: "",
       amount: "",
       title: "",
     },
   });
 
+  // Prepare month options and disable future months (only current and previous allowed)
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+  const currentMonthIndex = new Date().getMonth(); // 0-based
+  // recompute month options so months already selected become disabled
+  const monthOptions = monthNames.map((m, i) => ({
+    value: m,
+    name: m,
+    disabled: i > currentMonthIndex || selectedMonths.includes(m),
+  }));
+
   const onSubmit = async (data: any, studentPayments: any[] = []) => {
+    const monthsToPay = selectedMonths.length ? selectedMonths : data.month ? [data.month] : [];
+
     if (data.title === "Monthly") {
-      const alreadyPaidMonth = studentPayments.some(
-        (payment: any) => payment.month === data.month && Number(payment.amount) > 0
+      // prevent paying same month twice
+      const alreadyPaid = monthsToPay.filter((m) =>
+        studentPayments.some((payment: any) => payment.month === m && Number(payment.amount) > 0)
       );
 
-      if (alreadyPaidMonth && Number(data.amount) > 0) {
-        toast.error("Payment already taken this month");
+      if (alreadyPaid.length > 0 && Number(data.amount) > 0) {
+        toast.error(`Payment already taken for: ${alreadyPaid.join(", ")}`);
         return;
       }
     }
 
-    const payload = {
+    const payloads = monthsToPay.map((m) => ({
       studentId: data.studentId,
-      month: data.month,
+      month: m,
       amount: Number(data.amount),
       title: data.title,
-    };
+    }));
 
-    let message = "";
-    if (data.title === "Monthly") {
-      message = `Dear ${data?.firstName}, your monthly fee for ${data.month} has been successfully paid.\n\nThank you for staying with EDUCARE!`;
-    } else if (data.title === "ModelTest") {
-      message = `Dear ${data?.firstName}, your Special Model Test fee has been successfully paid.\n\nThank you for staying with EDUCARE!`;
-    } else if (data.title === "Others") {
-      message = customMessage || `Dear ${data?.firstName}, your payment has been received.`;
+    let allSuccess = true;
+    let lastMessage = "";
+
+    for (const payload of payloads) {
+      const res: any = await addPayment(payload).unwrap();
+      if (res?.statusCode == 200) {
+        lastMessage = res?.message || "Payment added successfully";
+      } else {
+        allSuccess = false;
+      }
     }
 
-    const res: any = await addPayment(payload).unwrap();
-
-    if (res?.statusCode == 200) {
+    if (allSuccess) {
       form.reset();
+      setSelectedMonths([]);
       setOpenFormFor(null);
-      toast.success(res?.message || "Payment added successfully");
+      toast.success(lastMessage || "Payment(s) added successfully");
+
+      const monthText = monthsToPay.length > 1 ? monthsToPay.join(", ") : monthsToPay[0] || "";
+      let message = "";
+      if (data.title === "Monthly") {
+        message = `Dear ${data?.firstName}, your monthly fee for ${monthText} has been successfully paid.\n\nThank you for staying with EDUCARE!`;
+      } else if (data.title === "ModelTest") {
+        message = `Dear ${data?.firstName}, your Special Model Test fee has been successfully paid.\n\nThank you for staying with EDUCARE!`;
+      } else if (data.title === "Others") {
+        message = customMessage || `Dear ${data?.firstName}, your payment has been received.`;
+      }
+
       const response = await sendMessage({
         message,
         number: data?.phone,
@@ -133,7 +175,7 @@ const MonthlyPayment = () => {
         toast.success(`Message sent to ${data?.firstName} successfully`);
       }
     } else {
-      toast.error("Failed to add payment");
+      toast.error("Failed to add one or more payments");
     }
   };
 
@@ -343,25 +385,49 @@ const MonthlyPayment = () => {
                                 placeholder="Enter amount"
                                 type="number"
                               />
-                              <SelectFieldWrapper
-                                name="month"
-                                label="Select Month"
-                                options={[
-                                  { value: "January", name: "January" },
-                                  { value: "February", name: "February" },
-                                  { value: "March", name: "March" },
-                                  { value: "April", name: "April" },
-                                  { value: "May", name: "May" },
-                                  { value: "June", name: "June" },
-                                  { value: "July", name: "July" },
-                                  { value: "August", name: "August" },
-                                  { value: "September", name: "September" },
-                                  { value: "October", name: "October" },
-                                  { value: "November", name: "November" },
-                                  { value: "December", name: "December" },
-                                ]}
-                                control={form.control}
-                              />
+                              <div>
+                                <SelectFieldWrapper
+                                  name="tmpMonth"
+                                  label="Add Month"
+                                  options={
+                                    monthOptions.filter((opt) => {
+                                      // hide months already selected in the chips
+                                      if (selectedMonths.includes(opt.value)) return false;
+                                      // hide months the student already paid for
+                                      const hasPaid = (student?.Payment || []).some(
+                                        (p: any) => p.month === opt.value && Number(p.amount) > 0
+                                      );
+                                      if (hasPaid) return false;
+                                      return true;
+                                    })
+                                  }
+                                  control={form.control}
+                                  onChange={(val: string) => {
+                                    if (!val) return;
+                                    // add if not already selected
+                                    setSelectedMonths((prev) => (prev.includes(val) ? prev : [...prev, val]));
+                                    // reset the temporary picker value
+                                    form.setValue("tmpMonth", "");
+                                  }}
+                                />
+
+                                {/* Selected month chips */}
+                                <div className="mt-2 flex flex-wrap gap-2">
+                                  {selectedMonths.map((m) => (
+                                    <Badge key={m} className="flex items-center gap-2 text-white bg-primary hover:bg-primary/80">
+                                      <span>{m}</span>
+                                      <button
+                                        type="button"
+                                        onClick={() => setSelectedMonths((prev) => prev.filter((x) => x !== m))}
+                                        className="opacity-70 hover:opacity-100"
+                                        aria-label={`Remove ${m}`}
+                                      >
+                                        <X className="w-3 h-3" />
+                                      </button>
+                                    </Badge>
+                                  ))}
+                                </div>
+                              </div>
                               {form.watch("title") === "Monthly" && (
                                 <div className="col-span-1 sm:col-span-2 text-green-700 font-medium text-sm">
                                   This is your monthly payment message.
