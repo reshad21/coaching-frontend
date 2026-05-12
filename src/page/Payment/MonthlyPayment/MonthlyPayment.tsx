@@ -260,7 +260,7 @@ const MonthlyPayment = () => {
           number: data?.phone,
         });
 
-        if (smsResult?.data?.data?.response_code == 202) {
+        if (smsResult?.data?.success === true) {
           toast.success(`Message sent to ${data?.firstName} successfully`);
         } else if (smsResult?.error) {
           const backendStatus = smsResult?.error?.originalStatus || smsResult?.error?.status;

@@ -42,11 +42,11 @@ const ClassMessage = () => {
           classId: selectedClass,
           message,
         }).unwrap();
-        if (res?.data?.response_code == 202) {
+        if (res?.success === true) {
           toast.success("Message send successfully");
         }
-        if (res?.data?.error_message) {
-          toast.error(res?.data?.error_message);
+        if (res?.error_message) {
+          toast.error(res?.error_message);
         }
         console.log(selectedClass);
         console.log(message);

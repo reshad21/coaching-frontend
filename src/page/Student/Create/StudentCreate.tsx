@@ -99,7 +99,7 @@ const StudentCreate = () => {
             number: data.phone,
           }).unwrap();
 
-          if (msgRes?.data?.response_code == 202) {
+          if (msgRes?.success === true) {
             toast.success("Welcome message sent successfully!");
           }
         } catch (msgError) {
