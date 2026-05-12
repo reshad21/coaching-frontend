@@ -4,6 +4,7 @@ import { CalendarDays, DollarSign, TrendingUp, BookOpen } from "lucide-react";
 
 interface PaymentSummaryCardProps {
   totalPaid: number;
+  totalMonthlyFees: number;
   currentMonth: string;
   paymentsByMonth: Record<string, Payment>;
   modelTestPayments?: Payment[];
@@ -13,6 +14,7 @@ interface PaymentSummaryCardProps {
 
 export function PaymentSummaryCard({
   totalPaid,
+  totalMonthlyFees,
   currentMonth,
   paymentsByMonth,
   modelTestPayments = [],
@@ -52,6 +54,20 @@ export function PaymentSummaryCard({
             </div>
             <span className="text-xl font-bold tracking-tight text-slate-700">
               ${totalPaid.toFixed(2)}
+            </span>
+          </div>
+        )}
+
+        {totalMonthlyFees > 0 && (
+          <div className="rounded-lg bg-white/60 border border-blue-100 px-4 py-3 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center justify-center rounded-md bg-blue-50 border border-blue-100 p-1.5">
+                <CalendarDays className="h-3.5 w-3.5 text-blue-500" strokeWidth={2} />
+              </span>
+              <span className="text-xs font-medium text-slate-500">Total Monthly Fees</span>
+            </div>
+            <span className="text-xl font-bold tracking-tight text-slate-700">
+              ${totalMonthlyFees.toFixed(2)}
             </span>
           </div>
         )}

@@ -42,6 +42,7 @@ export function PaymentDashboard() {
     paidMonths,
     paidPercentage,
     totalPaid,
+    totalMonthlyFees,
     currentMonth,
     nextUnpaidMonth,
     modelTestPayments,
@@ -129,6 +130,7 @@ export function PaymentDashboard() {
           />
           <PaymentSummaryCard
             totalPaid={totalPaid}
+            totalMonthlyFees={totalMonthlyFees}
             currentMonth={currentMonth}
             paymentsByMonth={paymentsByMonth}
             modelTestPayments={modelTestPayments}

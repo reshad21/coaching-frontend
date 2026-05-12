@@ -27,6 +27,9 @@ export function usePaymentCalculations(payments: Payment[]) {
 
     const modelTestPayments = payments.filter((payment) => payment.title?.toLowerCase() === "modeltest")
     const otherPayments = payments.filter((payment) => payment.title?.toLowerCase() === "others")
+    
+    // Calculate total monthly fees - only from paymentsByMonth (one payment per month)
+    const totalMonthlyFees = Object.values(paymentsByMonth).reduce((sum, payment) => sum + (payment.amount || 0), 0)
 
     return {
       paymentsByMonth,
@@ -34,6 +37,7 @@ export function usePaymentCalculations(payments: Payment[]) {
       paidMonths,
       paidPercentage,
       totalPaid,
+      totalMonthlyFees,
       currentMonth,
       nextUnpaidMonth,
       modelTestPayments,
