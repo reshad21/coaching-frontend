@@ -262,7 +262,22 @@ const MonthlyPayment = () => {
 
         if (smsResult?.data?.data?.response_code == 202) {
           toast.success(`Message sent to ${data?.firstName} successfully`);
+        } else if (smsResult?.error) {
+          const backendStatus = smsResult?.error?.originalStatus || smsResult?.error?.status;
+          const errorMessage =
+            smsResult?.error?.data?.message ||
+            smsResult?.error?.data?.error_message ||
+            smsResult?.error?.message ||
+            (backendStatus
+              ? `SMS service failed with status ${backendStatus}`
+              : "Message failed to send");
+
+          toast.error(errorMessage);
+        } else {
+          toast.error(`Message failed to send to ${data?.firstName}`);
         }
+      } else {
+        toast.error(`Payment added, but no phone number was available to send a message to ${data?.firstName}`);
       }
     } else {
       toast.error("Failed to add one or more payments");
