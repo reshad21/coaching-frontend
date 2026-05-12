@@ -25,6 +25,7 @@ const StudentCreate = () => {
   const { data: batchData } = useGetAllBatchQuery(undefined);
   const { data: classData } = useGetAllClassQuery(undefined);
   const { data: shiftData } = useGetAllShiftQuery(undefined);
+  const batchOptions = batchData?.data?.data ?? batchData?.data ?? [];
   const form = useForm({
     defaultValues: {
       firstName: "",
@@ -253,7 +254,7 @@ const StudentCreate = () => {
                       name="batchId"
                       label="Select Batch"
                       options={
-                        batchData?.data?.map((item: any) => ({
+                        batchOptions.map((item: any) => ({
                           value: item.id,
                           name: item.batchName,
                         })) || []
