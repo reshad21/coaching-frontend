@@ -118,7 +118,7 @@ export function PaymentDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
           <StudentInfoCard
             studentInfo={studentInfo}
-            totalPaid={totalPaid}
+            totalPaid={(studentInfo as any)?.admissionFees || 0}
           />
           <PaymentProgressCard
             paidMonths={paidMonths}
@@ -133,6 +133,7 @@ export function PaymentDashboard() {
             paymentsByMonth={paymentsByMonth}
             modelTestPayments={modelTestPayments}
             otherPayments={calculatedOtherPayments}
+            admissionFee={(studentInfo as any)?.admissionFees || 0}
           />
         </div>
 

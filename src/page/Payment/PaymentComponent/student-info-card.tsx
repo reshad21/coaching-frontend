@@ -67,7 +67,7 @@ export function StudentInfoCard({ studentInfo, totalPaid }: StudentInfoCardProps
           </div>
 
           <div className="rounded-lg bg-blue-50/80 px-3 py-2 text-right shrink-0">
-            <div className="text-[11px] font-medium uppercase tracking-wide text-blue-700/80">Total Paid</div>
+            <div className="text-[11px] font-medium uppercase tracking-wide text-blue-700/80">Admission Fee</div>
             <div className="text-base font-bold text-blue-800 mt-0.5">
               {typeof totalPaid === "number" ? `৳${totalPaid.toFixed(2)}` : "৳0.00"}
             </div>

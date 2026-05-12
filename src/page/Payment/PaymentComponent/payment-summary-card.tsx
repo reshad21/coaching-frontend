@@ -8,6 +8,7 @@ interface PaymentSummaryCardProps {
   paymentsByMonth: Record<string, Payment>;
   modelTestPayments?: Payment[];
   otherPayments?: Payment[];
+  admissionFee?: number;
 }
 
 export function PaymentSummaryCard({
@@ -16,6 +17,7 @@ export function PaymentSummaryCard({
   paymentsByMonth,
   modelTestPayments = [],
   otherPayments = [],
+  admissionFee = 0,
 }: PaymentSummaryCardProps) {
   const isCurrentMonthPaid = !!paymentsByMonth[currentMonth];
   const paidMonthCount = Object.values(paymentsByMonth).filter(
@@ -128,7 +130,21 @@ export function PaymentSummaryCard({
           </div>
         )}
 
-        {totalPaid === 0 && paidMonthCount === 0 && modelTestTotal === 0 && otherTotal === 0 && (
+        {admissionFee > 0 && (
+          <div className="rounded-lg bg-white/60 border border-blue-100 px-4 py-3 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center justify-center rounded-md bg-green-50 border border-green-100 p-1.5">
+                <DollarSign className="h-3.5 w-3.5 text-green-500" strokeWidth={2} />
+              </span>
+              <span className="text-xs font-medium text-slate-500">Admission Fee</span>
+            </div>
+            <span className="text-xl font-bold tracking-tight text-slate-700">
+              ${admissionFee.toFixed(2)}
+            </span>
+          </div>
+        )}
+
+        {totalPaid === 0 && paidMonthCount === 0 && modelTestTotal === 0 && otherTotal === 0 && admissionFee === 0 && (
           <div className="rounded-lg bg-slate-50/60 border border-slate-200 px-4 py-3 text-center">
             <p className="text-xs text-slate-500">No payments recorded yet</p>
           </div>
