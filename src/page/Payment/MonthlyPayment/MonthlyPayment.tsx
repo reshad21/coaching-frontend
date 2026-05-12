@@ -263,10 +263,6 @@ const MonthlyPayment = () => {
         if (smsResult?.data?.data?.response_code == 202) {
           toast.success(`Message sent to ${data?.firstName} successfully`);
         }
-
-        if (smsResult?.error) {
-          console.error("SMS send failed after successful payment:", smsResult.error);
-        }
       }
     } else {
       toast.error("Failed to add one or more payments");

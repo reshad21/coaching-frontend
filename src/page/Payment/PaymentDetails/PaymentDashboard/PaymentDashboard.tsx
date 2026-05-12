@@ -21,6 +21,7 @@ import { PaymentEditModal } from "../../PaymentComponent/payment-edit-modal";
 import { PaymentProgressCard } from "../../PaymentComponent/payment-progress-card";
 import { PaymentSummaryCard } from "../../PaymentComponent/payment-summary-card";
 import { StudentInfoCard } from "../../PaymentComponent/student-info-card";
+import { OtherPayments } from "../../PaymentComponent/other-payments";
 
 export function PaymentDashboard() {
   const navigate = useNavigate();
@@ -34,6 +35,7 @@ export function PaymentDashboard() {
 
   const payments = data?.data?.Payment || [];
   const studentInfo = data?.data;
+  const otherPayments = payments.filter((payment:any) => payment.title?.toLowerCase() === "others");
 
   const {
     paymentsByMonth,
@@ -167,6 +169,17 @@ export function PaymentDashboard() {
             setIsEditModalOpen(true);
           }}
         />
+
+        <OtherPayments
+          otherPayments={otherPayments}
+          onEditPayment={(payment) => {
+            setSelectedMonth("Other");
+            setSelectedPayment(payment);
+            setIsEditModalOpen(true);
+          }}
+        />
+
+        
 
         <PaymentEditModal
           isOpen={isEditModalOpen}

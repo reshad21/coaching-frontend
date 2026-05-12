@@ -51,7 +51,6 @@ const paymentApi = baseApi.injectEndpoints({
 
     addPayment: builder.mutation({
       query: (data) => {
-        console.log("resuxk data", data);
         return {
           url: "/payment",
           method: "POST",
@@ -63,7 +62,6 @@ const paymentApi = baseApi.injectEndpoints({
 
     updatePayment: builder.mutation({
       query: ({ id, data }) => {
-        console.log("redux inside==>", id, data);
         return {
           url: `/payment/${id}`,
           method: "PATCH",
