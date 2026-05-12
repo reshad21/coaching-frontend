@@ -17,7 +17,15 @@ import {
 import { useSendSingleMessageMutation } from "@/redux/api/auth/message/message";
 import { useAddPaymentMutation } from "@/redux/api/payment/paymentApi";
 import { useGetAllStudentQuery } from "@/redux/api/studentApi/studentApi";
-import { ChevronRight, DollarSign, Eye, Plus, RotateCcw, Check, X } from "lucide-react";
+import {
+  ChevronRight,
+  DollarSign,
+  Eye,
+  Plus,
+  RotateCcw,
+  Check,
+  X,
+} from "lucide-react";
 import { useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -39,7 +47,8 @@ const MonthlyPayment = () => {
   ];
 
   const { data: students, isLoading } = useGetAllStudentQuery(queryParams);
-  const focusStudentId = (location.state as { focusStudentId?: string } | null)?.focusStudentId;
+  const focusStudentId = (location.state as { focusStudentId?: string } | null)
+    ?.focusStudentId;
 
   const filteredStudents = useMemo(() => {
     const allStudents = students?.data ?? [];
@@ -48,7 +57,7 @@ const MonthlyPayment = () => {
       ? allStudents
       : allStudents.filter((student: any) => {
           const hasPaidForMonth = student?.Payment?.some(
-            (payment: any) => payment.month === filterMonth
+            (payment: any) => payment.month === filterMonth,
           );
 
           if (!filterStatus) {
@@ -78,9 +87,11 @@ const MonthlyPayment = () => {
   }, [students?.data, filterMonth, filterStatus, focusStudentId]);
 
   const [addPayment] = useAddPaymentMutation();
-  
+
   const [selectedMonths, setSelectedMonths] = useState<string[]>([]);
-  const [validationErrors, setValidationErrors] = useState<{ [key: string]: string }>({});
+  const [validationErrors, setValidationErrors] = useState<{
+    [key: string]: string;
+  }>({});
 
   const form = useForm({
     defaultValues: {
@@ -111,27 +122,36 @@ const MonthlyPayment = () => {
   ];
   const currentMonthIndex = new Date().getMonth(); // 0-based
   const currentMonth = monthNames[currentMonthIndex];
-  const previousMonth = monthNames[currentMonthIndex === 0 ? 11 : currentMonthIndex - 1];
+  const previousMonth =
+    monthNames[currentMonthIndex === 0 ? 11 : currentMonthIndex - 1];
 
   // Helper function to generate month options based on student payment history
   const getMonthOptions = (student: any) => {
     const studentPayments = student?.Payment || [];
-    const currentAndPreviousPaid = 
-      studentPayments.some((p: any) => p.month === currentMonth && Number(p.amount) > 0) &&
-      studentPayments.some((p: any) => p.month === previousMonth && Number(p.amount) > 0);
+    const currentAndPreviousPaid =
+      studentPayments.some(
+        (p: any) => p.month === currentMonth && Number(p.amount) > 0,
+      ) &&
+      studentPayments.some(
+        (p: any) => p.month === previousMonth && Number(p.amount) > 0,
+      );
 
     return monthNames.map((m, i) => ({
       value: m,
       name: m,
-      disabled: 
+      disabled:
         // disable future months unless both current and previous are paid
-        (i > currentMonthIndex && !currentAndPreviousPaid) || 
+        (i > currentMonthIndex && !currentAndPreviousPaid) ||
         selectedMonths.includes(m),
     }));
   };
 
   const onSubmit = async (data: any, studentPayments: any[] = []) => {
-    const monthsToPay = selectedMonths.length ? selectedMonths : data.month ? [data.month] : [];
+    const monthsToPay = selectedMonths.length
+      ? selectedMonths
+      : data.month
+        ? [data.month]
+        : [];
     const errors: { [key: string]: string } = {};
 
     // Validate that months are selected only for Monthly payments
@@ -155,7 +175,9 @@ const MonthlyPayment = () => {
     if (data.title === "Monthly") {
       // prevent paying same month twice
       const alreadyPaid = monthsToPay.filter((m) =>
-        studentPayments.some((payment: any) => payment.month === m && Number(payment.amount) > 0)
+        studentPayments.some(
+          (payment: any) => payment.month === m && Number(payment.amount) > 0,
+        ),
       );
 
       if (alreadyPaid.length > 0 && Number(data.amount) > 0) {
@@ -166,9 +188,10 @@ const MonthlyPayment = () => {
 
     // Calculate average amount per month
     const totalAmount = Number(data.amount);
-    const averageAmount = monthsToPay.length > 0 
-      ? parseFloat((totalAmount / monthsToPay.length).toFixed(2))
-      : totalAmount;
+    const averageAmount =
+      monthsToPay.length > 0
+        ? parseFloat((totalAmount / monthsToPay.length).toFixed(2))
+        : totalAmount;
 
     // Create payment payloads
     let payloads;
@@ -182,12 +205,14 @@ const MonthlyPayment = () => {
       }));
     } else {
       // For ModelTest and Others without months (single payment)
-      payloads = [{
-        studentId: data.studentId,
-        month: null,
-        amount: totalAmount,
-        title: data.title,
-      }];
+      payloads = [
+        {
+          studentId: data.studentId,
+          month: null,
+          amount: totalAmount,
+          title: data.title,
+        },
+      ];
     }
 
     let allSuccess = true;
@@ -205,14 +230,16 @@ const MonthlyPayment = () => {
       form.reset();
       setSelectedMonths([]);
       setOpenFormFor(null);
-      
-      const monthText = monthsToPay.length > 1 ? monthsToPay.join(", ") : monthsToPay[0] || "";
-      const breakdownText = monthsToPay.length > 1 
-        ? `${monthsToPay.length} months @ $${averageAmount} each` 
-        : monthsToPay.length === 1
-        ? `$${averageAmount}`
-        : `$${totalAmount}`;
-      
+
+      const monthText =
+        monthsToPay.length > 1 ? monthsToPay.join(", ") : monthsToPay[0] || "";
+      const breakdownText =
+        monthsToPay.length > 1
+          ? `${monthsToPay.length} months @ $${averageAmount} each`
+          : monthsToPay.length === 1
+            ? `$${averageAmount}`
+            : `$${totalAmount}`;
+
       toast.success(`Payment(s) added successfully!\n${breakdownText}`);
 
       let message = "";
@@ -221,21 +248,25 @@ const MonthlyPayment = () => {
       } else if (data.title === "ModelTest") {
         message = `Dear ${data?.firstName}, your Special Model Test fee has been successfully paid.\n\nThank you for staying with EDUCARE!`;
       } else if (data.title === "Others") {
-        message = customMessage || `Dear ${data?.firstName}, your payment has been received.`;
+        message =
+          customMessage ||
+          `Dear ${data?.firstName}, your payment has been received.`;
       }
 
-      try {
-        const response = await sendMessage({
+      // SMS should never break a successful payment flow.
+      if (data?.phone) {
+        const smsResult: any = await sendMessage({
           message,
           number: data?.phone,
-        }).unwrap();
+        });
 
-        if (response?.data?.response_code == 202) {
+        if (smsResult?.data?.data?.response_code == 202) {
           toast.success(`Message sent to ${data?.firstName} successfully`);
         }
-      } catch (error) {
-        console.error("Error sending message:", error);
-        toast.error("Payment added but message failed to send");
+
+        if (smsResult?.error) {
+          console.error("SMS send failed after successful payment:", smsResult.error);
+        }
       }
     } else {
       toast.error("Failed to add one or more payments");
@@ -245,7 +276,6 @@ const MonthlyPayment = () => {
   return (
     // ✅ Responsive padding: Adjusted for mobile, tablet, and desktop
     <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
-
       {/* ✅ Responsive Header */}
       <div>
         <div className="flex items-center gap-2 text-xs sm:text-sm text-muted-foreground mb-2 overflow-x-auto">
@@ -334,9 +364,18 @@ const MonthlyPayment = () => {
                 <>
                   <TableRow
                     key={student.id}
-                    className={focusStudentId === student.id ? "bg-amber-50 border-l-4 border-amber-600" : ""}
+                    className={
+                      focusStudentId === student.id
+                        ? "bg-amber-50 border-l-4 border-amber-600"
+                        : ""
+                    }
                   >
-                    <TableCell data-label="SL No." className="hidden sm:table-cell">{index + 1}</TableCell>
+                    <TableCell
+                      data-label="SL No."
+                      className="hidden sm:table-cell"
+                    >
+                      {index + 1}
+                    </TableCell>
                     <TableCell data-label="Full Name">
                       <div className="flex items-center gap-2">
                         <img
@@ -348,19 +387,41 @@ const MonthlyPayment = () => {
                           <div className="truncate text-sm font-medium">
                             {student.firstName} {student.lastName}
                           </div>
-                          <div className="text-xs text-gray-500 block sm:hidden">{student.studentId}</div>
-                          <div className="text-xs text-gray-500 block md:hidden">{student.phone}</div>
+                          <div className="text-xs text-gray-500 block sm:hidden">
+                            {student.studentId}
+                          </div>
+                          <div className="text-xs text-gray-500 block md:hidden">
+                            {student.phone}
+                          </div>
                         </div>
                       </div>
                     </TableCell>
-                    <TableCell data-label="Std Id" className="hidden md:table-cell">{student.studentId}</TableCell>
-                    <TableCell data-label="Phone" className="hidden md:table-cell">{student.phone}</TableCell>
-                    <TableCell data-label="Class" className="hidden md:table-cell">{student.className || "N/A"}</TableCell>
-                    <TableCell data-label="Payment Status" className="text-center">
+                    <TableCell
+                      data-label="Std Id"
+                      className="hidden md:table-cell"
+                    >
+                      {student.studentId}
+                    </TableCell>
+                    <TableCell
+                      data-label="Phone"
+                      className="hidden md:table-cell"
+                    >
+                      {student.phone}
+                    </TableCell>
+                    <TableCell
+                      data-label="Class"
+                      className="hidden md:table-cell"
+                    >
+                      {student.className || "N/A"}
+                    </TableCell>
+                    <TableCell
+                      data-label="Payment Status"
+                      className="text-center"
+                    >
                       {filterMonth ? (
                         (() => {
                           const hasPaidForMonth = student?.Payment?.some(
-                            (payment: any) => payment.month === filterMonth
+                            (payment: any) => payment.month === filterMonth,
                           );
                           return hasPaidForMonth ? (
                             <Badge className="bg-green-100 text-green-800 hover:bg-green-200 flex items-center justify-center gap-1 mx-auto w-fit">
@@ -396,7 +457,7 @@ const MonthlyPayment = () => {
                             setOpenFormFor((prev) =>
                               prev === student.studentId
                                 ? null
-                                : student.studentId
+                                : student.studentId,
                             );
                           }}
                         >
@@ -407,10 +468,15 @@ const MonthlyPayment = () => {
                               : "Make Payment"}
                           </span>
                           <span className="sm:hidden">
-                            {openFormFor === student.studentId ? "Cancel" : "Pay"}
+                            {openFormFor === student.studentId
+                              ? "Cancel"
+                              : "Pay"}
                           </span>
                         </Button>
-                        <Link to={`/payment/${student.id}`} className="w-full sm:w-auto">
+                        <Link
+                          to={`/payment/${student.id}`}
+                          className="w-full sm:w-auto"
+                        >
                           <Button
                             variant="outline"
                             size="sm"
@@ -430,7 +496,9 @@ const MonthlyPayment = () => {
                       <TableCell colSpan={7} className="p-2 sm:p-4">
                         <Form {...form}>
                           <form
-                            onSubmit={form.handleSubmit((data) => onSubmit(data, student.Payment || []))}
+                            onSubmit={form.handleSubmit((data) =>
+                              onSubmit(data, student.Payment || []),
+                            )}
                             className="p-3 sm:p-4 bg-slate-100 rounded-md"
                           >
                             <div className="grid grid-cols-1 gap-3 sm:gap-4 mb-4">
@@ -453,48 +521,66 @@ const MonthlyPayment = () => {
                                     name="tmpMonth"
                                     label="Add Month"
                                     required={form.watch("title") === "Monthly"}
-                                    options={
-                                      getMonthOptions(student).filter((opt) => {
+                                    options={getMonthOptions(student).filter(
+                                      (opt) => {
                                         // hide months already selected in the chips
-                                        if (selectedMonths.includes(opt.value)) return false;
+                                        if (selectedMonths.includes(opt.value))
+                                          return false;
                                         // hide months the student already paid for
-                                        const hasPaid = (student?.Payment || []).some(
-                                          (p: any) => p.month === opt.value && Number(p.amount) > 0
+                                        const hasPaid = (
+                                          student?.Payment || []
+                                        ).some(
+                                          (p: any) =>
+                                            p.month === opt.value &&
+                                            Number(p.amount) > 0,
                                         );
                                         if (hasPaid) return false;
                                         return true;
-                                      })
-                                    }
+                                      },
+                                    )}
                                     control={form.control}
-                                  onChange={(val: string) => {
-                                    if (!val) return;
-                                    // add if not already selected
-                                    setSelectedMonths((prev) => (prev.includes(val) ? prev : [...prev, val]));
-                                    // reset the temporary picker value
-                                    form.setValue("tmpMonth", "");
-                                  }}
-                                />
+                                    onChange={(val: string) => {
+                                      if (!val) return;
+                                      // add if not already selected
+                                      setSelectedMonths((prev) =>
+                                        prev.includes(val)
+                                          ? prev
+                                          : [...prev, val],
+                                      );
+                                      // reset the temporary picker value
+                                      form.setValue("tmpMonth", "");
+                                    }}
+                                  />
 
-                                {/* Selected month chips */}
-                                <div className="mt-2 flex flex-wrap gap-2">
-                                  {selectedMonths.map((m) => (
-                                    <Badge key={m} className="flex items-center gap-2 text-white bg-orange-600 hover:bg-orange-600/80 px-2 py-1 rounded-md">
-                                      <span className="font-medium">{m}</span>
-                                      <button
-                                        type="button"
-                                        onClick={() => setSelectedMonths((prev) => prev.filter((x) => x !== m))}
-                                        className="ml-1 inline-flex items-center justify-center h-4 w-4 rounded-md bg-white text-orange-600 hover:bg-orange-600 hover:text-white shadow-sm transition"
-                                        aria-label={`Remove ${m}`}
-                                        title={`Remove ${m}`}
+                                  {/* Selected month chips */}
+                                  <div className="mt-2 flex flex-wrap gap-2">
+                                    {selectedMonths.map((m) => (
+                                      <Badge
+                                        key={m}
+                                        className="flex items-center gap-2 text-white bg-orange-600 hover:bg-orange-600/80 px-2 py-1 rounded-md"
                                       >
-                                        <X className="w-4 h-4" />
-                                      </button>
-                                    </Badge>
-                                  ))}
-                                </div>
-                                {validationErrors.months && (
-                                  <p className="text-red-600 text-sm mt-2">{validationErrors.months}</p>
-                                )}
+                                        <span className="font-medium">{m}</span>
+                                        <button
+                                          type="button"
+                                          onClick={() =>
+                                            setSelectedMonths((prev) =>
+                                              prev.filter((x) => x !== m),
+                                            )
+                                          }
+                                          className="ml-1 inline-flex items-center justify-center h-4 w-4 rounded-md bg-white text-orange-600 hover:bg-orange-600 hover:text-white shadow-sm transition"
+                                          aria-label={`Remove ${m}`}
+                                          title={`Remove ${m}`}
+                                        >
+                                          <X className="w-4 h-4" />
+                                        </button>
+                                      </Badge>
+                                    ))}
+                                  </div>
+                                  {validationErrors.months && (
+                                    <p className="text-red-600 text-sm mt-2">
+                                      {validationErrors.months}
+                                    </p>
+                                  )}
                                 </div>
                               )}
 
@@ -507,7 +593,9 @@ const MonthlyPayment = () => {
                                 type="number"
                               />
                               {validationErrors.amount && (
-                                <p className="text-red-600 text-sm -mt-2">{validationErrors.amount}</p>
+                                <p className="text-red-600 text-sm -mt-2">
+                                  {validationErrors.amount}
+                                </p>
                               )}
                               {form.watch("title") === "Others" && (
                                 <div>
@@ -516,44 +604,81 @@ const MonthlyPayment = () => {
                                     className="w-full p-2 border rounded text-sm"
                                     placeholder="Enter your custom message"
                                     value={customMessage}
-                                    onChange={(e) => setCustomMessage(e.target.value)}
+                                    onChange={(e) =>
+                                      setCustomMessage(e.target.value)
+                                    }
                                   />
                                 </div>
                               )}
                             </div>
 
                             {/* Payment Breakdown Section */}
-                            {selectedMonths.length > 0 && form.watch("amount") && (
-                              <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
-                                <h4 className="font-semibold text-sm text-blue-900 mb-3">Payment Breakdown</h4>
-                                <div className="grid grid-cols-3 gap-2 mb-4 text-sm">
-                                  <div>
-                                    <p className="text-gray-600 text-xs">Total Amount</p>
-                                    <p className="font-bold text-blue-900">{Number(form.watch("amount")).toFixed(2)}TK</p>
-                                  </div>
-                                  <div>
-                                    <p className="text-gray-600 text-xs">Months Selected</p>
-                                    <p className="font-bold text-blue-900">{selectedMonths.length}</p>
-                                  </div>
-                                  <div>
-                                    <p className="text-gray-600 text-xs">Amount per Month</p>
-                                    <p className="font-bold text-blue-900">{(Number(form.watch("amount")) / selectedMonths.length).toFixed(2)}TK</p>
-                                  </div>
-                                </div>
-                                <p className="text-xs text-gray-600 mb-2">Distribution:</p>
-                                <div className="space-y-1 text-xs">
-                                  {selectedMonths.map((month) => (
-                                    <div key={month} className="flex justify-between items-center p-2 bg-white rounded border border-blue-100">
-                                      <span className="text-gray-700">{month}</span>
-                                      <span className="font-semibold text-blue-900">{(Number(form.watch("amount")) / selectedMonths.length).toFixed(2)}TK</span>
+                            {selectedMonths.length > 0 &&
+                              form.watch("amount") && (
+                                <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
+                                  <h4 className="font-semibold text-sm text-blue-900 mb-3">
+                                    Payment Breakdown
+                                  </h4>
+                                  <div className="grid grid-cols-3 gap-2 mb-4 text-sm">
+                                    <div>
+                                      <p className="text-gray-600 text-xs">
+                                        Total Amount
+                                      </p>
+                                      <p className="font-bold text-blue-900">
+                                        {Number(form.watch("amount")).toFixed(
+                                          2,
+                                        )}
+                                        TK
+                                      </p>
                                     </div>
-                                  ))}
+                                    <div>
+                                      <p className="text-gray-600 text-xs">
+                                        Months Selected
+                                      </p>
+                                      <p className="font-bold text-blue-900">
+                                        {selectedMonths.length}
+                                      </p>
+                                    </div>
+                                    <div>
+                                      <p className="text-gray-600 text-xs">
+                                        Amount per Month
+                                      </p>
+                                      <p className="font-bold text-blue-900">
+                                        {(
+                                          Number(form.watch("amount")) /
+                                          selectedMonths.length
+                                        ).toFixed(2)}
+                                        TK
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <p className="text-xs text-gray-600 mb-2">
+                                    Distribution:
+                                  </p>
+                                  <div className="space-y-1 text-xs">
+                                    {selectedMonths.map((month) => (
+                                      <div
+                                        key={month}
+                                        className="flex justify-between items-center p-2 bg-white rounded border border-blue-100"
+                                      >
+                                        <span className="text-gray-700">
+                                          {month}
+                                        </span>
+                                        <span className="font-semibold text-blue-900">
+                                          {(
+                                            Number(form.watch("amount")) /
+                                            selectedMonths.length
+                                          ).toFixed(2)}
+                                          TK
+                                        </span>
+                                      </div>
+                                    ))}
+                                  </div>
                                 </div>
-                              </div>
-                            )}
+                              )}
 
                             <Button
-                            variant="primaryGradient"
+                              variant="primaryGradient"
                               type="submit"
                               className="w-full sm:w-auto bg-primary hover:bg-cyan-800 text-white flex items-center justify-center gap-2 py-2 px-3 sm:px-4 rounded-md transition text-sm sm:text-base"
                             >
@@ -571,7 +696,9 @@ const MonthlyPayment = () => {
           </Table>
         </div>
       ) : (
-        <p className="text-center text-muted-foreground mt-10 text-sm sm:text-base">No data found</p>
+        <p className="text-center text-muted-foreground mt-10 text-sm sm:text-base">
+          No data found
+        </p>
       )}
     </div>
   );
