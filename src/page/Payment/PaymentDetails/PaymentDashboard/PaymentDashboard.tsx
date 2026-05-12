@@ -35,7 +35,6 @@ export function PaymentDashboard() {
 
   const payments = data?.data?.Payment || [];
   const studentInfo = data?.data;
-  const otherPayments = payments.filter((payment:any) => payment.title?.toLowerCase() === "others");
 
   const {
     paymentsByMonth,
@@ -46,6 +45,7 @@ export function PaymentDashboard() {
     currentMonth,
     nextUnpaidMonth,
     modelTestPayments,
+    otherPayments: calculatedOtherPayments,
   } = usePaymentCalculations(payments);
 
   const handleEditPayment = (month: string, payment?: Payment) => {
@@ -132,6 +132,7 @@ export function PaymentDashboard() {
             currentMonth={currentMonth}
             paymentsByMonth={paymentsByMonth}
             modelTestPayments={modelTestPayments}
+            otherPayments={calculatedOtherPayments}
           />
         </div>
 
@@ -171,7 +172,7 @@ export function PaymentDashboard() {
         />
 
         <OtherPayments
-          otherPayments={otherPayments}
+          otherPayments={calculatedOtherPayments}
           onEditPayment={(payment) => {
             setSelectedMonth("Other");
             setSelectedPayment(payment);

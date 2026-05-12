@@ -14,7 +14,9 @@ export function usePaymentCalculations(payments: Payment[]) {
     })
 
     const totalMonths = months.length
-    const paidMonths = Object.keys(paymentsByMonth).length
+    const paidMonths = Object.values(paymentsByMonth).filter(
+      (payment) => payment && payment.amount > 0
+    ).length
     const paidPercentage = Math.round((paidMonths / totalMonths) * 100)
     const totalPaid = payments.reduce((sum, payment) => sum + (payment.amount || 0), 0)
 
@@ -24,6 +26,7 @@ export function usePaymentCalculations(payments: Payment[]) {
     )
 
     const modelTestPayments = payments.filter((payment) => payment.title?.toLowerCase() === "modeltest")
+    const otherPayments = payments.filter((payment) => payment.title?.toLowerCase() === "others")
 
     return {
       paymentsByMonth,
@@ -34,6 +37,7 @@ export function usePaymentCalculations(payments: Payment[]) {
       currentMonth,
       nextUnpaidMonth,
       modelTestPayments,
+      otherPayments,
     }
   }, [payments])
 }
