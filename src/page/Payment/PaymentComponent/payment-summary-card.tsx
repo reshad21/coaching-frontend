@@ -29,6 +29,9 @@ export function PaymentSummaryCard({
   const modelTestTotal = modelTestPayments.reduce((sum, payment) => sum + (payment.amount || 0), 0);
   const otherTotal = otherPayments.reduce((sum, payment) => sum + (payment.amount || 0), 0);
   const hasOutstandingPayments = modelTestTotal > 0 || otherTotal > 0;
+  
+  // Total paid WITHOUT admission fee = Monthly + ModelTest + Other
+  const totalPaidWithoutAdmission = totalMonthlyFees + modelTestTotal + otherTotal;
 
   return (
     <Card className="h-full relative overflow-hidden rounded-xl border border-blue-200/70 bg-gradient-to-br from-blue-100 via-white to-purple-100 shadow-sm flex flex-col">
@@ -44,16 +47,16 @@ export function PaymentSummaryCard({
       </CardHeader>
 
       <CardContent className="px-5 pb-5 pt-0 flex flex-col gap-3 flex-1">
-        {totalPaid > 0 && (
+        {admissionFee > 0 && (
           <div className="rounded-lg bg-white/60 border border-blue-100 px-4 py-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center justify-center rounded-md bg-blue-50 border border-blue-100 p-1.5">
-                <TrendingUp className="h-3.5 w-3.5 text-blue-500" strokeWidth={2} />
+              <span className="inline-flex items-center justify-center rounded-md bg-green-50 border border-green-100 p-1.5">
+                <DollarSign className="h-3.5 w-3.5 text-green-500" strokeWidth={2} />
               </span>
-              <span className="text-xs font-medium text-slate-500">Total Paid</span>
+              <span className="text-xs font-medium text-slate-500">Admission Fee</span>
             </div>
             <span className="text-xl font-bold tracking-tight text-slate-700">
-              ${totalPaid.toFixed(2)}
+              ${admissionFee.toFixed(2)}
             </span>
           </div>
         )}
@@ -146,16 +149,16 @@ export function PaymentSummaryCard({
           </div>
         )}
 
-        {admissionFee > 0 && (
+        {totalPaidWithoutAdmission > 0 && (
           <div className="rounded-lg bg-white/60 border border-blue-100 px-4 py-3 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center justify-center rounded-md bg-green-50 border border-green-100 p-1.5">
-                <DollarSign className="h-3.5 w-3.5 text-green-500" strokeWidth={2} />
+              <span className="inline-flex items-center justify-center rounded-md bg-blue-50 border border-blue-100 p-1.5">
+                <TrendingUp className="h-3.5 w-3.5 text-blue-500" strokeWidth={2} />
               </span>
-              <span className="text-xs font-medium text-slate-500">Admission Fee</span>
+              <span className="text-xs font-medium text-slate-500">Total Paid without admission fee</span>
             </div>
             <span className="text-xl font-bold tracking-tight text-slate-700">
-              ${admissionFee.toFixed(2)}
+              ${totalPaidWithoutAdmission.toFixed(2)}
             </span>
           </div>
         )}
