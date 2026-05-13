@@ -3,15 +3,12 @@ import { useMemo, useState } from "react"
 
 import SelectBatch from "@/components/Batch/SelectBatch"
 import SearchInputField from "@/components/CommonSearch/SearchInputField"
-import EduCPagination from "@/components/EduCPagination/EduCPagination"
 import Loading from "@/components/Loading"
 import SelectStudentClass from "@/components/studentClass/SelectStudentClass"
-import SendMessage from "@/page/Student/View/SendMessage/SendMessage"
-import studentImage from "../../../assets/default.jpg"
-
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import {
   Select,
   SelectContent,
@@ -19,176 +16,268 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-
 import { useGetAllStudentQuery } from "@/redux/api/studentApi/studentApi"
-
-import { ChevronsRight, CreditCard, Eye, FileText, Filter, SquarePen, Users, X } from "lucide-react"
+import { jsPDF } from "jspdf"
+import autoTable from "jspdf-autotable"
+import studentImage from "../../../assets/default.jpg"
+import { ChevronsRight, CreditCard, Eye, Filter, FileText, SearchX, Users, X } from "lucide-react"
 import { Link } from "react-router-dom"
 
 const PaymentStatus = () => {
-  // Pagination, search, and filter state
-  const [page, setPage] = useState(1)
   const [search, setSearch] = useState("")
   const [selectedBatch, setSelectedBatch] = useState("")
   const [selectClass, setSelectedClass] = useState("")
-  const [paymentStatus, setPaymentStatus] = useState("")
-  const [sentMessages, setSentMessages] = useState<Record<string, boolean>>({})
+  const [paymentStatus, setPaymentStatus] = useState("unpaid")
+  const [isModelTestModalOpen, setIsModelTestModalOpen] = useState(false)
 
-  // Query params memoized
   const queryParams = useMemo(() => {
-    const params: { name: string; value: any }[] = [
-      { name: "limit", value: 10 },
-      { name: "page", value: page },
-      { name: "search", value: search },
-    ]
+    const params: { name: string; value: any }[] = [{ name: "limit", value: 99999 }]
+
+    if (search) params.push({ name: "search", value: search })
     if (selectedBatch) params.push({ name: "batchName", value: selectedBatch })
     if (selectClass) params.push({ name: "className", value: selectClass })
+
     return params
-  }, [page, search, selectedBatch, selectClass])
+  }, [search, selectedBatch, selectClass])
 
   const { data: students, isLoading } = useGetAllStudentQuery(queryParams)
+  const currentMonth = new Date().toLocaleString("default", { month: "long" })
+  const allStudents = useMemo(() => students?.data ?? [], [students?.data])
 
+  const unpaidModelTestStudents = useMemo(() => {
+    return allStudents.filter((student: any) => {
+      const modelTestPayments = (student?.Payment || []).filter(
+        (payment: any) => payment.title?.toLowerCase() === "modeltest",
+      )
+      return modelTestPayments.length === 0
+    })
+  }, [allStudents])
+
+  const paidModelTestStudents = useMemo(() => {
+    return allStudents.filter((student: any) => {
+      const modelTestPayments = (student?.Payment || []).filter(
+        (payment: any) => payment.title?.toLowerCase() === "modeltest",
+      )
+      return modelTestPayments.length > 0
+    })
+  }, [allStudents])
+
+  const visibleModelTestStudents = useMemo(() => {
+    if (paymentStatus === "paid") return paidModelTestStudents
+    if (paymentStatus === "unpaid") return unpaidModelTestStudents
+    return allStudents
+  }, [allStudents, paidModelTestStudents, paymentStatus, unpaidModelTestStudents])
 
   const summaryStats = useMemo(() => {
-    if (!students?.data) return { total: 0, paid: 0, unpaid: 0, modelTestPassed: 0 }
+    let currentMonthPaid = 0
+    let modelTestPaid = 0
 
-    const currentMonth = new Date().toLocaleString("default", { month: "long" })
-    let paid = 0
-    let modelTestPassed = 0
+    allStudents.forEach((student: any) => {
+      const hasPaidCurrentMonth = student?.Payment?.some((payment: any) => payment.month === currentMonth)
+      if (hasPaidCurrentMonth) currentMonthPaid += 1
 
-    students.data.forEach((student: any) => {
-      const hasPaid = student?.Payment?.some((p: any) => p.month === currentMonth)
-      if (hasPaid) paid++
-
-      const modelTests = student?.Payment?.filter((p: any) => p.title === "ModelTest")
-      if (modelTests && modelTests.length > 0) modelTestPassed++
+      const hasModelTestPayment = student?.Payment?.some(
+        (payment: any) => payment.title?.toLowerCase() === "modeltest",
+      )
+      if (hasModelTestPayment) modelTestPaid += 1
     })
 
     return {
-      total: students.data.length,
-      paid,
-      unpaid: students.data.length - paid,
-      modelTestPassed,
+      total: allStudents.length,
+      currentMonthPaid,
+      currentMonthUnpaid: allStudents.length - currentMonthPaid,
+      modelTestPaid,
+      modelTestUnpaid: unpaidModelTestStudents.length,
     }
-  }, [students?.data])
+  }, [allStudents, currentMonth, unpaidModelTestStudents.length])
 
-  const filteredStudents = useMemo(() => {
-    if (!students?.data) return []
-    if (!paymentStatus) return students.data
+  const hasActiveFilters = Boolean(search || selectedBatch || selectClass || paymentStatus !== "unpaid")
 
-    const currentMonth = new Date().toLocaleString("default", { month: "long" })
-    return students.data.filter((student: any) => {
-      const hasPaid = student?.Payment?.some((p: any) => p.month === currentMonth)
-      if (paymentStatus === "paid") return hasPaid
-      if (paymentStatus === "unpaid") return !hasPaid
-      return true
+  const handleDownloadPdf = () => {
+    const pdf = new jsPDF("p", "mm", "a4")
+    const pageWidth = pdf.internal.pageSize.getWidth()
+    const pageHeight = pdf.internal.pageSize.getHeight()
+    const date = new Date().toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
     })
-  }, [students?.data, paymentStatus])
 
-  const hasActiveFilters = search || selectedBatch || selectClass || paymentStatus
+    pdf.setFillColor(15, 23, 42)
+    pdf.rect(0, 0, pageWidth, 28, "F")
+
+    pdf.setTextColor(255, 255, 255)
+    pdf.setFontSize(20)
+    pdf.setFont("helvetica", "bold")
+    pdf.text("Model Test Payment Status", 14, 12)
+
+    pdf.setFontSize(10)
+    pdf.setFont("helvetica", "normal")
+    pdf.text(`Generated: ${date}`, 14, 20)
+    pdf.text(
+      `Status: ${paymentStatus === "paid" ? "Paid" : paymentStatus === "unpaid" ? "Unpaid" : "All"}`,
+      pageWidth - 14,
+      20,
+      { align: "right" },
+    )
+
+    pdf.setTextColor(15, 23, 42)
+    pdf.setFontSize(11)
+    pdf.setFont("helvetica", "bold")
+    pdf.text(`Total Records: ${visibleModelTestStudents.length}`, 14, 38)
+
+    const rows = visibleModelTestStudents.map((student: any, index: number) => {
+      const modelTestPayments = (student?.Payment || []).filter(
+        (payment: any) => payment.title?.toLowerCase() === "modeltest",
+      )
+      const isPaid = modelTestPayments.length > 0
+
+      return [
+        String(index + 1),
+        `${student.firstName || ""} ${student.lastName || ""}`.trim() || "-",
+        student.studentId || "-",
+        student.Batch?.batchName || student.batchName || "-",
+        student.className || "-",
+        student.phone || "-",
+        isPaid ? "Paid" : "Unpaid",
+      ]
+    })
+
+    autoTable(pdf, {
+      startY: 44,
+      head: [["SL", "Name", "Student ID", "Batch", "Class", "Phone", "Status"]],
+      body: rows,
+      theme: "grid",
+      styles: {
+        fontSize: 8.5,
+        cellPadding: 2,
+        valign: "middle",
+      },
+      headStyles: {
+        fillColor: [15, 23, 42],
+        textColor: 255,
+      },
+      alternateRowStyles: {
+        fillColor: [248, 250, 252],
+      },
+      didDrawPage: () => {
+        pdf.setFontSize(9)
+        pdf.setTextColor(100, 116, 139)
+        pdf.text(`Page ${pdf.getNumberOfPages()}`, pageWidth / 2, pageHeight - 8, { align: "center" })
+      },
+    })
+
+    pdf.save(`model-test-payment-status-${paymentStatus || "all"}.pdf`)
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30 p-6">
-      <div className="max-w-7xl mx-auto space-y-8">
+      <div className="mx-auto max-w-7xl space-y-8">
         <div className="space-y-2">
-          <div className="flex items-center text-sm text-slate-500 font-medium">
+          <div className="flex items-center text-sm font-medium text-slate-500">
             <span>Dashboard</span>
             <ChevronsRight className="mx-2 h-4 w-4" />
             <span>Payment Management</span>
             <ChevronsRight className="mx-2 h-4 w-4" />
-            <span className="text-slate-700">Payment Overview</span>
+            <span className="text-slate-700">Model Test Status</span>
           </div>
-          <div className="flex items-center justify-between">
+
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-slate-700 tracking-tight">Payment Overview</h1>
-              <p className="text-slate-700 mt-1">Monitor student payment status and model test progress</p>
+              <h1 className="text-3xl font-bold tracking-tight text-slate-700">Model Test Payment Status</h1>
+              <p className="mt-1 text-slate-700">Review students who still have no model test payment record.</p>
             </div>
-            <div className="flex items-center gap-3">
-              <Badge variant="outline" className="text-slate-700">
-                {students?.meta?.total || 0} Total Students
-              </Badge>
+
+            <div className="flex flex-wrap gap-3">
+              <Button variant="primaryGradient" className="w-fit" onClick={handleDownloadPdf}>
+                Download PDF
+              </Button>
+              <Button variant="primaryGradient" className="w-fit" onClick={() => setIsModelTestModalOpen(true)}>
+                View unpaid model test data
+              </Button>
             </div>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card className="border-0 shadow-sm bg-white/70 backdrop-blur-sm">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
+          <Card className="border-0 bg-white/70 shadow-sm backdrop-blur-sm">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-slate-700">Total Students</p>
                   <p className="text-2xl font-bold text-slate-700">{summaryStats.total}</p>
                 </div>
-                <div className="h-12 w-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100">
                   <Users className="h-6 w-6 text-blue-600" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-sm bg-white/70 backdrop-blur-sm">
+          <Card className="border-0 bg-white/70 shadow-sm backdrop-blur-sm">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-700">Paid This Month</p>
-                  <p className="text-2xl font-bold text-green-600">{summaryStats.paid}</p>
+                  <p className="text-sm font-medium text-slate-700">Model Test Paid</p>
+                  <p className="text-2xl font-bold text-emerald-600">{summaryStats.modelTestPaid}</p>
                 </div>
-                <div className="h-12 w-12 bg-green-100 rounded-lg flex items-center justify-center">
-                  <CreditCard className="h-6 w-6 text-green-600" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-emerald-100">
+                  <FileText className="h-6 w-6 text-emerald-600" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-0 shadow-sm bg-white/70 backdrop-blur-sm">
+          <Card className="border-0 bg-white/70 shadow-sm backdrop-blur-sm">
+            <CardContent className="p-6">
+              <button type="button" className="w-full text-left" onClick={() => setIsModelTestModalOpen(true)}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm font-medium text-slate-700">Model Test Unpaid</p>
+                    <p className="text-2xl font-bold text-rose-600">{summaryStats.modelTestUnpaid}</p>
+                  </div>
+                  <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-rose-100">
+                    <SearchX className="h-6 w-6 text-rose-600" />
+                  </div>
+                </div>
+              </button>
+            </CardContent>
+          </Card>
+
+          <Card className="border-0 bg-white/70 shadow-sm backdrop-blur-sm">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-slate-700">Pending Payment</p>
-                  <p className="text-2xl font-bold text-red-600">{summaryStats.unpaid}</p>
+                  <p className="text-sm font-medium text-slate-700">Current Month Pending</p>
+                  <p className="text-2xl font-bold text-red-600">{summaryStats.currentMonthUnpaid}</p>
                 </div>
-                <div className="h-12 w-12 bg-red-100 rounded-lg flex items-center justify-center">
+                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-red-100">
                   <CreditCard className="h-6 w-6 text-red-600" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-sm bg-white/70 backdrop-blur-sm">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-slate-700">Model Test Passed</p>
-                  <p className="text-2xl font-bold text-purple-600">{summaryStats.modelTestPassed}</p>
-                </div>
-                <div className="h-12 w-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <FileText className="h-6 w-6 text-purple-600" />
                 </div>
               </div>
             </CardContent>
           </Card>
         </div>
 
-        <Card className="border-0 shadow-sm bg-white/70 backdrop-blur-sm">
+        <Card className="border-0 bg-white/70 shadow-sm backdrop-blur-sm">
           <CardHeader className="pb-4">
-            <CardTitle className="text-lg font-semibold text-slate-900 flex items-center gap-2">
+            <CardTitle className="flex items-center gap-2 text-lg font-semibold text-slate-900">
               <Filter className="h-5 w-5" />
               Filters & Search
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
               <SearchInputField value={search} onChange={setSearch} onSearch={setSearch} />
               <SelectBatch value={selectedBatch} onChange={setSelectedBatch} />
               <SelectStudentClass value={selectClass} onChange={setSelectedClass} />
               <Select value={paymentStatus} onValueChange={setPaymentStatus}>
-                <SelectTrigger className="w-full h-10 border-slate-200">
+                <SelectTrigger className="h-10 w-full border-slate-200">
                   <SelectValue placeholder="Payment Status" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value="unpaid">Unpaid</SelectItem>
                   <SelectItem value="paid">Paid</SelectItem>
-                  <SelectItem value="unpaid">Pending</SelectItem>
                 </SelectContent>
               </Select>
               <Button
@@ -196,10 +285,10 @@ const PaymentStatus = () => {
                   setSearch("")
                   setSelectedBatch("")
                   setSelectedClass("")
-                  setPaymentStatus("")
+                  setPaymentStatus("unpaid")
                 }}
                 variant="primaryGradient"
-                className="w-fit px-3 sm:px-4 text-sm sm:text-base"
+                className="w-fit px-3 text-sm sm:px-4 sm:text-base"
                 disabled={!hasActiveFilters}
               >
                 <X className="h-4 w-4" />
@@ -208,26 +297,14 @@ const PaymentStatus = () => {
             </div>
 
             {hasActiveFilters && (
-              <div className="flex flex-wrap gap-2 pt-2 border-t">
-                <span className="text-sm text-slate-700 font-medium">Active filters:</span>
-                {search && (
-                  <Badge variant="secondary" className="text-xs">
-                    Search: {search}
-                  </Badge>
-                )}
-                {selectedBatch && (
-                  <Badge variant="secondary" className="text-xs">
-                    Batch: {selectedBatch}
-                  </Badge>
-                )}
-                {selectClass && (
-                  <Badge variant="secondary" className="text-xs">
-                    Class: {selectClass}
-                  </Badge>
-                )}
+              <div className="flex flex-wrap gap-2 border-t pt-2">
+                <span className="text-sm font-medium text-slate-700">Active filters:</span>
+                {search && <Badge variant="secondary">Search: {search}</Badge>}
+                {selectedBatch && <Badge variant="secondary">Batch: {selectedBatch}</Badge>}
+                {selectClass && <Badge variant="secondary">Class: {selectClass}</Badge>}
                 {paymentStatus && (
-                  <Badge variant="secondary" className="text-xs">
-                    Payment: {paymentStatus === 'paid' ? 'Paid' : 'Pending'}
+                  <Badge variant="secondary">
+                    Status: {paymentStatus === "paid" ? "Paid" : "Unpaid"}
                   </Badge>
                 )}
               </div>
@@ -235,161 +312,88 @@ const PaymentStatus = () => {
           </CardContent>
         </Card>
 
-        {/* Loading */}
         {isLoading && <Loading />}
 
-        {!isLoading && filteredStudents?.length > 0 ? (
-          <Card className="border-0 shadow-sm bg-white/70 backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="text-lg font-semibold text-slate-900">Student Payment Status</CardTitle>
+        {!isLoading && visibleModelTestStudents.length > 0 ? (
+          <Card className="border-0 bg-white/70 shadow-sm backdrop-blur-sm">
+            <CardHeader className="flex flex-row items-center justify-between gap-4">
+              <CardTitle className="text-lg font-semibold text-slate-900">
+                {paymentStatus === "paid" ? "Paid Model Test Students" : paymentStatus === "unpaid" ? "Unpaid Model Test Students" : "Model Test Students"}
+              </CardTitle>
+              <Badge variant="outline" className="shrink-0 text-slate-700">
+                {visibleModelTestStudents.length} records
+              </Badge>
             </CardHeader>
-            <CardContent className="p-0">
-              <div className="overflow-x-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow className="bg-slate-50/50">
-                      <TableHead className="w-[80px] font-semibold text-slate-700 whitespace-nowrap">SL No.</TableHead>
-                      <TableHead className="min-w-[250px] font-semibold text-slate-700 whitespace-nowrap">Student Details</TableHead>
-                      <TableHead className="w-[120px] font-semibold text-slate-700 whitespace-nowrap">Student ID</TableHead>
-                      <TableHead className="w-[140px] font-semibold text-slate-700 whitespace-nowrap">Contact</TableHead>
-                      <TableHead className="min-w-[200px] font-semibold text-slate-700 whitespace-nowrap">Batch</TableHead>
-                      <TableHead className="w-[150px] font-semibold text-slate-700 whitespace-nowrap">Payment Status</TableHead>
-                      <TableHead className="w-[150px] font-semibold text-slate-700 whitespace-nowrap">Model Test</TableHead>
-                      <TableHead className="w-[120px] font-semibold text-slate-700 text-center whitespace-nowrap">Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredStudents.map((student: any, index: number) => (
-                      <TableRow key={student.id} className="hover:bg-slate-50/50 transition-colors">
-                        <TableCell className="font-medium text-slate-700">{(page - 1) * 10 + index + 1}</TableCell>
-                        <TableCell>
-                          <div className="flex items-center gap-3">
-                            <div className="relative">
-                              <img
-                                src={student.image || studentImage}
-                                alt={`${student.firstName} ${student.lastName}`}
-                                className="h-12 w-12 rounded-full object-cover border-2 border-white shadow-sm"
-                              />
-                            </div>
-                            <div>
-                              <p className="font-semibold text-slate-900">
-                                {student.firstName} {student.lastName}
-                              </p>
-                              <p className="text-sm text-slate-500">Student</p>
-                            </div>
-                          </div>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className="font-mono text-xs whitespace-nowrap">
-                            {student.studentId}
-                          </Badge>
-                        </TableCell>
-                        <TableCell className="text-slate-700 whitespace-nowrap">{student.phone}</TableCell>
-                        <TableCell>
-                          {student.Batch?.batchName ? (
-                            <Badge variant="secondary" className="text-xs">
-                              {student.Batch.batchName}
-                            </Badge>
-                          ) : (
-                            <span className="text-slate-400 text-sm">Not assigned</span>
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          {(() => {
-                            const currentMonth = new Date().toLocaleString("default", { month: "long" })
-                            const hasPaid = student?.Payment?.some((p: any) => p.month === currentMonth)
-                            return hasPaid ? (
-                              <Badge className="bg-green-100 text-green-700 hover:bg-green-100 whitespace-nowrap">
-                                <CreditCard className="h-3 w-3 mr-1" />
-                                Paid
-                              </Badge>
-                            ) : (
-                              <Badge variant="destructive" className="bg-red-100 text-red-700 hover:bg-red-100 whitespace-nowrap">
-                                <CreditCard className="h-3 w-3 mr-1" />
-                                Pending
-                              </Badge>
-                            )
-                          })()}
-                        </TableCell>
-                        <TableCell>
-                          {(() => {
-                            const modelTests = student?.Payment?.filter((p: any) => p.title === "ModelTest")
-                            if (!modelTests || modelTests.length === 0) {
-                              return (
-                                <Badge variant="outline" className="text-red-600 border-red-200 whitespace-nowrap">
-                                  <FileText className="h-3 w-3 mr-1" />
-                                  Not Taken
-                                </Badge>
-                              )
-                            }
-                            const latestModelTest = modelTests.sort(
-                              (a: any, b: any) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
-                            )[0]
-                            return latestModelTest ? (
-                              <Badge className="bg-purple-100 text-purple-700 hover:bg-purple-100 whitespace-nowrap">
-                                <FileText className="h-3 w-3 mr-1" />
-                                Completed
-                              </Badge>
-                            ) : (
-                              <Badge variant="outline" className="text-red-600 border-red-200 whitespace-nowrap">
-                                <FileText className="h-3 w-3 mr-1" />
-                                Not Taken
-                              </Badge>
-                            )
-                          })()}
-                        </TableCell>
-                        <TableCell>
-                          <div className="flex items-center justify-center gap-1 relative">
-                            {sentMessages[student.id] && (
-                              <Badge variant="secondary" className="absolute -top-3 -right-2 px-1 py-0 text-[10px] bg-green-100 text-green-700 border-green-200 z-10 scale-90">
-                                Sent
-                              </Badge>
-                            )}
-                            <SendMessage
-                              student={student}
-                              onSuccess={() => setSentMessages(prev => ({ ...prev, [student.id]: true }))}
-                            />
-                            <Link to={`/view-student/${student.id}`}>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-8 w-8 p-0 text-blue-600 hover:text-blue-700 hover:bg-blue-50"
-                              >
-                                <Eye className="h-4 w-4" />
-                              </Button>
-                            </Link>
-                            <Link to={`/update-student/${student.id}`}>
-                              <Button
-                                variant="ghost"
-                                size="sm"
-                                className="h-8 w-8 p-0 text-green-600 hover:text-green-700 hover:bg-green-50"
-                              >
-                                <SquarePen className="h-4 w-4" />
-                              </Button>
-                            </Link>
-                          </div>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </div>
+            <CardContent className="grid grid-cols-1 gap-4 p-6 md:grid-cols-2 xl:grid-cols-3">
+              {visibleModelTestStudents.map((student: any) => {
+                const modelTestPayments = (student?.Payment || []).filter(
+                  (payment: any) => payment.title?.toLowerCase() === "modeltest",
+                )
+                const isPaid = modelTestPayments.length > 0
+
+                return (
+                <div key={student.id} className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                  <div className="flex items-start gap-3">
+                    <img
+                      src={student.image || studentImage}
+                      alt={`${student.firstName} ${student.lastName}`}
+                      className="h-12 w-12 rounded-full border border-slate-200 object-cover"
+                    />
+
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-start justify-between gap-2">
+                        <div>
+                          <p className="font-semibold text-slate-900">
+                            {student.firstName} {student.lastName}
+                          </p>
+                          <p className="text-xs text-slate-500">
+                            {isPaid ? "Model test payment found" : "No model test payment found"}
+                          </p>
+                        </div>
+                        <Badge
+                          variant={isPaid ? "secondary" : "destructive"}
+                          className={isPaid ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-100" : "bg-rose-100 text-rose-700 hover:bg-rose-100"}
+                        >
+                          {isPaid ? "Paid" : "Unpaid"}
+                        </Badge>
+                      </div>
+
+                      <div className="mt-3 space-y-1 text-sm text-slate-600">
+                        <p>ID: {student.studentId || "-"}</p>
+                        <p>Batch: {student.Batch?.batchName || student.batchName || "Not assigned"}</p>
+                        <p>Class: {student.className || "-"}</p>
+                        <p>Phone: {student.phone || "-"}</p>
+                      </div>
+
+                      <div className="mt-4">
+                        <Link to={`/payment/${student.id}`}>
+                          <Button variant="outline" size="sm">
+                            <Eye className="mr-2 h-4 w-4" />
+                            View payment
+                          </Button>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                )
+              })}
             </CardContent>
           </Card>
         ) : (
           !isLoading && (
-            <Card className="border-0 shadow-sm bg-white/70 backdrop-blur-sm">
+            <Card className="border-0 bg-white/70 shadow-sm backdrop-blur-sm">
               <CardContent className="p-12 text-center">
                 <div className="flex flex-col items-center gap-4">
-                  <div className="h-16 w-16 bg-slate-100 rounded-full flex items-center justify-center">
-                    <Users className="h-8 w-8 text-slate-400" />
+                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-slate-100">
+                    <FileText className="h-8 w-8 text-slate-400" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-slate-900">No students found</h3>
-                    <p className="text-slate-500 mt-1">
+                    <h3 className="text-lg font-semibold text-slate-900">No unpaid model test data found</h3>
+                    <p className="mt-1 text-slate-500">
                       {hasActiveFilters
                         ? "Try adjusting your filters to see more results"
-                        : "No students have been added to the system yet"}
+                        : "Every student in the current dataset already has a model test payment record."}
                     </p>
                   </div>
                 </div>
@@ -397,22 +401,74 @@ const PaymentStatus = () => {
             </Card>
           )
         )}
-
-        {students?.meta?.total > students?.meta?.limit && (
-          <div className="flex justify-between items-center">
-            <p className="text-sm text-slate-700">
-              Showing {(page - 1) * 10 + 1} to {Math.min(page * 10, students.meta.total)} of {students.meta.total}{" "}
-              students
-            </p>
-            <EduCPagination
-              page={page}
-              setPage={setPage}
-              totalPages={students.meta.totalPages}
-              className="flex justify-end"
-            />
-          </div>
-        )}
       </div>
+
+      <Dialog open={isModelTestModalOpen} onOpenChange={setIsModelTestModalOpen}>
+        <DialogContent className="max-w-4xl">
+          <DialogHeader>
+            <DialogTitle>Unpaid Model Test Data</DialogTitle>
+            <DialogDescription>
+              Students listed here do not have any payment entry with the model test title.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="max-h-[65vh] overflow-y-auto pr-1">
+            <div className="space-y-3">
+              {visibleModelTestStudents.length > 0 ? (
+                visibleModelTestStudents.map((student: any) => {
+                  const modelTestPayments = (student?.Payment || []).filter(
+                    (payment: any) => payment.title?.toLowerCase() === "modeltest",
+                  )
+                  const isPaid = modelTestPayments.length > 0
+
+                  return (
+                  <div
+                    key={student.id}
+                    className="flex flex-col gap-4 rounded-xl border border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between"
+                  >
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={student.image || studentImage}
+                        alt={`${student.firstName} ${student.lastName}`}
+                        className="h-12 w-12 rounded-full object-cover"
+                      />
+                      <div>
+                        <p className="font-semibold text-slate-900">
+                          {student.firstName} {student.lastName}
+                        </p>
+                        <p className="text-sm text-slate-600">
+                          {student.studentId || "-"} | {student.Batch?.batchName || student.batchName || "No batch"}
+                        </p>
+                        <p className="text-xs text-slate-500">Phone: {student.phone || "-"}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <Badge
+                        variant={isPaid ? "secondary" : "destructive"}
+                        className={isPaid ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-100" : "bg-rose-100 text-rose-700 hover:bg-rose-100"}
+                      >
+                        {isPaid ? "Paid" : "Unpaid"}
+                      </Badge>
+                      <Link to={`/payment/${student.id}`}>
+                        <Button variant="outline" size="sm">
+                          <Eye className="mr-2 h-4 w-4" />
+                          Open payment
+                        </Button>
+                      </Link>
+                    </div>
+                  </div>
+                  )
+                })
+              ) : (
+                <div className="rounded-xl border border-dashed border-slate-200 bg-white p-8 text-center text-slate-500">
+                  No model test records available for the selected status.
+                </div>
+              )}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

@@ -14,7 +14,6 @@ import Login from "@/page/Login/Login";
 import Message from "@/page/Message/Message";
 import MonthlyPayment from "@/page/Payment/MonthlyPayment/MonthlyPayment";
 import PaymentDetails from "@/page/Payment/PaymentDetails/PaymentDetails";
-import PaymentStatus from "@/page/Payment/PaymentStatus/PaymentStatus";
 import UnpaidOverview from "@/page/Payment/UnpaidOverview/UnpaidOverview";
 import ShiftCreate from "@/page/Shift/Create/ShiftCreate";
 import ShiftUpdate from "@/page/Shift/Update/ShiftUpdate";
@@ -28,6 +27,7 @@ import { createBrowserRouter } from "react-router-dom";
 import { DashboardOverview } from '@/page/DashboardView/DashboardView';
 import BalanceStatus from "@/page/Payment/Balance/BalanceStatus";
 import SiteSettingPage from "@/components/SiteSetting/SiteSettingPage";
+import PaymentStatus from "@/page/Payment/PaymentStatus/PaymentStatus";
 
 const componentMapping: Record<string, React.ElementType> = {
   // login route
