@@ -67,26 +67,26 @@ const ImageUploadField = ({
       <label htmlFor={inputId} className="block text-sm font-medium text-slate-700">
         {label}
       </label>
-      <div className="flex items-center gap-4">
-        <div className={`${previewSize} ${previewRounded} overflow-hidden border border-gray-300 shadow-sm bg-white flex items-center justify-center p-2`}>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+        <div className={`${previewSize} ${previewRounded} mx-auto sm:mx-0 overflow-hidden border border-gray-300 shadow-sm bg-white flex items-center justify-center p-2`}>
           <img
             src={selectedImage || defaultImage}
             alt={`${label} Preview`}
             className="object-contain w-full h-full"
           />
         </div>
-        <div className="flex-1 flex flex-col gap-2">
-          <div className="flex items-center gap-2">
+        <div className="flex-1 flex flex-col gap-2 items-center sm:items-start">
+          <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-2">
             <Button
               type="button"
               variant="secondary"
-              className="bg-gray-800 text-white rounded-lg px-4 py-2 hover:bg-gray-700 transition"
+              className="w-full sm:w-auto bg-gray-800 text-white rounded-lg px-4 py-2 hover:bg-gray-700 transition"
               onClick={() => document.getElementById(inputId)?.click()}
             >
               <Upload className="h-4 w-4 mr-2" />
               Choose File
             </Button>
-            <span className="text-sm text-gray-600 truncate max-w-[200px]">{fileName}</span>
+            <span className="text-sm text-gray-600 truncate max-w-full sm:max-w-[200px] text-center sm:text-left">{fileName}</span>
           </div>
           <input
             id={inputId}
@@ -177,7 +177,7 @@ const SiteSettingPage = () => {
 
   if (isLoadingSettings) {
     return (
-      <div className="min-h-screen bg-background p-6 flex items-center justify-center">
+      <div className="min-h-screen bg-background p-4 sm:p-6 flex items-center justify-center">
         <div className="flex items-center gap-2">
           <Loader2 className="h-6 w-6 animate-spin text-primary" />
           <span className="text-muted-foreground">Loading site settings...</span>
@@ -187,13 +187,13 @@ const SiteSettingPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background p-6">
+    <div className="min-h-screen bg-background p-4 sm:p-6">
       <div className="max-w-4xl mx-auto">
         {/* Header Section */}
-        <div className="mb-8">
-          <div className="flex items-center gap-2 mb-4">
+        <div className="mb-6 sm:mb-8">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-2 mb-4">
             <Settings className="h-6 w-6 text-primary" />
-            <nav className="flex items-center gap-2 text-sm text-muted-foreground">
+            <nav className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
               <Link to="/" className="hover:text-foreground transition-colors font-medium">
                 Dashboard
               </Link>
@@ -202,7 +202,7 @@ const SiteSettingPage = () => {
             </nav>
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-foreground mb-2">Site Settings</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">Site Settings</h1>
             <p className="text-muted-foreground">
               {isEditMode
                 ? "Update your site's branding including logo, favicon and brand name."
@@ -213,13 +213,13 @@ const SiteSettingPage = () => {
 
         {/* Main Form Card */}
         <div className="bg-card border border-border rounded-lg shadow-sm">
-          <div className="p-8">
+          <div className="p-4 sm:p-8">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6 sm:space-y-8">
                 {/* Brand Name Section */}
-                <div className="border-b border-border pb-8">
-                  <h2 className="text-lg font-semibold text-foreground mb-6">Brand Information</h2>
-                  <div className="grid grid-cols-1 gap-6 max-w-md">
+                <div className="border-b border-border pb-6 sm:pb-8">
+                  <h2 className="text-lg font-semibold text-foreground mb-4 sm:mb-6">Brand Information</h2>
+                  <div className="grid grid-cols-1 gap-4 sm:gap-6 w-full max-w-md">
                     <FormFieldWrapper
                       name="brandName"
                       label="Brand Name"
@@ -234,12 +234,12 @@ const SiteSettingPage = () => {
                 </div>
 
                 {/* Logo Section */}
-                <div className="border-b border-border pb-8">
+                <div className="border-b border-border pb-6 sm:pb-8">
                   <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
                     <Image className="h-5 w-5" />
                     Site Logo
                   </h2>
-                  <p className="text-sm text-muted-foreground mb-4">
+                  <p className="text-sm text-muted-foreground mb-4 max-w-2xl">
                     Upload your organization's logo. This will be displayed in the header and other branded areas.
                   </p>
                   <ImageUploadField
@@ -254,12 +254,12 @@ const SiteSettingPage = () => {
                 </div>
 
                 {/* Favicon Section */}
-                <div className="border-b border-border pb-8">
+                <div className="border-b border-border pb-6 sm:pb-8">
                   <h2 className="text-lg font-semibold text-foreground mb-4 flex items-center gap-2">
                     <Image className="h-5 w-5" />
                     Favicon
                   </h2>
-                  <p className="text-sm text-muted-foreground mb-4">
+                  <p className="text-sm text-muted-foreground mb-4 max-w-2xl">
                     Upload a favicon for your site. This small icon appears in browser tabs and bookmarks.
                   </p>
                   <ImageUploadField
@@ -275,17 +275,17 @@ const SiteSettingPage = () => {
                 </div>
 
                 {/* Preview Section */}
-                <div className="border-b border-border pb-8">
+                <div className="border-b border-border pb-6 sm:pb-8">
                   <h2 className="text-lg font-semibold text-foreground mb-4">Header Preview</h2>
-                  <div className="bg-primary rounded-lg p-4 flex items-center gap-4">
-                    <div className="h-10 w-10 bg-white rounded-lg flex items-center justify-center p-1">
+                  <div className="bg-primary rounded-lg p-4 sm:p-4 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 text-center sm:text-left">
+                    <div className="h-10 w-10 mx-auto sm:mx-0 bg-white rounded-lg flex items-center justify-center p-1">
                       <img
                         src={existingSetting?.logo || logo}
                         alt="Logo"
                         className="h-full w-auto object-contain"
                       />
                     </div>
-                    <span className="text-white text-xl font-bold tracking-wide">
+                    <span className="text-white text-lg sm:text-xl font-bold tracking-wide break-words">
                       {form.watch("brandName") || existingSetting?.brandName || "Brand Name"}
                     </span>
                   </div>
@@ -295,12 +295,13 @@ const SiteSettingPage = () => {
                 </div>
 
                 {/* Submit Button */}
-                <div className="flex justify-end gap-4">
+                <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4">
                   <Button
                     type="button"
                     variant="outline"
                     onClick={() => form.reset()}
                     disabled={isSubmitting}
+                    className="w-full sm:w-auto"
                   >
                     Reset
                   </Button>
@@ -308,6 +309,7 @@ const SiteSettingPage = () => {
                     type="submit"
                     variant="primaryGradient"
                     disabled={isSubmitting}
+                    className="w-full sm:w-auto"
                   >
                     {isSubmitting ? (
                       <>

@@ -357,11 +357,11 @@ const MonthlyPayment = () => {
       {isLoading ? (
         <Loading />
       ) : filteredStudents?.length > 0 ? (
-        <div className="border rounded-lg overflow-hidden">
+        <div className="border rounded-lg overflow-hidden bg-slate-100 p-5">
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="hidden sm:table-cell">SL No.</TableHead>
+                <TableHead className="hidden sm:table-cell">#.</TableHead>
                 <TableHead>Full Name</TableHead>
                 <TableHead className="hidden md:table-cell">Std Id</TableHead>
                 <TableHead className="hidden md:table-cell">Phone</TableHead>
@@ -510,7 +510,7 @@ const MonthlyPayment = () => {
                             onSubmit={form.handleSubmit((data) =>
                               onSubmit(data, student.Payment || []),
                             )}
-                            className="p-3 sm:p-4 bg-slate-100 rounded-md"
+                            className="p-3 sm:p-4 bg-white rounded-md"
                           >
                             <div className="grid grid-cols-1 gap-3 sm:gap-4 mb-4">
                               <SelectFieldWrapper

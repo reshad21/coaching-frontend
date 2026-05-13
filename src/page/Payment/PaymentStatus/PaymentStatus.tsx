@@ -145,7 +145,7 @@ const PaymentStatus = () => {
 
     autoTable(pdf, {
       startY: 44,
-      head: [["SL", "Name", "Student ID", "Batch", "Class", "Phone", "Status"]],
+      head: [["SL", "Name", "Std ID", "Batch", "Class", "Phone", "Status"]],
       body: rows,
       theme: "grid",
       styles: {
@@ -171,8 +171,8 @@ const PaymentStatus = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30 p-6">
-      <div className="mx-auto max-w-7xl space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30 p-3 sm:p-6">
+      <div className="mx-auto max-w-7xl space-y-6 sm:space-y-8">
         <div className="space-y-2">
           <div className="flex items-center text-sm font-medium text-slate-500">
             <span>Dashboard</span>
@@ -184,15 +184,15 @@ const PaymentStatus = () => {
 
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <h1 className="text-3xl font-bold tracking-tight text-slate-700">Model Test Payment Status</h1>
+              <h1 className="text-2xl font-bold tracking-tight text-slate-700 sm:text-3xl">Model Test Payment Status</h1>
               <p className="mt-1 text-slate-700">Review students who still have no model test payment record.</p>
             </div>
 
-            <div className="flex flex-wrap gap-3">
-              <Button variant="primaryGradient" className="w-fit" onClick={handleDownloadPdf}>
+            <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:gap-3">
+              <Button variant="primaryGradient" className="w-full sm:w-fit" onClick={handleDownloadPdf}>
                 Download PDF
               </Button>
-              <Button variant="primaryGradient" className="w-fit" onClick={() => setIsModelTestModalOpen(true)}>
+              <Button variant="primaryGradient" className="w-full sm:w-fit" onClick={() => setIsModelTestModalOpen(true)}>
                 View unpaid model test data
               </Button>
             </div>
@@ -267,7 +267,7 @@ const PaymentStatus = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-5">
               <SearchInputField value={search} onChange={setSearch} onSearch={setSearch} />
               <SelectBatch value={selectedBatch} onChange={setSelectedBatch} />
               <SelectStudentClass value={selectClass} onChange={setSelectedClass} />
@@ -288,7 +288,7 @@ const PaymentStatus = () => {
                   setPaymentStatus("unpaid")
                 }}
                 variant="primaryGradient"
-                className="w-fit px-3 text-sm sm:px-4 sm:text-base"
+                className="w-full px-3 text-sm sm:w-fit sm:px-4 sm:text-base"
                 disabled={!hasActiveFilters}
               >
                 <X className="h-4 w-4" />
@@ -316,7 +316,7 @@ const PaymentStatus = () => {
 
         {!isLoading && visibleModelTestStudents.length > 0 ? (
           <Card className="border-0 bg-white/70 shadow-sm backdrop-blur-sm">
-            <CardHeader className="flex flex-row items-center justify-between gap-4">
+            <CardHeader className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center sm:gap-4">
               <CardTitle className="text-lg font-semibold text-slate-900">
                 {paymentStatus === "paid" ? "Paid Model Test Students" : paymentStatus === "unpaid" ? "Unpaid Model Test Students" : "Model Test Students"}
               </CardTitle>
@@ -324,7 +324,7 @@ const PaymentStatus = () => {
                 {visibleModelTestStudents.length} records
               </Badge>
             </CardHeader>
-            <CardContent className="grid grid-cols-1 gap-4 p-6 md:grid-cols-2 xl:grid-cols-3">
+            <CardContent className="grid grid-cols-1 gap-3 p-3 sm:gap-4 sm:p-6 md:grid-cols-2 xl:grid-cols-3">
               {visibleModelTestStudents.map((student: any) => {
                 const modelTestPayments = (student?.Payment || []).filter(
                   (payment: any) => payment.title?.toLowerCase() === "modeltest",
@@ -332,24 +332,21 @@ const PaymentStatus = () => {
                 const isPaid = modelTestPayments.length > 0
 
                 return (
-                <div key={student.id} className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-                  <div className="flex items-start gap-3">
-                    <img
-                      src={student.image || studentImage}
-                      alt={`${student.firstName} ${student.lastName}`}
-                      className="h-12 w-12 rounded-full border border-slate-200 object-cover"
-                    />
+                <div key={student.id} className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm sm:p-4">
+                  <div className="flex flex-col gap-3">
+                    <div className="w-fit rounded-full bg-slate-100 p-1 ring-1 ring-slate-200">
+                      <img
+                        src={student.image || studentImage}
+                        alt={`${student.firstName} ${student.lastName}`}
+                        className="h-12 w-12 rounded-full object-cover"
+                      />
+                    </div>
 
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-start justify-between gap-2">
-                        <div>
-                          <p className="font-semibold text-slate-900">
-                            {student.firstName} {student.lastName}
-                          </p>
-                          <p className="text-xs text-slate-500">
-                            {isPaid ? "Model test payment found" : "No model test payment found"}
-                          </p>
-                        </div>
+                    <div className="min-w-0">
+                      <div className="flex flex-wrap items-start justify-between gap-2">
+                        <p className="text-base font-semibold leading-tight text-slate-900 break-words">
+                          {student.firstName} {student.lastName}
+                        </p>
                         <Badge
                           variant={isPaid ? "secondary" : "destructive"}
                           className={isPaid ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-100" : "bg-rose-100 text-rose-700 hover:bg-rose-100"}
@@ -358,16 +355,20 @@ const PaymentStatus = () => {
                         </Badge>
                       </div>
 
-                      <div className="mt-3 space-y-1 text-sm text-slate-600">
-                        <p>ID: {student.studentId || "-"}</p>
-                        <p>Batch: {student.Batch?.batchName || student.batchName || "Not assigned"}</p>
-                        <p>Class: {student.className || "-"}</p>
-                        <p>Phone: {student.phone || "-"}</p>
+                      <p className="mt-2 text-sm text-slate-500">
+                        {isPaid ? "Model test payment found" : "No model test payment found"}
+                      </p>
+
+                      <div className="mt-3 border-t border-slate-100 pt-3 text-sm leading-6 text-slate-600 break-words">
+                        <p><span className="font-medium text-slate-700">ID:</span> {student.studentId || "-"}</p>
+                        <p><span className="font-medium text-slate-700">Batch:</span> {student.Batch?.batchName || student.batchName || "Not assigned"}</p>
+                        <p><span className="font-medium text-slate-700">Class:</span> {student.className || "-"}</p>
+                        <p><span className="font-medium text-slate-700">Phone:</span> {student.phone || "-"}</p>
                       </div>
 
                       <div className="mt-4">
-                        <Link to={`/payment/${student.id}`}>
-                          <Button variant="outline" size="sm">
+                        <Link to={`/payment/${student.id}`} className="block w-full">
+                          <Button variant="outline" size="sm" className="w-full">
                             <Eye className="mr-2 h-4 w-4" />
                             View payment
                           </Button>
@@ -424,38 +425,43 @@ const PaymentStatus = () => {
                   return (
                   <div
                     key={student.id}
-                    className="flex flex-col gap-4 rounded-xl border border-slate-200 bg-slate-50 p-4 sm:flex-row sm:items-center sm:justify-between"
+                    className="rounded-xl border border-slate-200 bg-slate-50 p-3 sm:p-4"
                   >
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={student.image || studentImage}
-                        alt={`${student.firstName} ${student.lastName}`}
-                        className="h-12 w-12 rounded-full object-cover"
-                      />
-                      <div>
-                        <p className="font-semibold text-slate-900">
-                          {student.firstName} {student.lastName}
-                        </p>
-                        <p className="text-sm text-slate-600">
+                    <div className="flex flex-col gap-3">
+                      <div className="w-fit rounded-full bg-white p-1 ring-1 ring-slate-200">
+                        <img
+                          src={student.image || studentImage}
+                          alt={`${student.firstName} ${student.lastName}`}
+                          className="h-12 w-12 rounded-full object-cover"
+                        />
+                      </div>
+
+                      <div className="min-w-0">
+                        <div className="flex flex-wrap items-start justify-between gap-2">
+                          <p className="text-base font-semibold leading-tight text-slate-900 break-words">
+                            {student.firstName} {student.lastName}
+                          </p>
+                          <Badge
+                            variant={isPaid ? "secondary" : "destructive"}
+                            className={isPaid ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-100" : "bg-rose-100 text-rose-700 hover:bg-rose-100"}
+                          >
+                            {isPaid ? "Paid" : "Unpaid"}
+                          </Badge>
+                        </div>
+                        <p className="mt-2 text-sm text-slate-600 break-words">
                           {student.studentId || "-"} | {student.Batch?.batchName || student.batchName || "No batch"}
                         </p>
                         <p className="text-xs text-slate-500">Phone: {student.phone || "-"}</p>
-                      </div>
-                    </div>
 
-                    <div className="flex items-center gap-2">
-                      <Badge
-                        variant={isPaid ? "secondary" : "destructive"}
-                        className={isPaid ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-100" : "bg-rose-100 text-rose-700 hover:bg-rose-100"}
-                      >
-                        {isPaid ? "Paid" : "Unpaid"}
-                      </Badge>
-                      <Link to={`/payment/${student.id}`}>
-                        <Button variant="outline" size="sm">
-                          <Eye className="mr-2 h-4 w-4" />
-                          Open payment
-                        </Button>
-                      </Link>
+                        <div className="mt-4">
+                          <Link to={`/payment/${student.id}`} className="block w-full">
+                            <Button variant="outline" size="sm" className="w-full">
+                              <Eye className="mr-2 h-4 w-4" />
+                              Open payment
+                            </Button>
+                          </Link>
+                        </div>
+                      </div>
                     </div>
                   </div>
                   )

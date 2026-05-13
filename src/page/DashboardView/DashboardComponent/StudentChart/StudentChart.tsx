@@ -11,9 +11,9 @@ import { TrendingUp, Users, GraduationCap, Clock } from "lucide-react";
 import {
   Area,
   AreaChart,
+  Cell,
   Bar,
   BarChart,
-  Cell,
   Pie,
   PieChart,
   ResponsiveContainer,
@@ -79,7 +79,7 @@ const StudentChart = () => {
       name: name.length > 20 ? name.substring(0, 20) + "..." : name,
       fullName: name,
       students: value as number,
-      color: SOLID_COLORS[index % SOLID_COLORS.length],
+      fill: SOLID_COLORS[index % SOLID_COLORS.length],
     }))
     .sort((a, b) => b.students - a.students)
     .slice(0, 8);
@@ -228,94 +228,76 @@ const StudentChart = () => {
       </div>
 
       {/* Charts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Horizontal Bar Chart - Students by Shift */}
-        <Card className="overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-          <CardHeader className="pb-2 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-900">
-            <CardTitle className="text-base font-semibold flex items-center gap-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        {/* Standard Bar Chart - Students by Shift */}
+        <Card className="overflow-hidden shadow-sm transition-shadow hover:shadow-md">
+          <CardHeader className="bg-gradient-to-r from-gray-50 to-white pb-2 dark:from-gray-800 dark:to-gray-900">
+            <CardTitle className="flex items-center gap-2 text-base font-semibold">
               <div className="h-3 w-3 rounded-full bg-gradient-to-r from-indigo-500 to-purple-500"></div>
               Students by Shift
             </CardTitle>
-            <CardDescription className="text-xs">
-              Top shifts by student enrollment
-            </CardDescription>
+            <CardDescription className="text-xs">Top shifts by student enrollment</CardDescription>
           </CardHeader>
           <CardContent className="pt-4">
-            <div className="h-[300px] w-full">
+            <div className="h-[340px] w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart
                   data={shiftData}
-                  layout="vertical"
-                  margin={{ top: 5, right: 30, left: 5, bottom: 5 }}
+                  margin={{ top: 10, right: 16, left: 8, bottom: 36 }}
+                  barCategoryGap="14%"
                 >
-                  <defs>
-                    {shiftData.map((_, index) => (
-                      <linearGradient
-                        key={index}
-                        id={`barGradient${index}`}
-                        x1="0"
-                        y1="0"
-                        x2="1"
-                        y2="0"
-                      >
-                        <stop
-                          offset="0%"
-                          stopColor={
-                            GRADIENT_COLORS[index % GRADIENT_COLORS.length]
-                              .start
-                          }
-                        />
-                        <stop
-                          offset="100%"
-                          stopColor={
-                            GRADIENT_COLORS[index % GRADIENT_COLORS.length].end
-                          }
-                        />
-                      </linearGradient>
-                    ))}
-                  </defs>
                   <XAxis
-                    type="number"
-                    tick={{ fontSize: 11, fill: "#9ca3af" }}
+                    type="category"
+                    dataKey="name"
+                    tick={{ fontSize: 11, fill: "#64748b", fontWeight: 600 }}
                     axisLine={false}
                     tickLine={false}
                   />
                   <YAxis
-                    type="category"
-                    dataKey="name"
-                    tick={{ fontSize: 11, fill: "#6b7280" }}
-                    width={120}
+                    type="number"
+                    tick={{ fontSize: 11, fill: "#94a3b8" }}
                     axisLine={false}
                     tickLine={false}
                   />
-                  <Tooltip
-                    content={<CustomTooltip />}
-                    cursor={{ fill: "rgba(99, 102, 241, 0.08)" }}
-                  />
-                  <Bar dataKey="students" radius={[0, 8, 8, 0]} barSize={24}>
-                    {shiftData.map((_, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={`url(#barGradient${index})`}
-                      />
+                  <Tooltip content={<CustomTooltip />} />
+                  <Bar dataKey="students" radius={[12, 12, 0, 0]} barSize={34}>
+                    {shiftData.map((entry, index) => (
+                      <Cell key={`shift-cell-${index}`} fill={entry.fill} />
                     ))}
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
             </div>
+
+            <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
+              {shiftData.map((entry) => (
+                <div key={entry.fullName} className="flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-2">
+                  <span
+                    className="h-2.5 w-2.5 shrink-0 rounded-full"
+                    style={{
+                      background: entry.fill,
+                    }}
+                  />
+                  <div className="min-w-0">
+                    <p className="truncate text-xs font-medium text-slate-700" title={entry.fullName}>
+                      {entry.fullName}
+                    </p>
+                    <p className="text-[11px] text-slate-500">{entry.students} students</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </CardContent>
         </Card>
 
         {/* Donut Chart - Students by Class */}
-        <Card className="overflow-hidden shadow-sm hover:shadow-md transition-shadow">
-          <CardHeader className="pb-2 bg-gradient-to-r from-gray-50 to-white dark:from-gray-800 dark:to-gray-900">
-            <CardTitle className="text-base font-semibold flex items-center gap-2">
+        <Card className="overflow-hidden shadow-sm transition-shadow hover:shadow-md">
+          <CardHeader className="bg-gradient-to-r from-gray-50 to-white pb-2 dark:from-gray-800 dark:to-gray-900">
+            <CardTitle className="flex items-center gap-2 text-base font-semibold">
               <div className="h-3 w-3 rounded-full bg-gradient-to-r from-emerald-500 to-teal-500"></div>
               Students by Class
             </CardTitle>
-            <CardDescription className="text-xs">
-              Class-wise student distribution
-            </CardDescription>
+            <CardDescription className="text-xs">Class-wise student distribution</CardDescription>
           </CardHeader>
           <CardContent className="pt-4">
             <div className="h-[220px] w-full">
@@ -333,16 +315,11 @@ const StudentChart = () => {
                       >
                         <stop
                           offset="0%"
-                          stopColor={
-                            GRADIENT_COLORS[index % GRADIENT_COLORS.length]
-                              .start
-                          }
+                          stopColor={GRADIENT_COLORS[index % GRADIENT_COLORS.length].start}
                         />
                         <stop
                           offset="100%"
-                          stopColor={
-                            GRADIENT_COLORS[index % GRADIENT_COLORS.length].end
-                          }
+                          stopColor={GRADIENT_COLORS[index % GRADIENT_COLORS.length].end}
                         />
                       </linearGradient>
                     ))}
@@ -370,7 +347,7 @@ const StudentChart = () => {
               </ResponsiveContainer>
             </div>
             {/* Legend */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2 mt-4 px-2">
+            <div className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2 px-2 sm:grid-cols-3">
               {classData.slice(0, 6).map((entry, index) => (
                 <div key={index} className="flex items-center gap-2">
                   <div
