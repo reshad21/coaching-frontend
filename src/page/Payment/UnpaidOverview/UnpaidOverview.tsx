@@ -613,8 +613,8 @@ export default function UnpaidOverview() {
                 />
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-3 justify-end pt-2">
-                <button
+              <div className="flex flex-col sm:flex-row gap-3 justify-end">
+                <Button
                   type="button"
                   onClick={() => setBulkMessage("")}
                   disabled={!bulkMessage || isSendingBulkMessage}
@@ -622,7 +622,7 @@ export default function UnpaidOverview() {
                 >
                   <Trash2 size={18} />
                   Clear Message
-                </button>
+                </Button>
                 <Button
                   type="button"
                   onClick={handleSendBulkMessage}
