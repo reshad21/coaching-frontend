@@ -1,7 +1,7 @@
-import type React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
+import type React from "react";
 
 interface SearchInputFieldProps {
   value: string;
@@ -30,14 +30,14 @@ export default function SearchInputField({
           placeholder="Searching here..."
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          className="rounded-r-none border-r-0 pr-10 bg-white focus-visible:ring-0 focus-visible:ring-offset-0"
+          className="h-10 rounded-r-none border-r-0 pr-10 bg-white focus-visible:ring-0 focus-visible:ring-offset-0"
         />
       </div>
       <Button
         type="submit"
         variant="outline"
         size="icon"
-        className="rounded-l-none border-l-0 bg-white hover:bg-gray-50"
+        className="h-10 rounded-l-none border-l-0 bg-white hover:bg-gray-50"
       >
         <Search className="h-4 w-4 text-gray-500" />
         <span className="sr-only">Search</span>

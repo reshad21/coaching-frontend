@@ -22,7 +22,7 @@ const SelectBatch = ({
   if (isLoading) return null;
   return (
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger className="w-full ">
+      <SelectTrigger className="w-full h-10 border-slate-200">
         <SelectValue placeholder="Select Batch" />
       </SelectTrigger>
       <SelectContent className="bg-slate-100 text-slate-700 font-semibold">

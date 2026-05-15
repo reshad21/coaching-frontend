@@ -20,7 +20,7 @@ const SelectStudentClass = ({
   if (isLoading) return "";
   return (
     <Select value={value} onValueChange={onChange}>
-      <SelectTrigger className="w-full ">
+      <SelectTrigger className="w-full h-10 border-slate-200">
         <SelectValue placeholder="Select Student Class" />
       </SelectTrigger>
       <SelectContent className="bg-slate-100 text-slate-700 font-semibold">
