@@ -3,9 +3,9 @@ import { FormFieldWrapper } from "@/components/common/FormFieldWrapper";
 import { SelectFieldWrapper } from "@/components/common/SelectFieldWrapper";
 import SearchInputField from "@/components/CommonSearch/SearchInputField";
 import Loading from "@/components/Loading";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { Badge } from "@/components/ui/badge";
 import {
   Table,
   TableBody,
@@ -18,12 +18,12 @@ import { useSendSingleMessageMutation } from "@/redux/api/auth/message/message";
 import { useAddPaymentMutation } from "@/redux/api/payment/paymentApi";
 import { useGetAllStudentQuery } from "@/redux/api/studentApi/studentApi";
 import {
+  Check,
   ChevronRight,
   DollarSign,
   Eye,
   Plus,
   RotateCcw,
-  Check,
   X,
 } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -610,8 +610,13 @@ const MonthlyPayment = () => {
                               )}
                               {form.watch("title") === "Others" && (
                                 <div>
+                                  <label className="block text-sm font-medium text-gray-700 mb-1" htmlFor="customMessage">
+                                    Custom Message <span className="text-red-600">*</span>
+                                  </label>
                                   <input
                                     type="text"
+                                    name="customMessage"
+                                    aria-label="Custom Message"
                                     className="w-full p-2 border rounded text-sm"
                                     placeholder="Enter your custom message"
                                     value={customMessage}
