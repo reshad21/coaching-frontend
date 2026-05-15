@@ -50,24 +50,6 @@ const PaymentStatus = () => {
     "July", "August", "September", "October", "November", "December"
   ]
 
-  const unpaidModelTestStudents = useMemo(() => {
-    return allStudents.filter((student: any) => {
-      const modelTestPayments = (student?.Payment || []).filter(
-        (payment: any) => payment.title?.toLowerCase() === "modeltest",
-      )
-      return modelTestPayments.length === 0
-    })
-  }, [allStudents])
-
-  const paidModelTestStudents = useMemo(() => {
-    return allStudents.filter((student: any) => {
-      const modelTestPayments = (student?.Payment || []).filter(
-        (payment: any) => payment.title?.toLowerCase() === "modeltest",
-      )
-      return modelTestPayments.length > 0
-    })
-  }, [allStudents])
-
   const visibleModelTestStudents = useMemo(() => {
     let filtered = allStudents
 
