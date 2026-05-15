@@ -47,59 +47,50 @@ const PaymentStatus = () => {
 
   const months = [
     "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
+    "July", "August", "September", "October", "November", "December",
   ]
 
+  // Use selectedMonth if set, otherwise fall back to current month
+  const activeMonth = selectedMonth || currentMonth
+
+  // Filter students by model test payment status in the active month
   const visibleModelTestStudents = useMemo(() => {
-    let filtered = allStudents
-
-    // Apply month filter if selected
-    if (selectedMonth) {
-      filtered = filtered.filter((student: any) => {
-        const hasPaymentInMonth = student?.Payment?.some(
-          (payment: any) => payment.month === selectedMonth
-        )
-        return hasPaymentInMonth
-      })
-    }
-
-    // Apply payment status filter
-    const statusFiltered = filtered.filter((student: any) => {
-      const modelTestPayments = (student?.Payment || []).filter(
-        (payment: any) => payment.title?.toLowerCase() === "modeltest",
+    return allStudents.filter((student: any) => {
+      const hasModelTestInMonth = student?.Payment?.some(
+        (payment: any) =>
+          payment.title?.toLowerCase() === "modeltest" &&
+          payment.month === activeMonth
       )
-      if (paymentStatus === "paid") return modelTestPayments.length > 0
-      if (paymentStatus === "unpaid") return modelTestPayments.length === 0
+
+      if (paymentStatus === "paid") return hasModelTestInMonth
+      if (paymentStatus === "unpaid") return !hasModelTestInMonth
       return true
     })
+  }, [allStudents, paymentStatus, activeMonth])
 
-    return statusFiltered
-  }, [allStudents, paymentStatus, selectedMonth])
-
+  // Summary stats always based on current month regardless of selectedMonth filter
   const summaryStats = useMemo(() => {
-    // Filter students who have payments in the current month
-    const currentMonthStudents = allStudents.filter((student: any) =>
-      student?.Payment?.some((payment: any) => payment.month === currentMonth)
-    )
-
-    // Count model test paid in current month
     let modelTestPaid = 0
-    currentMonthStudents.forEach((student: any) => {
-      const hasModelTestPayment = student?.Payment?.some(
+    let modelTestUnpaid = 0
+
+    allStudents.forEach((student: any) => {
+      const hasModelTestThisMonth = student?.Payment?.some(
         (payment: any) =>
-          payment.title?.toLowerCase() === "modeltest" && payment.month === currentMonth,
+          payment.title?.toLowerCase() === "modeltest" &&
+          payment.month === currentMonth
       )
-      if (hasModelTestPayment) modelTestPaid += 1
+      if (hasModelTestThisMonth) {
+        modelTestPaid++
+      } else {
+        modelTestUnpaid++
+      }
     })
 
-    const modelTestUnpaid = currentMonthStudents.length - modelTestPaid
-
     return {
-      total: currentMonthStudents.length,
-      currentMonthPaid: currentMonthStudents.length,
-      currentMonthUnpaid: modelTestUnpaid,
+      total: allStudents.length,
       modelTestPaid,
       modelTestUnpaid,
+      currentMonthUnpaid: modelTestUnpaid,
     }
   }, [allStudents, currentMonth])
 
@@ -127,7 +118,7 @@ const PaymentStatus = () => {
     pdf.setFont("helvetica", "normal")
     pdf.text(`Generated: ${date}`, 14, 20)
     pdf.text(
-      `Status: ${paymentStatus === "paid" ? "Paid" : paymentStatus === "unpaid" ? "Unpaid" : "All"}`,
+      `Month: ${activeMonth} | Status: ${paymentStatus === "paid" ? "Paid" : paymentStatus === "unpaid" ? "Unpaid" : "All"}`,
       pageWidth - 14,
       20,
       { align: "right" },
@@ -139,10 +130,11 @@ const PaymentStatus = () => {
     pdf.text(`Total Records: ${visibleModelTestStudents.length}`, 14, 38)
 
     const rows = visibleModelTestStudents.map((student: any, index: number) => {
-      const modelTestPayments = (student?.Payment || []).filter(
-        (payment: any) => payment.title?.toLowerCase() === "modeltest",
+      const hasModelTestInMonth = student?.Payment?.some(
+        (payment: any) =>
+          payment.title?.toLowerCase() === "modeltest" &&
+          payment.month === activeMonth
       )
-      const isPaid = modelTestPayments.length > 0
 
       return [
         String(index + 1),
@@ -151,7 +143,7 @@ const PaymentStatus = () => {
         student.Batch?.batchName || student.batchName || "-",
         student.className || "-",
         student.phone || "-",
-        isPaid ? "Paid" : "Unpaid",
+        hasModelTestInMonth ? "Paid" : "Unpaid",
       ]
     })
 
@@ -179,7 +171,7 @@ const PaymentStatus = () => {
       },
     })
 
-    pdf.save(`model-test-payment-status-${paymentStatus || "all"}.pdf`)
+    pdf.save(`model-test-payment-status-${activeMonth}-${paymentStatus || "all"}.pdf`)
   }
 
   return (
@@ -197,7 +189,9 @@ const PaymentStatus = () => {
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <h1 className="text-2xl font-bold tracking-tight text-slate-700 sm:text-3xl">Model Test Payment Status</h1>
-              <p className="mt-1 text-slate-700">Review students who still have no model test payment record.</p>
+              <p className="mt-1 text-slate-700">
+                Showing students for <span className="font-semibold">{activeMonth}</span> — review who has paid or not paid their model test.
+              </p>
             </div>
 
             <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:gap-3">
@@ -211,6 +205,7 @@ const PaymentStatus = () => {
           </div>
         </div>
 
+        {/* Summary stats always show current month */}
         <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
           <Card className="border-0 bg-white/70 shadow-sm backdrop-blur-sm">
             <CardContent className="p-6">
@@ -218,6 +213,7 @@ const PaymentStatus = () => {
                 <div>
                   <p className="text-sm font-medium text-slate-700">Total Students</p>
                   <p className="text-2xl font-bold text-slate-700">{summaryStats.total}</p>
+                  <p className="text-xs text-slate-400 mt-1">All enrolled</p>
                 </div>
                 <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-blue-100">
                   <Users className="h-6 w-6 text-blue-600" />
@@ -232,6 +228,7 @@ const PaymentStatus = () => {
                 <div>
                   <p className="text-sm font-medium text-slate-700">Model Test Paid</p>
                   <p className="text-2xl font-bold text-emerald-600">{summaryStats.modelTestPaid}</p>
+                  <p className="text-xs text-slate-400 mt-1">{currentMonth}</p>
                 </div>
                 <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-emerald-100">
                   <FileText className="h-6 w-6 text-emerald-600" />
@@ -247,6 +244,7 @@ const PaymentStatus = () => {
                   <div>
                     <p className="text-sm font-medium text-slate-700">Model Test Unpaid</p>
                     <p className="text-2xl font-bold text-rose-600">{summaryStats.modelTestUnpaid}</p>
+                    <p className="text-xs text-slate-400 mt-1">{currentMonth}</p>
                   </div>
                   <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-rose-100">
                     <SearchX className="h-6 w-6 text-rose-600" />
@@ -262,6 +260,7 @@ const PaymentStatus = () => {
                 <div>
                   <p className="text-sm font-medium text-slate-700">Current Month Pending</p>
                   <p className="text-2xl font-bold text-red-600">{summaryStats.currentMonthUnpaid}</p>
+                  <p className="text-xs text-slate-400 mt-1">{currentMonth}</p>
                 </div>
                 <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-red-100">
                   <CreditCard className="h-6 w-6 text-red-600" />
@@ -283,7 +282,7 @@ const PaymentStatus = () => {
               <SearchInputField value={search} onChange={setSearch} onSearch={setSearch} />
               <Select value={selectedMonth} onValueChange={setSelectedMonth}>
                 <SelectTrigger className="h-10 w-full border-slate-200">
-                  <SelectValue placeholder="Select Month" />
+                  <SelectValue placeholder={`Month (${currentMonth})`} />
                 </SelectTrigger>
                 <SelectContent>
                   {months.map((month) => (
@@ -302,6 +301,7 @@ const PaymentStatus = () => {
                 <SelectContent>
                   <SelectItem value="unpaid">Unpaid</SelectItem>
                   <SelectItem value="paid">Paid</SelectItem>
+                  <SelectItem value="all">All</SelectItem>
                 </SelectContent>
               </Select>
               <Button
@@ -330,7 +330,7 @@ const PaymentStatus = () => {
                 {selectedMonth && <Badge variant="secondary">Month: {selectedMonth}</Badge>}
                 {paymentStatus && (
                   <Badge variant="secondary">
-                    Status: {paymentStatus === "paid" ? "Paid" : "Unpaid"}
+                    Status: {paymentStatus === "paid" ? "Paid" : paymentStatus === "unpaid" ? "Unpaid" : "All"}
                   </Badge>
                 )}
               </div>
@@ -344,7 +344,11 @@ const PaymentStatus = () => {
           <Card className="border-0 bg-white/70 shadow-sm backdrop-blur-sm">
             <CardHeader className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center sm:gap-4">
               <CardTitle className="text-lg font-semibold text-slate-900">
-                {paymentStatus === "paid" ? "Paid Model Test Students" : paymentStatus === "unpaid" ? "Unpaid Model Test Students" : "Model Test Students"}
+                {paymentStatus === "paid"
+                  ? `Paid Model Test Students — ${activeMonth}`
+                  : paymentStatus === "unpaid"
+                  ? `Unpaid Model Test Students — ${activeMonth}`
+                  : `All Model Test Students — ${activeMonth}`}
               </CardTitle>
               <Badge variant="outline" className="shrink-0 text-slate-700">
                 {visibleModelTestStudents.length} records
@@ -352,10 +356,11 @@ const PaymentStatus = () => {
             </CardHeader>
             <CardContent className="grid grid-cols-1 gap-3 p-3 sm:gap-4 sm:p-6 md:grid-cols-2 xl:grid-cols-3">
               {visibleModelTestStudents.map((student: any) => {
-                const modelTestPayments = (student?.Payment || []).filter(
-                  (payment: any) => payment.title?.toLowerCase() === "modeltest",
+                const isPaid = student?.Payment?.some(
+                  (payment: any) =>
+                    payment.title?.toLowerCase() === "modeltest" &&
+                    payment.month === activeMonth
                 )
-                const isPaid = modelTestPayments.length > 0
 
                 return (
                   <div key={student.id} className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm sm:p-4">
@@ -382,7 +387,9 @@ const PaymentStatus = () => {
                         </div>
 
                         <p className="mt-2 text-sm text-slate-500">
-                          {isPaid ? "Model test payment found" : "No model test payment found"}
+                          {isPaid
+                            ? `Model test payment found for ${activeMonth}`
+                            : `No model test payment for ${activeMonth}`}
                         </p>
 
                         <div className="mt-3 border-t border-slate-100 pt-3 text-sm leading-6 text-slate-600 break-words">
@@ -416,11 +423,11 @@ const PaymentStatus = () => {
                     <FileText className="h-8 w-8 text-slate-400" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-slate-900">No unpaid model test data found</h3>
+                    <h3 className="text-lg font-semibold text-slate-900">No records found for {activeMonth}</h3>
                     <p className="mt-1 text-slate-500">
                       {hasActiveFilters
                         ? "Try adjusting your filters to see more results"
-                        : "Every student in the current dataset already has a model test payment record."}
+                        : `Every student already has a model test payment record for ${activeMonth}.`}
                     </p>
                   </div>
                 </div>
@@ -433,9 +440,9 @@ const PaymentStatus = () => {
       <Dialog open={isModelTestModalOpen} onOpenChange={setIsModelTestModalOpen}>
         <DialogContent className="max-w-4xl">
           <DialogHeader>
-            <DialogTitle>Unpaid Model Test Data</DialogTitle>
+            <DialogTitle>Unpaid Model Test — {activeMonth}</DialogTitle>
             <DialogDescription>
-              Students listed here do not have any payment entry with the model test title.
+              Students listed here do not have a model test payment for <strong>{activeMonth}</strong>.
             </DialogDescription>
           </DialogHeader>
 
@@ -443,10 +450,11 @@ const PaymentStatus = () => {
             <div className="space-y-3">
               {visibleModelTestStudents.length > 0 ? (
                 visibleModelTestStudents.map((student: any) => {
-                  const modelTestPayments = (student?.Payment || []).filter(
-                    (payment: any) => payment.title?.toLowerCase() === "modeltest",
+                  const isPaid = student?.Payment?.some(
+                    (payment: any) =>
+                      payment.title?.toLowerCase() === "modeltest" &&
+                      payment.month === activeMonth
                   )
-                  const isPaid = modelTestPayments.length > 0
 
                   return (
                     <div
