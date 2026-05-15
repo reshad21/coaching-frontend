@@ -19,9 +19,14 @@ import {
 import { useGetAllStudentQuery } from "@/redux/api/studentApi/studentApi"
 import { jsPDF } from "jspdf"
 import autoTable from "jspdf-autotable"
-import { ChevronsRight, CreditCard, Eye, FileText, Filter, SearchX, Users, X } from "lucide-react"
+import { ChevronsRight, Eye, FileText, Filter, SearchX, Users, X } from "lucide-react"
 import { Link } from "react-router-dom"
 import studentImage from "../../../assets/default.jpg"
+
+const months = [
+  "January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December",
+]
 
 const PaymentStatus = () => {
   const [search, setSearch] = useState("")
@@ -29,70 +34,50 @@ const PaymentStatus = () => {
   const [selectClass, setSelectedClass] = useState("")
   const [paymentStatus, setPaymentStatus] = useState("unpaid")
   const [selectedMonth, setSelectedMonth] = useState("")
-  const [isModelTestModalOpen, setIsModelTestModalOpen] = useState(false)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const currentMonth = new Date().toLocaleString("default", { month: "long" })
 
   const queryParams = useMemo(() => {
     const params: { name: string; value: any }[] = [{ name: "limit", value: 99999 }]
-
     if (search) params.push({ name: "search", value: search })
     if (selectedBatch) params.push({ name: "batchName", value: selectedBatch })
     if (selectClass) params.push({ name: "className", value: selectClass })
-
     return params
   }, [search, selectedBatch, selectClass])
 
   const { data: students, isLoading } = useGetAllStudentQuery(queryParams)
-  const currentMonth = new Date().toLocaleString("default", { month: "long" })
   const allStudents = useMemo(() => students?.data ?? [], [students?.data])
 
-  const months = [
-    "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December",
-  ]
+  // Strict: only a ModelTest payment with exactly this month counts as paid
+  // If no month selected, check against current month
+  const hasModelTestForMonth = (student: any, month: string): boolean =>
+    (student?.Payment || []).some(
+      (p: any) => p.title === "ModelTest" && p.month === month
+    )
 
-  // Use selectedMonth if set, otherwise fall back to current month
   const activeMonth = selectedMonth || currentMonth
 
-  // Filter students by model test payment status in the active month
-  const visibleModelTestStudents = useMemo(() => {
+  // Students shown in main card — respects all filters
+  const visibleStudents = useMemo(() => {
     return allStudents.filter((student: any) => {
-      const hasModelTestInMonth = student?.Payment?.some(
-        (payment: any) =>
-          payment.title?.toLowerCase() === "modeltest" &&
-          payment.month === activeMonth
-      )
-
-      if (paymentStatus === "paid") return hasModelTestInMonth
-      if (paymentStatus === "unpaid") return !hasModelTestInMonth
+      const isPaid = hasModelTestForMonth(student, activeMonth)
+      if (paymentStatus === "paid") return isPaid
+      if (paymentStatus === "unpaid") return !isPaid
       return true
     })
   }, [allStudents, paymentStatus, activeMonth])
 
-  // Summary stats always based on current month regardless of selectedMonth filter
+  // Summary stats — always based on activeMonth across ALL students (no search/batch/class filter)
   const summaryStats = useMemo(() => {
-    let modelTestPaid = 0
-    let modelTestUnpaid = 0
-
+    let paid = 0
+    let unpaid = 0
     allStudents.forEach((student: any) => {
-      const hasModelTestThisMonth = student?.Payment?.some(
-        (payment: any) =>
-          payment.title?.toLowerCase() === "modeltest" &&
-          payment.month === currentMonth
-      )
-      if (hasModelTestThisMonth) {
-        modelTestPaid++
-      } else {
-        modelTestUnpaid++
-      }
+      if (hasModelTestForMonth(student, activeMonth)) paid++
+      else unpaid++
     })
-
-    return {
-      total: allStudents.length,
-      modelTestPaid,
-      modelTestUnpaid,
-      currentMonthUnpaid: modelTestUnpaid,
-    }
-  }, [allStudents, currentMonth])
+    return { total: allStudents.length, paid, unpaid }
+  }, [allStudents, activeMonth])
 
   const hasActiveFilters = Boolean(search || selectedBatch || selectClass || paymentStatus !== "unpaid" || selectedMonth)
 
@@ -100,70 +85,44 @@ const PaymentStatus = () => {
     const pdf = new jsPDF("p", "mm", "a4")
     const pageWidth = pdf.internal.pageSize.getWidth()
     const pageHeight = pdf.internal.pageSize.getHeight()
-    const date = new Date().toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    })
+    const date = new Date().toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })
 
     pdf.setFillColor(15, 23, 42)
     pdf.rect(0, 0, pageWidth, 28, "F")
-
     pdf.setTextColor(255, 255, 255)
     pdf.setFontSize(20)
     pdf.setFont("helvetica", "bold")
     pdf.text("Model Test Payment Status", 14, 12)
-
     pdf.setFontSize(10)
     pdf.setFont("helvetica", "normal")
     pdf.text(`Generated: ${date}`, 14, 20)
     pdf.text(
       `Month: ${activeMonth} | Status: ${paymentStatus === "paid" ? "Paid" : paymentStatus === "unpaid" ? "Unpaid" : "All"}`,
-      pageWidth - 14,
-      20,
-      { align: "right" },
+      pageWidth - 14, 20, { align: "right" }
     )
-
     pdf.setTextColor(15, 23, 42)
     pdf.setFontSize(11)
     pdf.setFont("helvetica", "bold")
-    pdf.text(`Total Records: ${visibleModelTestStudents.length}`, 14, 38)
+    pdf.text(`Total Records: ${visibleStudents.length}`, 14, 38)
 
-    const rows = visibleModelTestStudents.map((student: any, index: number) => {
-      const hasModelTestInMonth = student?.Payment?.some(
-        (payment: any) =>
-          payment.title?.toLowerCase() === "modeltest" &&
-          payment.month === activeMonth
-      )
-
-      return [
-        String(index + 1),
-        `${student.firstName || ""} ${student.lastName || ""}`.trim() || "-",
-        student.studentId || "-",
-        student.Batch?.batchName || student.batchName || "-",
-        student.className || "-",
-        student.phone || "-",
-        hasModelTestInMonth ? "Paid" : "Unpaid",
-      ]
-    })
+    const rows = visibleStudents.map((student: any, index: number) => [
+      String(index + 1),
+      `${student.firstName || ""} ${student.lastName || ""}`.trim() || "-",
+      student.studentId || "-",
+      student.Batch?.batchName || student.batchName || "-",
+      student.className || "-",
+      student.phone || "-",
+      hasModelTestForMonth(student, activeMonth) ? "Paid" : "Unpaid",
+    ])
 
     autoTable(pdf, {
       startY: 44,
       head: [["SL", "Name", "Std ID", "Batch", "Class", "Phone", "Status"]],
       body: rows,
       theme: "grid",
-      styles: {
-        fontSize: 8.5,
-        cellPadding: 2,
-        valign: "middle",
-      },
-      headStyles: {
-        fillColor: [15, 23, 42],
-        textColor: 255,
-      },
-      alternateRowStyles: {
-        fillColor: [248, 250, 252],
-      },
+      styles: { fontSize: 8.5, cellPadding: 2, valign: "middle" },
+      headStyles: { fillColor: [15, 23, 42], textColor: 255 },
+      alternateRowStyles: { fillColor: [248, 250, 252] },
       didDrawPage: () => {
         pdf.setFontSize(9)
         pdf.setTextColor(100, 116, 139)
@@ -171,12 +130,14 @@ const PaymentStatus = () => {
       },
     })
 
-    pdf.save(`model-test-payment-status-${activeMonth}-${paymentStatus || "all"}.pdf`)
+    pdf.save(`model-test-${activeMonth}-${paymentStatus}.pdf`)
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50/30 p-3 sm:p-6">
       <div className="mx-auto max-w-7xl space-y-6 sm:space-y-8">
+
+        {/* Header */}
         <div className="space-y-2">
           <div className="flex items-center text-sm font-medium text-slate-500">
             <span>Dashboard</span>
@@ -188,25 +149,27 @@ const PaymentStatus = () => {
 
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <h1 className="text-2xl font-bold tracking-tight text-slate-700 sm:text-3xl">Model Test Payment Status</h1>
+              <h1 className="text-2xl font-bold tracking-tight text-slate-700 sm:text-3xl">
+                Model Test Payment Status
+              </h1>
               <p className="mt-1 text-slate-700">
-                Showing students for <span className="font-semibold">{activeMonth}</span> — review who has paid or not paid their model test.
+                Showing results for <span className="font-semibold text-slate-900">{activeMonth}</span>.
+                {!selectedMonth && <span className="text-slate-400 text-sm ml-1">(current month)</span>}
               </p>
             </div>
-
             <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:gap-3">
               <Button variant="primaryGradient" className="w-full sm:w-fit" onClick={handleDownloadPdf}>
                 Download PDF
               </Button>
-              <Button variant="primaryGradient" className="w-full sm:w-fit" onClick={() => setIsModelTestModalOpen(true)}>
-                View unpaid model test data
+              <Button variant="primaryGradient" className="w-full sm:w-fit" onClick={() => setIsModalOpen(true)}>
+                View Unpaid Students
               </Button>
             </div>
           </div>
         </div>
 
-        {/* Summary stats always show current month */}
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-4">
+        {/* Summary Cards */}
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           <Card className="border-0 bg-white/70 shadow-sm backdrop-blur-sm">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -227,8 +190,8 @@ const PaymentStatus = () => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-slate-700">Model Test Paid</p>
-                  <p className="text-2xl font-bold text-emerald-600">{summaryStats.modelTestPaid}</p>
-                  <p className="text-xs text-slate-400 mt-1">{currentMonth}</p>
+                  <p className="text-2xl font-bold text-emerald-600">{summaryStats.paid}</p>
+                  <p className="text-xs text-slate-400 mt-1">{activeMonth}</p>
                 </div>
                 <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-emerald-100">
                   <FileText className="h-6 w-6 text-emerald-600" />
@@ -239,12 +202,12 @@ const PaymentStatus = () => {
 
           <Card className="border-0 bg-white/70 shadow-sm backdrop-blur-sm">
             <CardContent className="p-6">
-              <button type="button" className="w-full text-left" onClick={() => setIsModelTestModalOpen(true)}>
+              <button type="button" className="w-full text-left" onClick={() => setIsModalOpen(true)}>
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-slate-700">Model Test Unpaid</p>
-                    <p className="text-2xl font-bold text-rose-600">{summaryStats.modelTestUnpaid}</p>
-                    <p className="text-xs text-slate-400 mt-1">{currentMonth}</p>
+                    <p className="text-2xl font-bold text-rose-600">{summaryStats.unpaid}</p>
+                    <p className="text-xs text-slate-400 mt-1">{activeMonth}</p>
                   </div>
                   <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-rose-100">
                     <SearchX className="h-6 w-6 text-rose-600" />
@@ -253,23 +216,9 @@ const PaymentStatus = () => {
               </button>
             </CardContent>
           </Card>
-
-          <Card className="border-0 bg-white/70 shadow-sm backdrop-blur-sm">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-slate-700">Current Month Pending</p>
-                  <p className="text-2xl font-bold text-red-600">{summaryStats.currentMonthUnpaid}</p>
-                  <p className="text-xs text-slate-400 mt-1">{currentMonth}</p>
-                </div>
-                <div className="flex h-12 w-12 items-center justify-center rounded-lg bg-red-100">
-                  <CreditCard className="h-6 w-6 text-red-600" />
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </div>
 
+        {/* Filters */}
         <Card className="border-0 bg-white/70 shadow-sm backdrop-blur-sm">
           <CardHeader className="pb-4">
             <CardTitle className="flex items-center gap-2 text-lg font-semibold text-slate-900">
@@ -280,20 +229,23 @@ const PaymentStatus = () => {
           <CardContent className="space-y-4">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-6">
               <SearchInputField value={search} onChange={setSearch} onSearch={setSearch} />
+
+              {/* Month filter */}
               <Select value={selectedMonth} onValueChange={setSelectedMonth}>
                 <SelectTrigger className="h-10 w-full border-slate-200">
                   <SelectValue placeholder={`Month (${currentMonth})`} />
                 </SelectTrigger>
                 <SelectContent>
                   {months.map((month) => (
-                    <SelectItem key={month} value={month}>
-                      {month}
-                    </SelectItem>
+                    <SelectItem key={month} value={month}>{month}</SelectItem>
                   ))}
                 </SelectContent>
               </Select>
+
               <SelectBatch value={selectedBatch} onChange={setSelectedBatch} />
               <SelectStudentClass value={selectClass} onChange={setSelectedClass} />
+
+              {/* Payment status */}
               <Select value={paymentStatus} onValueChange={setPaymentStatus}>
                 <SelectTrigger className="h-10 w-full border-slate-200">
                   <SelectValue placeholder="Payment Status" />
@@ -304,6 +256,7 @@ const PaymentStatus = () => {
                   <SelectItem value="all">All</SelectItem>
                 </SelectContent>
               </Select>
+
               <Button
                 onClick={() => {
                   setSearch("")
@@ -313,10 +266,10 @@ const PaymentStatus = () => {
                   setPaymentStatus("unpaid")
                 }}
                 variant="primaryGradient"
-                className="w-full px-3 text-sm sm:w-fit sm:px-4 sm:text-base"
+                className="w-full px-3 text-sm sm:w-fit sm:px-4"
                 disabled={!hasActiveFilters}
               >
-                <X className="h-4 w-4" />
+                <X className="h-4 w-4 mr-1" />
                 Clear Filters
               </Button>
             </div>
@@ -328,11 +281,9 @@ const PaymentStatus = () => {
                 {selectedBatch && <Badge variant="secondary">Batch: {selectedBatch}</Badge>}
                 {selectClass && <Badge variant="secondary">Class: {selectClass}</Badge>}
                 {selectedMonth && <Badge variant="secondary">Month: {selectedMonth}</Badge>}
-                {paymentStatus && (
-                  <Badge variant="secondary">
-                    Status: {paymentStatus === "paid" ? "Paid" : paymentStatus === "unpaid" ? "Unpaid" : "All"}
-                  </Badge>
-                )}
+                <Badge variant="secondary">
+                  Status: {paymentStatus === "paid" ? "Paid" : paymentStatus === "unpaid" ? "Unpaid" : "All"}
+                </Badge>
               </div>
             )}
           </CardContent>
@@ -340,28 +291,24 @@ const PaymentStatus = () => {
 
         {isLoading && <Loading />}
 
-        {!isLoading && visibleModelTestStudents.length > 0 ? (
+        {/* Student Cards */}
+        {!isLoading && visibleStudents.length > 0 ? (
           <Card className="border-0 bg-white/70 shadow-sm backdrop-blur-sm">
             <CardHeader className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center sm:gap-4">
               <CardTitle className="text-lg font-semibold text-slate-900">
                 {paymentStatus === "paid"
-                  ? `Paid Model Test Students — ${activeMonth}`
+                  ? `Paid — Model Test (${activeMonth})`
                   : paymentStatus === "unpaid"
-                  ? `Unpaid Model Test Students — ${activeMonth}`
-                  : `All Model Test Students — ${activeMonth}`}
+                  ? `Unpaid — Model Test (${activeMonth})`
+                  : `All Students — Model Test (${activeMonth})`}
               </CardTitle>
               <Badge variant="outline" className="shrink-0 text-slate-700">
-                {visibleModelTestStudents.length} records
+                {visibleStudents.length} records
               </Badge>
             </CardHeader>
             <CardContent className="grid grid-cols-1 gap-3 p-3 sm:gap-4 sm:p-6 md:grid-cols-2 xl:grid-cols-3">
-              {visibleModelTestStudents.map((student: any) => {
-                const isPaid = student?.Payment?.some(
-                  (payment: any) =>
-                    payment.title?.toLowerCase() === "modeltest" &&
-                    payment.month === activeMonth
-                )
-
+              {visibleStudents.map((student: any) => {
+                const isPaid = hasModelTestForMonth(student, activeMonth)
                 return (
                   <div key={student.id} className="rounded-xl border border-slate-200 bg-white p-3 shadow-sm sm:p-4">
                     <div className="flex flex-col gap-3">
@@ -372,15 +319,17 @@ const PaymentStatus = () => {
                           className="h-12 w-12 rounded-full object-cover"
                         />
                       </div>
-
                       <div className="min-w-0">
                         <div className="flex flex-wrap items-start justify-between gap-2">
                           <p className="text-base font-semibold leading-tight text-slate-900 break-words">
                             {student.firstName} {student.lastName}
                           </p>
                           <Badge
-                            variant={isPaid ? "secondary" : "destructive"}
-                            className={isPaid ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-100" : "bg-rose-100 text-rose-700 hover:bg-rose-100"}
+                            className={
+                              isPaid
+                                ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-100"
+                                : "bg-rose-100 text-rose-700 hover:bg-rose-100"
+                            }
                           >
                             {isPaid ? "Paid" : "Unpaid"}
                           </Badge>
@@ -388,8 +337,8 @@ const PaymentStatus = () => {
 
                         <p className="mt-2 text-sm text-slate-500">
                           {isPaid
-                            ? `Model test payment found for ${activeMonth}`
-                            : `No model test payment for ${activeMonth}`}
+                            ? `ModelTest payment found for ${activeMonth}`
+                            : `No ModelTest payment for ${activeMonth}`}
                         </p>
 
                         <div className="mt-3 border-t border-slate-100 pt-3 text-sm leading-6 text-slate-600 break-words">
@@ -423,11 +372,11 @@ const PaymentStatus = () => {
                     <FileText className="h-8 w-8 text-slate-400" />
                   </div>
                   <div>
-                    <h3 className="text-lg font-semibold text-slate-900">No records found for {activeMonth}</h3>
+                    <h3 className="text-lg font-semibold text-slate-900">No records found</h3>
                     <p className="mt-1 text-slate-500">
                       {hasActiveFilters
-                        ? "Try adjusting your filters to see more results"
-                        : `Every student already has a model test payment record for ${activeMonth}.`}
+                        ? "Try adjusting your filters to see more results."
+                        : `All students have paid their Model Test fee for ${activeMonth}.`}
                     </p>
                   </div>
                 </div>
@@ -437,30 +386,23 @@ const PaymentStatus = () => {
         )}
       </div>
 
-      <Dialog open={isModelTestModalOpen} onOpenChange={setIsModelTestModalOpen}>
+      {/* Modal — always shows unpaid for activeMonth, ignores search/batch/class filters */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent className="max-w-4xl">
           <DialogHeader>
             <DialogTitle>Unpaid Model Test — {activeMonth}</DialogTitle>
             <DialogDescription>
-              Students listed here do not have a model test payment for <strong>{activeMonth}</strong>.
+              Students who have <strong>not</strong> paid their ModelTest fee for <strong>{activeMonth}</strong>.
             </DialogDescription>
           </DialogHeader>
 
           <div className="max-h-[65vh] overflow-y-auto pr-1">
             <div className="space-y-3">
-              {visibleModelTestStudents.length > 0 ? (
-                visibleModelTestStudents.map((student: any) => {
-                  const isPaid = student?.Payment?.some(
-                    (payment: any) =>
-                      payment.title?.toLowerCase() === "modeltest" &&
-                      payment.month === activeMonth
-                  )
-
-                  return (
-                    <div
-                      key={student.id}
-                      className="rounded-xl border border-slate-200 bg-slate-50 p-3 sm:p-4"
-                    >
+              {allStudents.filter((s: any) => !hasModelTestForMonth(s, activeMonth)).length > 0 ? (
+                allStudents
+                  .filter((student: any) => !hasModelTestForMonth(student, activeMonth))
+                  .map((student: any) => (
+                    <div key={student.id} className="rounded-xl border border-slate-200 bg-slate-50 p-3 sm:p-4">
                       <div className="flex flex-col gap-3">
                         <div className="w-fit rounded-full bg-white p-1 ring-1 ring-slate-200">
                           <img
@@ -469,24 +411,17 @@ const PaymentStatus = () => {
                             className="h-12 w-12 rounded-full object-cover"
                           />
                         </div>
-
                         <div className="min-w-0">
                           <div className="flex flex-wrap items-start justify-between gap-2">
                             <p className="text-base font-semibold leading-tight text-slate-900 break-words">
                               {student.firstName} {student.lastName}
                             </p>
-                            <Badge
-                              variant={isPaid ? "secondary" : "destructive"}
-                              className={isPaid ? "bg-emerald-100 text-emerald-700 hover:bg-emerald-100" : "bg-rose-100 text-rose-700 hover:bg-rose-100"}
-                            >
-                              {isPaid ? "Paid" : "Unpaid"}
-                            </Badge>
+                            <Badge className="bg-rose-100 text-rose-700 hover:bg-rose-100">Unpaid</Badge>
                           </div>
                           <p className="mt-2 text-sm text-slate-600 break-words">
                             {student.studentId || "-"} | {student.Batch?.batchName || student.batchName || "No batch"}
                           </p>
                           <p className="text-xs text-slate-500">Phone: {student.phone || "-"}</p>
-
                           <div className="mt-4">
                             <Link to={`/payment/${student.id}`} className="block w-full">
                               <Button variant="outline" size="sm" className="w-full">
@@ -498,11 +433,10 @@ const PaymentStatus = () => {
                         </div>
                       </div>
                     </div>
-                  )
-                })
+                  ))
               ) : (
                 <div className="rounded-xl border border-dashed border-slate-200 bg-white p-8 text-center text-slate-500">
-                  No model test records available for the selected status.
+                  All students have paid their Model Test fee for {activeMonth}.
                 </div>
               )}
             </div>
