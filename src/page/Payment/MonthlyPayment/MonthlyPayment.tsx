@@ -353,21 +353,21 @@ const MonthlyPayment = () => {
         </Button>
       </div>
 
-      {/* ✅ Responsive Table */}
+      {/* ✅ Responsive Table - FIXED: Removed padding, added w-full to table */}
       {isLoading ? (
         <Loading />
       ) : filteredStudents?.length > 0 ? (
-        <div className="border rounded-lg overflow-hidden bg-slate-100 p-3">
-          <Table>
+        <div className="w-full border rounded-lg overflow-x-auto bg-slate-100 p-4">
+          <Table className="w-full table-fixed">
             <TableHeader>
               <TableRow>
-                <TableHead className="hidden sm:table-cell">#.</TableHead>
-                <TableHead>Full Name</TableHead>
-                <TableHead className="hidden md:table-cell">ID</TableHead>
-                <TableHead className="hidden md:table-cell">Phone</TableHead>
-                <TableHead className="hidden md:table-cell">Class</TableHead>
-                <TableHead className="text-center">Status</TableHead>
-                <TableHead>Action</TableHead>
+                <TableHead className="hidden sm:table-cell w-12">#.</TableHead>
+                <TableHead className="w-48">Full Name</TableHead>
+                <TableHead className="hidden md:table-cell w-20">ID</TableHead>
+                <TableHead className="hidden md:table-cell w-32">Phone</TableHead>
+                <TableHead className="hidden md:table-cell w-24">Class</TableHead>
+                <TableHead className="text-center w-24">Status</TableHead>
+                <TableHead className="w-40">Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -383,18 +383,18 @@ const MonthlyPayment = () => {
                   >
                     <TableCell
                       data-label="SL No."
-                      className="hidden sm:table-cell"
+                      className="hidden sm:table-cell overflow-hidden"
                     >
                       {index + 1}
                     </TableCell>
-                    <TableCell data-label="Full Name">
-                      <div className="flex items-center gap-2">
+                    <TableCell data-label="Full Name" className="overflow-hidden">
+                      <div className="flex items-center gap-2 min-w-0">
                         <img
                           src={student?.image || studentImage}
                           alt={`${student?.firstName ?? ""} ${student?.lastName ?? ""}`}
                           className="size-8 sm:size-10 rounded-md object-cover flex-shrink-0"
                         />
-                        <div className="min-w-0">
+                        <div className="min-w-0 flex-1">
                           <div className="truncate text-sm font-medium">
                             {student.firstName} {student.lastName}
                           </div>
@@ -409,19 +409,19 @@ const MonthlyPayment = () => {
                     </TableCell>
                     <TableCell
                       data-label="ID"
-                      className="hidden md:table-cell"
+                      className="hidden md:table-cell overflow-hidden"
                     >
                       {student.studentId}
                     </TableCell>
                     <TableCell
                       data-label="Phone"
-                      className="hidden md:table-cell"
+                      className="hidden md:table-cell overflow-hidden"
                     >
                       {student.phone}
                     </TableCell>
                     <TableCell
                       data-label="Class"
-                      className="hidden md:table-cell"
+                      className="hidden md:table-cell overflow-hidden"
                     >
                       {student.className || "N/A"}
                     </TableCell>
@@ -452,12 +452,12 @@ const MonthlyPayment = () => {
                         </Badge>
                       )}
                     </TableCell>
-                    <TableCell data-label="Action">
-                      <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2">
+                    <TableCell data-label="Action" className="overflow-hidden">
+                      <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 flex-wrap">
                         <Button
                           variant="outline"
                           size="sm"
-                          className="w-full sm:w-auto bg-green-600 hover:bg-green-500 text-white text-xs sm:text-sm"
+                          className="flex-1 sm:flex-none min-w-fit bg-green-600 hover:bg-green-500 text-white text-xs sm:text-sm"
                           onClick={() => {
                             form.setValue("studentId", student.id);
                             form.setValue("phone", student.phone);
@@ -485,7 +485,7 @@ const MonthlyPayment = () => {
                         </Button>
                         <Link
                           to={`/payment/${student.id}`}
-                          className="w-full sm:w-auto"
+                          className="flex-1 sm:flex-none min-w-fit"
                         >
                           <Button
                             variant="outline"
