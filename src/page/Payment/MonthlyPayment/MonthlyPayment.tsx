@@ -357,16 +357,16 @@ const MonthlyPayment = () => {
       {isLoading ? (
         <Loading />
       ) : filteredStudents?.length > 0 ? (
-        <div className="border rounded-lg overflow-hidden bg-slate-100 p-5">
+        <div className="border rounded-lg overflow-hidden bg-slate-100 p-3">
           <Table>
             <TableHeader>
               <TableRow>
                 <TableHead className="hidden sm:table-cell">#.</TableHead>
                 <TableHead>Full Name</TableHead>
-                <TableHead className="hidden md:table-cell">Std Id</TableHead>
+                <TableHead className="hidden md:table-cell">ID</TableHead>
                 <TableHead className="hidden md:table-cell">Phone</TableHead>
                 <TableHead className="hidden md:table-cell">Class</TableHead>
-                <TableHead className="text-center">Payment Status</TableHead>
+                <TableHead className="text-center">Status</TableHead>
                 <TableHead>Action</TableHead>
               </TableRow>
             </TableHeader>
@@ -408,7 +408,7 @@ const MonthlyPayment = () => {
                       </div>
                     </TableCell>
                     <TableCell
-                      data-label="Std Id"
+                      data-label="ID"
                       className="hidden md:table-cell"
                     >
                       {student.studentId}
@@ -426,7 +426,7 @@ const MonthlyPayment = () => {
                       {student.className || "N/A"}
                     </TableCell>
                     <TableCell
-                      data-label="Payment Status"
+                      data-label="Status"
                       className="text-center"
                     >
                       {filterMonth ? (
@@ -448,8 +448,7 @@ const MonthlyPayment = () => {
                         })()
                       ) : (
                         <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-200 flex items-center justify-center gap-1 mx-auto w-fit">
-                          <span>—</span>
-                          No Filter
+                          N/A
                         </Badge>
                       )}
                     </TableCell>
@@ -472,11 +471,11 @@ const MonthlyPayment = () => {
                             );
                           }}
                         >
-                          <DollarSign className="w-3 h-3 sm:w-5 sm:h-5 mr-1" />
+                          <DollarSign className="w-3 h-3 sm:w-5 sm:h-5" />
                           <span className="hidden sm:inline">
                             {openFormFor === student.studentId
                               ? "Cancel"
-                              : "Make Payment"}
+                              : "Take Payment"}
                           </span>
                           <span className="sm:hidden">
                             {openFormFor === student.studentId
