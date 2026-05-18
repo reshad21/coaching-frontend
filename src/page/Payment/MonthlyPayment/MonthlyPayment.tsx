@@ -353,157 +353,130 @@ const MonthlyPayment = () => {
         </Button>
       </div>
 
-      {/* ✅ Responsive Table - FIXED: Removed padding, added w-full to table */}
+      {/* ✅ Responsive Table/Card Layout */}
       {isLoading ? (
         <Loading />
       ) : filteredStudents?.length > 0 ? (
-        <div className="w-full border rounded-lg overflow-x-auto bg-slate-100 p-4">
-          <Table className="w-full table-fixed">
-            <TableHeader>
-              <TableRow>
-                <TableHead className="hidden sm:table-cell w-12">#.</TableHead>
-                <TableHead className="w-48">Full Name</TableHead>
-                <TableHead className="hidden md:table-cell w-20">ID</TableHead>
-                <TableHead className="hidden md:table-cell w-32">Phone</TableHead>
-                <TableHead className="hidden md:table-cell w-24">Class</TableHead>
-                <TableHead className="text-center w-24">Status</TableHead>
-                <TableHead className="w-40">Action</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredStudents?.map((student: any, index: number) => (
-                <>
-                  <TableRow
-                    key={student.id}
-                    className={
-                      focusStudentId === student.id
-                        ? "bg-amber-50 border-l-4 border-amber-600"
-                        : ""
-                    }
-                  >
-                    <TableCell
-                      data-label="SL No."
-                      className="hidden sm:table-cell overflow-hidden"
-                    >
-                      {index + 1}
-                    </TableCell>
-                    <TableCell data-label="Full Name" className="overflow-hidden">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <img
-                          src={student?.image || studentImage}
-                          alt={`${student?.firstName ?? ""} ${student?.lastName ?? ""}`}
-                          className="size-8 sm:size-10 rounded-md object-cover flex-shrink-0"
-                        />
-                        <div className="min-w-0 flex-1">
-                          <div className="truncate text-sm font-medium">
-                            {student.firstName} {student.lastName}
+        <>
+          {/* Desktop Table View */}
+          <div className="hidden sm:block w-full border rounded-lg overflow-hidden bg-white">
+            <Table className="w-full border-collapse">
+              <TableHeader>
+                <TableRow className="bg-slate-100 border-b">
+                  <TableHead className="hidden sm:table-cell text-xs font-semibold py-3 px-4 w-12 text-left">#.</TableHead>
+                  <TableHead className="text-xs font-semibold py-3 px-4 text-left min-w-max">Full Name</TableHead>
+                  <TableHead className="hidden md:table-cell text-xs font-semibold py-3 px-4 w-20 text-left">ID</TableHead>
+                  <TableHead className="hidden md:table-cell text-xs font-semibold py-3 px-4 w-28 text-left">Phone</TableHead>
+                  <TableHead className="hidden md:table-cell text-xs font-semibold py-3 px-4 w-20 text-left">Class</TableHead>
+                  <TableHead className="text-xs font-semibold py-3 px-4 w-20 text-center">Status</TableHead>
+                  <TableHead className="text-xs font-semibold py-3 px-4 flex-1 text-center">Action</TableHead>
+                </TableRow>
+              </TableHeader>
+                <TableBody>
+                  {filteredStudents?.map((student: any, index: number) => (
+                    <>
+                      <TableRow
+                        key={student.id}
+                        className={`border-b hover:bg-slate-50 ${
+                          focusStudentId === student.id
+                            ? "bg-amber-50 border-l-4 border-amber-600"
+                            : ""
+                        }`}
+                      >
+                        <TableCell className="hidden sm:table-cell py-3 px-4 text-xs w-12">
+                          {index + 1}
+                        </TableCell>
+                        <TableCell className="py-3 px-4 min-w-max">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <img
+                              src={student?.image || studentImage}
+                              alt={`${student?.firstName ?? ""} ${student?.lastName ?? ""}`}
+                              className="size-10 rounded-md object-cover flex-shrink-0"
+                            />
+                            <div className="min-w-0 flex-1">
+                              <div className="truncate text-sm font-medium">
+                                {student.firstName} {student.lastName}
+                              </div>
+                            </div>
                           </div>
-                          <div className="text-xs text-gray-500 block sm:hidden">
-                            {student.studentId}
-                          </div>
-                          <div className="text-xs text-gray-500 block md:hidden">
-                            {student.phone}
-                          </div>
-                        </div>
-                      </div>
-                    </TableCell>
-                    <TableCell
-                      data-label="ID"
-                      className="hidden md:table-cell overflow-hidden"
-                    >
-                      {student.studentId}
-                    </TableCell>
-                    <TableCell
-                      data-label="Phone"
-                      className="hidden md:table-cell overflow-hidden"
-                    >
-                      {student.phone}
-                    </TableCell>
-                    <TableCell
-                      data-label="Class"
-                      className="hidden md:table-cell overflow-hidden"
-                    >
-                      {student.className || "N/A"}
-                    </TableCell>
-                    <TableCell
-                      data-label="Status"
-                      className="text-center"
-                    >
-                      {filterMonth ? (
-                        (() => {
-                          const hasPaidForMonth = student?.Payment?.some(
-                            (payment: any) => payment.month === filterMonth,
-                          );
-                          return hasPaidForMonth ? (
-                            <Badge className="bg-green-100 text-green-800 hover:bg-green-200 flex items-center justify-center gap-1 mx-auto w-fit">
-                              <Check className="w-3 h-3" />
-                              Paid
-                            </Badge>
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell py-3 px-4 text-xs w-20">
+                          {student.studentId}
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell py-3 px-4 text-xs w-28">
+                          {student.phone}
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell py-3 px-4 text-xs w-20">
+                          {student.className || "N/A"}
+                        </TableCell>
+                        <TableCell className="text-center py-3 px-4 w-20">
+                          {filterMonth ? (
+                            (() => {
+                              const hasPaidForMonth = student?.Payment?.some(
+                                (payment: any) => payment.month === filterMonth,
+                              );
+                              return hasPaidForMonth ? (
+                                <Badge className="bg-green-100 text-green-800 hover:bg-green-200 flex items-center justify-center gap-1 mx-auto w-fit text-xs">
+                                  <Check className="w-3 h-3" />
+                                  Paid
+                                </Badge>
+                              ) : (
+                                <Badge className="bg-red-100 text-red-800 hover:bg-red-200 flex items-center justify-center gap-1 mx-auto w-fit text-xs">
+                                  <X className="w-3 h-3" />
+                                  Not Paid
+                                </Badge>
+                              );
+                            })()
                           ) : (
-                            <Badge className="bg-red-100 text-red-800 hover:bg-red-200 flex items-center justify-center gap-1 mx-auto w-fit">
-                              <X className="w-3 h-3" />
-                              Not Paid
+                            <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-200 flex items-center justify-center gap-1 mx-auto w-fit text-xs">
+                              N/A
                             </Badge>
-                          );
-                        })()
-                      ) : (
-                        <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-200 flex items-center justify-center gap-1 mx-auto w-fit">
-                          N/A
-                        </Badge>
-                      )}
-                    </TableCell>
-                    <TableCell data-label="Action" className="overflow-hidden">
-                      <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2 flex-wrap">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="flex-1 sm:flex-none min-w-fit bg-green-600 hover:bg-green-500 text-white text-xs sm:text-sm"
-                          onClick={() => {
-                            form.setValue("studentId", student.id);
-                            form.setValue("phone", student.phone);
-                            form.setValue("firstName", student.firstName);
-                            setValidationErrors({});
-                            setSelectedMonths([]);
-                            setOpenFormFor((prev) =>
-                              prev === student.studentId
-                                ? null
-                                : student.studentId,
-                            );
-                          }}
-                        >
-                          <DollarSign className="w-3 h-3 sm:w-5 sm:h-5" />
-                          <span className="hidden sm:inline">
-                            {openFormFor === student.studentId
-                              ? "Cancel"
-                              : "Take Payment"}
-                          </span>
-                          <span className="sm:hidden">
-                            {openFormFor === student.studentId
-                              ? "Cancel"
-                              : "Pay"}
-                          </span>
-                        </Button>
-                        <Link
-                          to={`/payment/${student.id}`}
-                          className="flex-1 sm:flex-none min-w-fit"
-                        >
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            className="w-full bg-green-600 hover:bg-green-500 text-white text-xs sm:text-sm"
-                          >
-                            <Eye className="w-3 h-3 sm:w-5 sm:h-5" />
-                            <span className="hidden sm:inline ml-1">View</span>
-                          </Button>
-                        </Link>
-                      </div>
-                    </TableCell>
-                  </TableRow>
+                          )}
+                        </TableCell>
+                        <TableCell className="py-3 px-4">
+                          <div className="flex items-center gap-2 justify-end">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="bg-green-600 hover:bg-green-500 text-white text-xs py-1 px-2 h-auto whitespace-nowrap"
+                              onClick={() => {
+                                form.setValue("studentId", student.id);
+                                form.setValue("phone", student.phone);
+                                form.setValue("firstName", student.firstName);
+                                setValidationErrors({});
+                                setSelectedMonths([]);
+                                setOpenFormFor((prev) =>
+                                  prev === student.studentId
+                                    ? null
+                                    : student.studentId,
+                                );
+                              }}
+                            >
+                              <DollarSign className="w-4 h-4" />
+                              <span className="ml-1">
+                                {openFormFor === student.studentId
+                                  ? "Cancel"
+                                  : "Take Payment"}
+                              </span>
+                            </Button>
+                            <Link to={`/payment/${student.id}`}>
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="bg-green-600 hover:bg-green-500 text-white text-xs py-1 px-2 h-auto whitespace-nowrap"
+                              >
+                                <Eye className="w-4 h-4" />
+                                <span className="ml-1">View</span>
+                              </Button>
+                            </Link>
+                          </div>
+                        </TableCell>
+                      </TableRow>
 
-                  {/* ✅ Responsive Collapsible Form Row */}
-                  {openFormFor === student.studentId && (
-                    <TableRow>
-                      <TableCell colSpan={7} className="p-2 sm:p-4">
+                      {/* Desktop Form Row */}
+                      {openFormFor === student.studentId && (
+                        <TableRow>
+                          <TableCell colSpan={7} className="p-4">
                         <Form {...form}>
                           <form
                             onSubmit={form.handleSubmit((data) =>
@@ -630,35 +603,35 @@ const MonthlyPayment = () => {
                             {/* Payment Breakdown Section */}
                             {selectedMonths.length > 0 &&
                               form.watch("amount") && (
-                                <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-md">
-                                  <h4 className="font-semibold text-sm text-blue-900 mb-3">
+                                <div className="mb-4 p-2 sm:p-3 bg-blue-50 border border-blue-200 rounded-md">
+                                  <h4 className="font-semibold text-xs sm:text-sm text-blue-900 mb-3">
                                     Payment Breakdown
                                   </h4>
-                                  <div className="grid grid-cols-3 gap-2 mb-4 text-sm">
-                                    <div>
+                                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-3 sm:mb-4 text-xs sm:text-sm">
+                                    <div className="bg-white p-2 rounded border border-blue-100">
                                       <p className="text-gray-600 text-xs">
                                         Total Amount
                                       </p>
-                                      <p className="font-bold text-blue-900">
+                                      <p className="font-bold text-blue-900 text-sm">
                                         {Number(form.watch("amount")).toFixed(
                                           2,
                                         )}
                                         TK
                                       </p>
                                     </div>
-                                    <div>
+                                    <div className="bg-white p-2 rounded border border-blue-100">
                                       <p className="text-gray-600 text-xs">
                                         Months Selected
                                       </p>
-                                      <p className="font-bold text-blue-900">
+                                      <p className="font-bold text-blue-900 text-sm">
                                         {selectedMonths.length}
                                       </p>
                                     </div>
-                                    <div>
+                                    <div className="bg-white p-2 rounded border border-blue-100">
                                       <p className="text-gray-600 text-xs">
                                         Amount per Month
                                       </p>
-                                      <p className="font-bold text-blue-900">
+                                      <p className="font-bold text-blue-900 text-sm">
                                         {(
                                           Number(form.watch("amount")) /
                                           selectedMonths.length
@@ -674,12 +647,12 @@ const MonthlyPayment = () => {
                                     {selectedMonths.map((month) => (
                                       <div
                                         key={month}
-                                        className="flex justify-between items-center p-2 bg-white rounded border border-blue-100"
+                                        className="flex justify-between items-center p-2 bg-white rounded border border-blue-100 text-xs sm:text-sm"
                                       >
-                                        <span className="text-gray-700">
+                                        <span className="text-gray-700 truncate">
                                           {month}
                                         </span>
-                                        <span className="font-semibold text-blue-900">
+                                        <span className="font-semibold text-blue-900 flex-shrink-0 ml-2">
                                           {(
                                             Number(form.watch("amount")) /
                                             selectedMonths.length
@@ -709,7 +682,301 @@ const MonthlyPayment = () => {
               ))}
             </TableBody>
           </Table>
-        </div>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className="sm:hidden space-y-3">
+            {filteredStudents?.map((student: any) => (
+              <div
+                key={student.id}
+                className={`border rounded-lg p-4 ${
+                  focusStudentId === student.id
+                    ? "bg-amber-50 border-2 border-amber-600"
+                    : "bg-white border-slate-200"
+                }`}
+              >
+                <div className="space-y-3">
+                  {/* Student Info */}
+                  <div className="flex items-center gap-3">
+                    <img
+                      src={student?.image || studentImage}
+                      alt={`${student?.firstName ?? ""} ${student?.lastName ?? ""}`}
+                      className="size-12 rounded-md object-cover flex-shrink-0"
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="font-semibold text-sm truncate">
+                        {student.firstName} {student.lastName}
+                      </div>
+                      <div className="text-xs text-gray-500 mt-1">{student.studentId}</div>
+                      <div className="text-xs text-gray-500">{student.phone}</div>
+                      {student.className && (
+                        <div className="text-xs text-gray-500">{student.className}</div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Status */}
+                  <div className="flex items-center justify-between pt-2 border-t">
+                    <span className="text-xs font-medium text-gray-600">Status:</span>
+                    <div>
+                      {filterMonth ? (
+                        (() => {
+                          const hasPaidForMonth = student?.Payment?.some(
+                            (payment: any) => payment.month === filterMonth,
+                          );
+                          return hasPaidForMonth ? (
+                            <Badge className="bg-green-100 text-green-800 hover:bg-green-200 flex items-center gap-1 text-xs">
+                              <Check className="w-3 h-3" />
+                              Paid
+                            </Badge>
+                          ) : (
+                            <Badge className="bg-red-100 text-red-800 hover:bg-red-200 flex items-center gap-1 text-xs">
+                              <X className="w-3 h-3" />
+                              Not Paid
+                            </Badge>
+                          );
+                        })()
+                      ) : (
+                        <Badge className="bg-gray-100 text-gray-800 hover:bg-gray-200 text-xs">
+                          N/A
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-2 pt-2 border-t">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex-1 bg-green-600 hover:bg-green-500 text-white text-xs py-2 h-auto"
+                      onClick={() => {
+                        form.setValue("studentId", student.id);
+                        form.setValue("phone", student.phone);
+                        form.setValue("firstName", student.firstName);
+                        setValidationErrors({});
+                        setSelectedMonths([]);
+                        setOpenFormFor((prev) =>
+                          prev === student.studentId
+                            ? null
+                            : student.studentId,
+                        );
+                      }}
+                    >
+                      <DollarSign className="w-4 h-4" />
+                      <span className="ml-1">
+                        {openFormFor === student.studentId
+                          ? "Cancel"
+                          : "Pay"}
+                      </span>
+                    </Button>
+                    <Link to={`/payment/${student.id}`} className="flex-1">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full bg-green-600 hover:bg-green-500 text-white text-xs py-2 h-auto"
+                      >
+                        <Eye className="w-4 h-4" />
+                        <span className="ml-1">View</span>
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+
+                {/* Mobile Form */}
+                {openFormFor === student.studentId && (
+                  <div className="mt-4 pt-4 border-t">
+                    <Form {...form}>
+                      <form
+                        onSubmit={form.handleSubmit((data) =>
+                          onSubmit(data, student.Payment || []),
+                        )}
+                        className="space-y-3"
+                      >
+                        <SelectFieldWrapper
+                          name="title"
+                          label="Payment Title"
+                          required={true}
+                          options={[
+                            { value: "Monthly", name: "Monthly" },
+                            { value: "ModelTest", name: "Model Test" },
+                            { value: "Others", name: "Other" },
+                          ]}
+                          control={form.control}
+                        />
+
+                        {form.watch("title") === "Monthly" && (
+                          <div>
+                            <SelectFieldWrapper
+                              name="tmpMonth"
+                              label="Add Month"
+                              required={form.watch("title") === "Monthly"}
+                              options={getMonthOptions(student).filter(
+                                (opt) => {
+                                  if (selectedMonths.includes(opt.value))
+                                    return false;
+                                  const hasPaid = (
+                                    student?.Payment || []
+                                  ).some(
+                                    (p: any) =>
+                                      p.month === opt.value &&
+                                      Number(p.amount) > 0,
+                                  );
+                                  if (hasPaid) return false;
+                                  return true;
+                                },
+                              )}
+                              control={form.control}
+                              onChange={(val: string) => {
+                                if (!val) return;
+                                setSelectedMonths((prev) =>
+                                  prev.includes(val)
+                                    ? prev
+                                    : [...prev, val],
+                                );
+                                form.setValue("tmpMonth", "");
+                              }}
+                            />
+
+                            <div className="mt-2 flex flex-wrap gap-2">
+                              {selectedMonths.map((m) => (
+                                <Badge
+                                  key={m}
+                                  className="flex items-center gap-2 text-white bg-orange-600 hover:bg-orange-600/80 px-2 py-1 rounded-md"
+                                >
+                                  <span className="font-medium text-xs">{m}</span>
+                                  <button
+                                    type="button"
+                                    onClick={() =>
+                                      setSelectedMonths((prev) =>
+                                        prev.filter((x) => x !== m),
+                                      )
+                                    }
+                                    className="ml-1 inline-flex items-center justify-center h-4 w-4 rounded-md bg-white text-orange-600 hover:bg-orange-600 hover:text-white shadow-sm transition"
+                                    aria-label={`Remove ${m}`}
+                                    title={`Remove ${m}`}
+                                  >
+                                    <X className="w-4 h-4" />
+                                  </button>
+                                </Badge>
+                              ))}
+                            </div>
+                            {validationErrors.months && (
+                              <p className="text-red-600 text-xs mt-2">
+                                {validationErrors.months}
+                              </p>
+                            )}
+                          </div>
+                        )}
+
+                        <FormFieldWrapper
+                          name="amount"
+                          label="Amount"
+                          required={true}
+                          placeholder="Enter amount"
+                          type="number"
+                        />
+
+                        {validationErrors.amount && (
+                          <p className="text-red-600 text-xs">
+                            {validationErrors.amount}
+                          </p>
+                        )}
+
+                        {form.watch("title") === "Others" && (
+                          <div>
+                            <label className="block text-xs font-medium text-gray-700 mb-1" htmlFor="customMessage">
+                              Custom Message <span className="text-red-600">*</span>
+                            </label>
+                            <input
+                              type="text"
+                              name="customMessage"
+                              aria-label="Custom Message"
+                              className="w-full p-2 border rounded text-sm"
+                              placeholder="Enter your custom message"
+                              value={customMessage}
+                              onChange={(e) =>
+                                setCustomMessage(e.target.value)
+                              }
+                            />
+                          </div>
+                        )}
+
+                        {selectedMonths.length > 0 &&
+                          form.watch("amount") && (
+                            <div className="p-2 bg-blue-50 border border-blue-200 rounded-md">
+                              <h4 className="font-semibold text-xs text-blue-900 mb-2">
+                                Payment Breakdown
+                              </h4>
+                              <div className="grid grid-cols-1 gap-2 mb-2 text-xs">
+                                <div className="bg-white p-2 rounded border border-blue-100">
+                                  <p className="text-gray-600 text-xs">
+                                    Total Amount
+                                  </p>
+                                  <p className="font-bold text-blue-900">
+                                    {Number(form.watch("amount")).toFixed(2)} TK
+                                  </p>
+                                </div>
+                                <div className="bg-white p-2 rounded border border-blue-100">
+                                  <p className="text-gray-600 text-xs">
+                                    Months Selected
+                                  </p>
+                                  <p className="font-bold text-blue-900">
+                                    {selectedMonths.length}
+                                  </p>
+                                </div>
+                                <div className="bg-white p-2 rounded border border-blue-100">
+                                  <p className="text-gray-600 text-xs">
+                                    Amount per Month
+                                  </p>
+                                  <p className="font-bold text-blue-900">
+                                    {(
+                                      Number(form.watch("amount")) /
+                                      selectedMonths.length
+                                    ).toFixed(2)} TK
+                                  </p>
+                                </div>
+                              </div>
+                              <p className="text-xs text-gray-600 mb-2">
+                                Distribution:
+                              </p>
+                              <div className="space-y-1 text-xs">
+                                {selectedMonths.map((month) => (
+                                  <div
+                                    key={month}
+                                    className="flex justify-between items-center p-2 bg-white rounded border border-blue-100"
+                                  >
+                                    <span className="text-gray-700">
+                                      {month}
+                                    </span>
+                                    <span className="font-semibold text-blue-900">
+                                      {(
+                                        Number(form.watch("amount")) /
+                                        selectedMonths.length
+                                      ).toFixed(2)} TK
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+
+                        <Button
+                          variant="primaryGradient"
+                          type="submit"
+                          className="w-full bg-primary hover:bg-cyan-800 text-white flex items-center justify-center gap-2 py-2 px-3 rounded-md transition text-sm"
+                        >
+                          <Plus className="w-4 h-4" />
+                          <span>Submit Payment</span>
+                        </Button>
+                      </form>
+                    </Form>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </>
       ) : (
         <p className="text-center text-muted-foreground mt-10 text-sm sm:text-base">
           No data found
