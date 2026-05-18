@@ -454,10 +454,10 @@ const MonthlyPayment = () => {
                               }}
                             >
                               <DollarSign className="w-4 h-4" />
-                              <span className="ml-1">
+                              <span className="ml-0">
                                 {openFormFor === student.studentId
                                   ? "Cancel"
-                                  : "Take Payment"}
+                                  : "Payment"}
                               </span>
                             </Button>
                             <Link to={`/payment/${student.id}`}>
@@ -467,7 +467,7 @@ const MonthlyPayment = () => {
                                 className="bg-green-600 hover:bg-green-500 text-white text-xs py-1 px-2 h-auto whitespace-nowrap"
                               >
                                 <Eye className="w-4 h-4" />
-                                <span className="ml-1">View</span>
+                                <span className="ml-0">View</span>
                               </Button>
                             </Link>
                           </div>
