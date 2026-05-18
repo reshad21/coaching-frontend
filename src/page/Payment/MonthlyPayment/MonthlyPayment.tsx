@@ -359,9 +359,10 @@ const MonthlyPayment = () => {
       ) : filteredStudents?.length > 0 ? (
         <>
           {/* Desktop Table View */}
-          <div className="hidden sm:block w-full border rounded-lg overflow-hidden bg-white">
-            <Table className="w-full border-collapse">
-              <TableHeader>
+          <div className="hidden sm:block w-full border rounded-lg bg-white overflow-hidden">
+            <div className="max-h-[75vh] overflow-y-auto overflow-x-auto">
+              <Table className="w-full border-collapse">
+                <TableHeader>
                 <TableRow className="bg-slate-100 border-b">
                   <TableHead className="hidden sm:table-cell text-xs font-semibold py-3 px-4 w-12 text-left">#.</TableHead>
                   <TableHead className="text-xs font-semibold py-3 px-4 text-left min-w-max">Full Name</TableHead>
@@ -682,6 +683,7 @@ const MonthlyPayment = () => {
               ))}
             </TableBody>
           </Table>
+            </div>
           </div>
 
           {/* Mobile Card View */}
