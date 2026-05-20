@@ -125,6 +125,26 @@ const MonthlyPayment = () => {
   const previousMonth =
     monthNames[currentMonthIndex === 0 ? 11 : currentMonthIndex - 1];
 
+  const getPaymentCreatedMonth = (payment: any) => {
+    if (!payment?.createdAt) {
+      return null;
+    }
+
+    return new Date(payment.createdAt).toLocaleString("default", {
+      month: "long",
+    });
+  };
+
+  const hasModelTestPaidThisMonth = (studentPayments: any[] = []) =>
+    studentPayments.some((payment: any) => {
+      if (payment.title !== "ModelTest") {
+        return false;
+      }
+
+      const paymentMonth = getPaymentCreatedMonth(payment);
+      return paymentMonth === currentMonth;
+    });
+
   // Helper function to generate month options based on student payment history
   const getMonthOptions = (student: any) => {
     const studentPayments = student?.Payment || [];
@@ -184,6 +204,11 @@ const MonthlyPayment = () => {
         toast.error(`Payment already taken for: ${alreadyPaid.join(", ")}`);
         return;
       }
+    }
+
+    if (data.title === "ModelTest" && hasModelTestPaidThisMonth(studentPayments)) {
+      toast.error(`Model Test payment has already been taken for ${currentMonth}`);
+      return;
     }
 
     // Calculate average amount per month
