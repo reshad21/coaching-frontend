@@ -50,10 +50,23 @@ const PaymentStatus = () => {
   const allStudents = useMemo(() => students?.data ?? [], [students?.data])
 
   // Strict: only a ModelTest payment with exactly this month counts as paid
+  // For ModelTest payments (which have month: null), check the createdAt date
   // If no month selected, check against current month
   const hasModelTestForMonth = (student: any, month: string): boolean =>
     (student?.Payment || []).some(
-      (p: any) => p.title === "ModelTest" && p.month === month
+      (p: any) => {
+        if (p.title !== "ModelTest") return false
+        
+        // For ModelTest payments, check if payment was made in the target month
+        if (p.month === null && p.createdAt) {
+          const paymentDate = new Date(p.createdAt)
+          const paymentMonth = paymentDate.toLocaleString("default", { month: "long" })
+          return paymentMonth === month
+        }
+        
+        // Fallback to month field check for other cases
+        return p.month === month
+      }
     )
 
   const activeMonth = selectedMonth || currentMonth

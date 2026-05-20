@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import type { Payment } from "@/types/payment"
 import { CalendarIcon, DollarSign, SquarePen } from "lucide-react"
+import { formatPaymentMonth } from "@/utils/formatPaymentMonth"
 
 interface ModelTestPaymentsProps {
   modelTestPayments: Payment[]
@@ -64,7 +65,7 @@ export function ModelTestPayments({ modelTestPayments, onEditPayment }: ModelTes
 
               <div className="flex items-center gap-1.5 text-xs text-slate-700">
                 <CalendarIcon className="h-3 w-3 text-blue-400 shrink-0" />
-                <span>
+                <span title={`Month: ${formatPaymentMonth(payment.month, payment.title)}`}>
                   {new Date(payment.createdAt).toLocaleString("en-US", {
                     month: "short",
                     day: "numeric",

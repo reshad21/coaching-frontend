@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { CalendarIcon, DollarSign } from "lucide-react"
 import type { EditPaymentModalProps } from "@/types/payment"
+import { formatPaymentMonth } from "@/utils/formatPaymentMonth"
 
 export function PaymentEditModal({ isOpen, onClose, month, payment, onSave }: EditPaymentModalProps) {
   const [amount, setAmount] = useState("")
@@ -53,6 +54,9 @@ export function PaymentEditModal({ isOpen, onClose, month, payment, onSave }: Ed
     onClose()
   }
 
+  // Format the month display, handling ModelTest/Other cases
+  const displayMonth = formatPaymentMonth(payment?.month, payment?.title) === "N/A" ? month : formatPaymentMonth(payment?.month, payment?.title)
+
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-[425px]">
@@ -62,7 +66,7 @@ export function PaymentEditModal({ isOpen, onClose, month, payment, onSave }: Ed
             {payment ? "Edit Payment" : "Add Payment"}
           </DialogTitle>
           <DialogDescription>
-            {payment ? `Update the payment for ${month}` : `Add a new payment for ${month}`}
+            {payment ? `Update the payment for ${displayMonth}` : `Add a new payment for ${displayMonth}`}
           </DialogDescription>
         </DialogHeader>
 
@@ -73,7 +77,7 @@ export function PaymentEditModal({ isOpen, onClose, month, payment, onSave }: Ed
             </Label>
             <div className="col-span-3 flex items-center gap-2 px-3 py-2 bg-muted rounded-md">
               <CalendarIcon className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm font-medium">{month}</span>
+              <span className="text-sm font-medium">{displayMonth}</span>
             </div>
           </div>
 

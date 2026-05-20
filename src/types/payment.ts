@@ -1,6 +1,6 @@
 export type Payment = {
   id: string
-  month: string
+  month: string | null
   amount: number
   createdAt: string
   title?: string
