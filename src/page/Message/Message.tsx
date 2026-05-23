@@ -12,6 +12,7 @@ import BatchMessage from "./BatchMessage/BatchMessage"
 import ClassMessage from "./ClassMessage/ClassMessage"
 import Shift from "./Shift/Shift"
 import All from "./All/All"
+import FeeReminderDraft from "./FeeReminderDraft/FeeReminderDraft"
 
 interface TabItem {
   value: string
@@ -47,6 +48,12 @@ const Message = () => {
       label: "All Students",
       shortLabel: "All",
       component: <All />,
+    },
+    {
+      value: "fee-reminder",
+      label: "Fee Reminder Draft",
+      shortLabel: "Fee Draft",
+      component: <FeeReminderDraft />,
     },
   ]
 
@@ -115,7 +122,7 @@ const Message = () => {
 
                 {/* ============ DESKTOP VIEW (>= 1024px) ============ */}
                 <div className="hidden lg:block mb-6">
-                  <TabsList className="grid w-full grid-cols-4 gap-2 bg-muted/40 p-1.5 rounded-lg">
+                    <TabsList className="grid w-full grid-cols-5 gap-2 bg-muted/40 p-1.5 rounded-lg">
                     {tabs.map((tab) => (
                       <TabsTrigger
                         key={tab.value}

@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 // import counterReducer from '../features/counter/counterSlice'
 import authReducer from '../redux/features/authSlice/authSlice'
+import feeReminderReducer from '../redux/features/feeReminderSlice/feeReminderSlice'
 import {FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE} from 'redux-persist'
 import storage from 'redux-persist/lib/storage';
 import { baseApi } from './api/baseApi';
@@ -18,6 +19,7 @@ export const store = configureStore({
   reducer: {
     [baseApi.reducerPath]: baseApi.reducer,
     auth:persisterAuthReducer,
+    feeReminder: feeReminderReducer,
   },
   middleware:getDefaultMiddleware => getDefaultMiddleware({
     serializableCheck: {
