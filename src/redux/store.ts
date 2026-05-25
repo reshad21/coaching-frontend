@@ -1,27 +1,25 @@
-import { configureStore } from '@reduxjs/toolkit'
+import { configureStore } from '@reduxjs/toolkit';
 // import counterReducer from '../features/counter/counterSlice'
-import authReducer from '../redux/features/authSlice/authSlice'
-import feeReminderReducer from '../redux/features/feeReminderSlice/feeReminderSlice'
-import {FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE} from 'redux-persist'
+import { FLUSH, PAUSE, PERSIST, persistReducer, persistStore, PURGE, REGISTER, REHYDRATE } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
+import authReducer from '../redux/features/authSlice/authSlice';
 import { baseApi } from './api/baseApi';
 
 
 
 const persistConfig = {
-  key:"userInfo",
+  key: "userInfo",
   storage
 }
 
-const persisterAuthReducer = persistReducer(persistConfig,authReducer);
+const persisterAuthReducer = persistReducer(persistConfig, authReducer);
 
 export const store = configureStore({
   reducer: {
     [baseApi.reducerPath]: baseApi.reducer,
-    auth:persisterAuthReducer,
-    feeReminder: feeReminderReducer,
+    auth: persisterAuthReducer,
   },
-  middleware:getDefaultMiddleware => getDefaultMiddleware({
+  middleware: getDefaultMiddleware => getDefaultMiddleware({
     serializableCheck: {
       ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
     },

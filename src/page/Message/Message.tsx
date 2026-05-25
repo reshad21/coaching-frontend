@@ -1,5 +1,3 @@
-import { useState } from "react"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card } from "@/components/ui/card"
 import {
   Select,
@@ -8,11 +6,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useState } from "react"
+import All from "./All/All"
 import BatchMessage from "./BatchMessage/BatchMessage"
 import ClassMessage from "./ClassMessage/ClassMessage"
 import Shift from "./Shift/Shift"
-import All from "./All/All"
-import FeeReminderDraft from "./FeeReminderDraft/FeeReminderDraft"
 
 interface TabItem {
   value: string
@@ -49,12 +48,7 @@ const Message = () => {
       shortLabel: "All",
       component: <All />,
     },
-    {
-      value: "fee-reminder",
-      label: "Fee Reminder Draft",
-      shortLabel: "Fee Draft",
-      component: <FeeReminderDraft />,
-    },
+    // Fee reminder AI draft feature removed
   ]
 
   return (
@@ -105,13 +99,13 @@ const Message = () => {
                         <TabsTrigger
                           key={tab.value}
                           value={tab.value}
-                           className="py-1.5 sm:py-2 px-2 sm:px-3 text-2xs sm:text-xs font-medium rounded-md whitespace-nowrap transition-all duration-200 hover:bg-muted/70 active:scale-95 bg-background/90 data-[state=active]:text-white"
-                           style={{
-                             background: activeTab === tab.value ? "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)" : undefined,
-                             color: activeTab === tab.value ? "white" : "inherit",
-                             fontWeight: activeTab === tab.value ? "600" : "500",
-                             boxShadow: activeTab === tab.value ? "0 2px 8px rgba(6, 182, 212, 0.2)" : "none",
-                           }}
+                          className="py-1.5 sm:py-2 px-2 sm:px-3 text-2xs sm:text-xs font-medium rounded-md whitespace-nowrap transition-all duration-200 hover:bg-muted/70 active:scale-95 bg-background/90 data-[state=active]:text-white"
+                          style={{
+                            background: activeTab === tab.value ? "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)" : undefined,
+                            color: activeTab === tab.value ? "white" : "inherit",
+                            fontWeight: activeTab === tab.value ? "600" : "500",
+                            boxShadow: activeTab === tab.value ? "0 2px 8px rgba(6, 182, 212, 0.2)" : "none",
+                          }}
                         >
                           {tab.shortLabel}
                         </TabsTrigger>
@@ -122,18 +116,18 @@ const Message = () => {
 
                 {/* ============ DESKTOP VIEW (>= 1024px) ============ */}
                 <div className="hidden lg:block mb-6">
-                    <TabsList className="grid w-full grid-cols-5 gap-2 bg-muted/40 p-1.5 rounded-lg">
+                  <TabsList className="grid w-full grid-cols-5 gap-2 bg-muted/40 p-1.5 rounded-lg">
                     {tabs.map((tab) => (
                       <TabsTrigger
                         key={tab.value}
                         value={tab.value}
-                         className="py-2.5 px-4 text-sm font-medium rounded-md transition-all duration-200 hover:bg-muted/70 active:scale-95 bg-background/90 data-[state=active]:text-white"
-                         style={{
-                           background: activeTab === tab.value ? "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)" : undefined,
-                           color: activeTab === tab.value ? "white" : "inherit",
-                           fontWeight: activeTab === tab.value ? "600" : "500",
-                           boxShadow: activeTab === tab.value ? "0 4px 12px rgba(6, 182, 212, 0.3)" : "none",
-                         }}
+                        className="py-2.5 px-4 text-sm font-medium rounded-md transition-all duration-200 hover:bg-muted/70 active:scale-95 bg-background/90 data-[state=active]:text-white"
+                        style={{
+                          background: activeTab === tab.value ? "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)" : undefined,
+                          color: activeTab === tab.value ? "white" : "inherit",
+                          fontWeight: activeTab === tab.value ? "600" : "500",
+                          boxShadow: activeTab === tab.value ? "0 4px 12px rgba(6, 182, 212, 0.3)" : "none",
+                        }}
                       >
                         {tab.label}
                       </TabsTrigger>
