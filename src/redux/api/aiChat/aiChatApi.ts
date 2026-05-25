@@ -13,12 +13,12 @@ export interface ChatRequest {
 }
 
 export interface ChatResponse {
-    success?: boolean;
-    message?: string;
+    success: boolean;
+    message: string;
     error?: string;
     data?: {
-        reply?: string;
-        history?: ChatHistoryMessage[];
+        reply: string;
+        history: ChatHistoryMessage[];
     };
 }
 
