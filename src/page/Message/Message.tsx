@@ -10,6 +10,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useState } from "react"
 import All from "./All/All"
 import BatchMessage from "./BatchMessage/BatchMessage"
+import Chatbot from "./Chatbot/Chatbot"
 import ClassMessage from "./ClassMessage/ClassMessage"
 import Shift from "./Shift/Shift"
 
@@ -48,7 +49,12 @@ const Message = () => {
       shortLabel: "All",
       component: <All />,
     },
-    // Fee reminder AI draft feature removed
+    {
+      value: "chatbot",
+      label: "AI Chatbot",
+      shortLabel: "Chatbot",
+      component: <Chatbot />,
+    },
   ]
 
   return (
@@ -116,7 +122,10 @@ const Message = () => {
 
                 {/* ============ DESKTOP VIEW (>= 1024px) ============ */}
                 <div className="hidden lg:block mb-6">
-                  <TabsList className="grid w-full grid-cols-5 gap-2 bg-muted/40 p-1.5 rounded-lg">
+                  <TabsList
+                    className="grid w-full gap-2 bg-muted/40 p-1.5 rounded-lg"
+                    style={{ gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))` }}
+                  >
                     {tabs.map((tab) => (
                       <TabsTrigger
                         key={tab.value}
