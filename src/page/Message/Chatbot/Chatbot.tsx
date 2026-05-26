@@ -1,5 +1,3 @@
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
 import {
@@ -14,7 +12,6 @@ import {
     Sparkles,
     Trash2,
     User,
-    ChevronDown,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -42,6 +39,10 @@ const quickPrompts = [
     "মোট কতজন student আছে?",
 ];
 
+// App-এর brand color — cyan gradient
+// সব জায়গায় এই color ব্যবহার করা হয়েছে যাতে consistent থাকে
+const BRAND_GRADIENT = "linear-gradient(135deg, #06b6d4 0%, #0891b2 100%)";
+const BRAND_COLOR_FROM = "#06b6d4"; // cyan-500
 // ─────────────────────────────────────────────────────────────
 // HELPERS
 // ─────────────────────────────────────────────────────────────
@@ -61,7 +62,6 @@ const readStoredMessages = (): ChatMessage[] => {
 
 // UI → Gemini backend format
 // FIX: শুধু আগের messages পাঠানো হয়, নতুন user message বাদ।
-// duplicate message prevent করে।
 const toHistory = (messages: ChatMessage[]): ChatHistoryMessage[] =>
     messages.map((m) => ({
         role: m.role,
@@ -93,8 +93,6 @@ const Chatbot = () => {
     const [messages, setMessages] = useState<ChatMessage[]>(() => readStoredMessages());
     const [input, setInput] = useState("");
     const [error, setError] = useState<string | null>(null);
-    const [showScrollBtn, setShowScrollBtn] = useState(false);
-
     const [sendChatMessage, { isLoading }] = useSendChatMessageMutation();
 
     const bottomRef = useRef<HTMLDivElement | null>(null);
@@ -105,7 +103,7 @@ const Chatbot = () => {
         [input, isLoading]
     );
 
-    // FIX: শেষ ৫০টা message localStorage-এ রাখো
+    // শেষ ৫০টা message localStorage-এ রাখো
     useEffect(() => {
         const trimmed = messages.slice(-MAX_STORED_MESSAGES);
         localStorage.setItem(STORAGE_KEY, JSON.stringify(trimmed));
@@ -116,7 +114,7 @@ const Chatbot = () => {
         bottomRef.current?.scrollIntoView({ behavior: "smooth" });
     }, [messages.length, isLoading]);
 
-    // Textarea auto-resize — content অনুযায়ী height বাড়বে
+    // Textarea auto-resize
     useEffect(() => {
         const el = textareaRef.current;
         if (!el) return;
@@ -127,7 +125,6 @@ const Chatbot = () => {
     // ─────────────────────────────────────────────────────────
     // SEND HANDLER
     // FIX: history-তে নতুন user message নেই — duplicate বাদ।
-    // overrideMessage দিলে quick prompt সরাসরি send হয়।
     // ─────────────────────────────────────────────────────────
     const handleSend = async (overrideMessage?: string) => {
         const message = (overrideMessage ?? input).trim();
@@ -142,8 +139,6 @@ const Chatbot = () => {
             createdAt: Date.now(),
         };
 
-        // FIX: messages (পুরনো) থেকে history তৈরি করো
-        // userMsg এখনো state-এ নেই তাই duplicate হবে না
         const historyToSend = toHistory(messages);
 
         setMessages((prev) => [...prev, userMsg]);
@@ -175,10 +170,7 @@ const Chatbot = () => {
         }
     };
 
-    // Quick prompt — সরাসরি send করো, শুধু input-এ না বসিয়ে
-    const handleQuickPrompt = (prompt: string) => {
-        void handleSend(prompt);
-    };
+    const handleQuickPrompt = (prompt: string) => void handleSend(prompt);
 
     const handleClear = () => {
         setMessages([]);
@@ -196,64 +188,66 @@ const Chatbot = () => {
         }
     };
 
-    const scrollToBottom = () => {
-        bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-    };
-
     // ─────────────────────────────────────────────────────────
-    // RENDER — Single Chatbox (একটাই box)
+    // RENDER
     // ─────────────────────────────────────────────────────────
     return (
-        <div className="mx-auto flex h-[calc(100vh-8rem)] max-h-[800px] min-h-[500px] w-full max-w-3xl flex-col overflow-hidden rounded-2xl border bg-background shadow-xl">
+        <div className="mx-auto flex h-[calc(100vh-8rem)] max-h-[800px] min-h-[500px] w-full max-w-3xl flex-col overflow-hidden rounded-2xl shadow-2xl"
+            style={{ border: `1.5px solid ${BRAND_COLOR_FROM}33` }}
+        >
 
-            {/* ══ HEADER ══════════════════════════════════════ */}
-            <div className="flex shrink-0 items-center justify-between border-b bg-muted/40 px-5 py-3">
+            {/* ══ HEADER — Brand gradient background ══════════ */}
+            <div
+                className="shrink-0 px-5 py-3.5"
+                style={{ background: BRAND_GRADIENT }}
+            >
+                <div className="flex items-center justify-between">
 
-                <div className="flex items-center gap-3">
-                    {/* AI Avatar — green dot = online */}
-                    <div className="relative">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary/10">
-                            <Bot className="h-5 w-5 text-primary" />
+                    <div className="flex items-center gap-3">
+                        {/* AI Avatar */}
+                        <div className="relative">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm ring-2 ring-white/30">
+                                <Bot className="h-5 w-5 text-white" />
+                            </div>
+                            {/* Online dot */}
+                            <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-white bg-green-400" />
                         </div>
-                        <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-background bg-green-500" />
+
+                        <div>
+                            <p className="text-sm font-semibold leading-none text-white">
+                                TalkToAi
+                            </p>
+                            <p className="mt-0.5 text-xs text-white/70">
+                                {isLoading ? "লিখছে..." : "● সক্রিয়"}
+                            </p>
+                        </div>
                     </div>
 
-                    <div>
-                        <p className="text-sm font-semibold leading-none">Educare AI</p>
-                        <p className="mt-0.5 text-xs text-muted-foreground">
-                            {isLoading ? "লিখছে..." : "সক্রিয়"}
-                        </p>
+                    {/* Message count + Clear */}
+                    <div className="flex items-center gap-3">
+                        {messages.length > 0 && (
+                            <span className="text-xs text-white/60">
+                                {messages.length} টি message
+                            </span>
+                        )}
+                        <button
+                            onClick={handleClear}
+                            className="flex items-center gap-1.5 rounded-lg bg-white/15 px-3 py-1.5 text-xs text-white/90 transition-all hover:bg-white/25 active:scale-95"
+                        >
+                            <Trash2 className="h-3.5 w-3.5" />
+                            Clear
+                        </button>
                     </div>
                 </div>
 
-                {/* Message count + Clear button */}
-                <div className="flex items-center gap-3">
-                    {messages.length > 0 && (
-                        <span className="text-xs text-muted-foreground">
-                            {messages.length} টি message
-                        </span>
-                    )}
-                    <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={handleClear}
-                        className="h-8 gap-1.5 text-xs text-muted-foreground hover:text-destructive"
-                    >
-                        <Trash2 className="h-3.5 w-3.5" />
-                        Clear
-                    </Button>
-                </div>
-            </div>
-
-            {/* ══ QUICK PROMPTS ════════════════════════════════ */}
-            <div className="shrink-0 border-b bg-muted/20 px-4 py-2">
-                <div className="flex flex-wrap gap-2">
+                {/* Quick Prompts — header-এর ভেতরে, gradient-এ */}
+                <div className="mt-3 flex flex-wrap gap-2">
                     {quickPrompts.map((q) => (
                         <button
                             key={q}
                             disabled={isLoading}
                             onClick={() => handleQuickPrompt(q)}
-                            className="flex items-center gap-1.5 rounded-full border bg-background px-3 py-1 text-xs text-muted-foreground shadow-sm transition-all hover:border-primary/40 hover:bg-primary/5 hover:text-primary disabled:cursor-not-allowed disabled:opacity-50"
+                            className="flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs text-white/90 backdrop-blur-sm transition-all hover:bg-white/25 disabled:cursor-not-allowed disabled:opacity-50"
                         >
                             <Sparkles className="h-3 w-3" />
                             {q}
@@ -263,17 +257,23 @@ const Chatbot = () => {
             </div>
 
             {/* ══ MESSAGES AREA ════════════════════════════════ */}
-            <div className="relative min-h-0 flex-1">
-                <ScrollArea className="h-full px-4 py-4">
+            <div className="relative min-h-0 flex-1 bg-background">
+                <ScrollArea className="h-full px-4 py-5">
 
-                    {/* Empty State — কোনো message না থাকলে */}
+                    {/* Empty State */}
                     {messages.length === 0 && !isLoading && (
-                        <div className="flex h-full min-h-[220px] flex-col items-center justify-center gap-3 py-16 text-center">
-                            <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/8 ring-1 ring-primary/15">
-                                <Bot className="h-8 w-8 text-primary/50" />
+                        <div className="flex h-full min-h-[240px] flex-col items-center justify-center gap-4 py-16 text-center">
+                            {/* Gradient icon box */}
+                            <div
+                                className="flex h-16 w-16 items-center justify-center rounded-2xl shadow-lg"
+                                style={{ background: BRAND_GRADIENT }}
+                            >
+                                <Bot className="h-8 w-8 text-white" />
                             </div>
                             <div className="space-y-1">
-                                <p className="text-sm font-medium text-foreground">কথোপকথন শুরু করো</p>
+                                <p className="text-sm font-semibold text-foreground">
+                                    কথোপকথন শুরু করো
+                                </p>
                                 <p className="text-xs text-muted-foreground">
                                     উপরের quick prompts ব্যবহার করো বা নিজে লিখে পাঠাও।
                                 </p>
@@ -295,28 +295,30 @@ const Chatbot = () => {
                                     )}
                                 >
                                     {/* Avatar */}
-                                    <Avatar className="mt-1 h-7 w-7 shrink-0">
-                                        <AvatarFallback className={cn(
-                                            "text-xs",
-                                            isUser
-                                                ? "bg-primary text-primary-foreground"
-                                                : "bg-muted"
-                                        )}>
-                                            {isUser
-                                                ? <User className="h-3.5 w-3.5" />
-                                                : <Bot className="h-3.5 w-3.5" />
-                                            }
-                                        </AvatarFallback>
-                                    </Avatar>
+                                    <div
+                                        className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full"
+                                        style={isUser
+                                            ? { background: BRAND_GRADIENT }
+                                            : { background: "#f1f5f9" }
+                                        }
+                                    >
+                                        {isUser
+                                            ? <User className="h-3.5 w-3.5 text-white" />
+                                            : <Bot className="h-3.5 w-3.5 text-cyan-600" />
+                                        }
+                                    </div>
 
-                                    {/* Message Bubble */}
-                                    <div className={cn(
-                                        "group relative max-w-[75%] min-w-0 rounded-2xl px-4 py-2.5 shadow-sm",
-                                        isUser
-                                            ? "rounded-tr-sm bg-primary text-primary-foreground"
-                                            : "rounded-tl-sm bg-muted text-foreground"
-                                    )}>
-                                        {/* Text */}
+                                    {/* Bubble */}
+                                    <div
+                                        className={cn(
+                                            "group relative max-w-[75%] min-w-0 rounded-2xl px-4 py-2.5 shadow-sm",
+                                            isUser
+                                                ? "rounded-tr-sm text-white"
+                                                : "rounded-tl-sm bg-slate-100 text-foreground dark:bg-muted"
+                                        )}
+                                        style={isUser ? { background: BRAND_GRADIENT } : {}}
+                                    >
+                                        {/* Message text */}
                                         <p className="whitespace-pre-wrap break-words text-sm leading-relaxed">
                                             {m.content}
                                         </p>
@@ -326,12 +328,9 @@ const Chatbot = () => {
                                             "mt-1.5 flex items-center gap-2",
                                             isUser ? "flex-row-reverse" : "flex-row"
                                         )}>
-                                            {/* Time */}
                                             <span className={cn(
                                                 "text-[10px]",
-                                                isUser
-                                                    ? "text-primary-foreground/50"
-                                                    : "text-muted-foreground/60"
+                                                isUser ? "text-white/50" : "text-muted-foreground/60"
                                             )}>
                                                 {new Date(m.createdAt).toLocaleTimeString("bn-BD", {
                                                     hour: "2-digit",
@@ -344,9 +343,7 @@ const Chatbot = () => {
                                                 onClick={() => void handleCopy(m.content)}
                                                 className={cn(
                                                     "flex items-center gap-1 text-[10px] opacity-0 transition-opacity group-hover:opacity-60 hover:!opacity-100",
-                                                    isUser
-                                                        ? "text-primary-foreground"
-                                                        : "text-muted-foreground"
+                                                    isUser ? "text-white" : "text-muted-foreground"
                                                 )}
                                             >
                                                 <Copy className="h-2.5 w-2.5" />
@@ -358,38 +355,29 @@ const Chatbot = () => {
                             );
                         })}
 
-                        {/* Typing Indicator — AI লিখছে */}
+                        {/* Typing Indicator */}
                         {isLoading && (
                             <div className="flex items-end gap-2.5">
-                                <Avatar className="h-7 w-7 shrink-0">
-                                    <AvatarFallback className="bg-muted text-xs">
-                                        <Bot className="h-3.5 w-3.5" />
-                                    </AvatarFallback>
-                                </Avatar>
-                                <div className="rounded-2xl rounded-tl-sm bg-muted px-4 py-3 shadow-sm">
+                                <div
+                                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full"
+                                    style={{ background: "#f1f5f9" }}
+                                >
+                                    <Bot className="h-3.5 w-3.5 text-cyan-600" />
+                                </div>
+                                <div className="rounded-2xl rounded-tl-sm bg-slate-100 px-4 py-3 shadow-sm dark:bg-muted">
                                     <div className="flex items-center gap-1">
-                                        <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground/50 [animation-delay:0ms]" />
-                                        <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground/50 [animation-delay:150ms]" />
-                                        <span className="h-1.5 w-1.5 animate-bounce rounded-full bg-muted-foreground/50 [animation-delay:300ms]" />
+                                        <span className="h-2 w-2 animate-bounce rounded-full bg-cyan-500 [animation-delay:0ms]" />
+                                        <span className="h-2 w-2 animate-bounce rounded-full bg-cyan-500 [animation-delay:150ms]" />
+                                        <span className="h-2 w-2 animate-bounce rounded-full bg-cyan-500 [animation-delay:300ms]" />
                                     </div>
                                 </div>
                             </div>
                         )}
                     </div>
 
-                    {/* Auto scroll anchor */}
                     <div ref={bottomRef} />
                 </ScrollArea>
 
-                {/* Scroll to bottom — user উপরে scroll করলে দেখাবে */}
-                {showScrollBtn && (
-                    <button
-                        onClick={scrollToBottom}
-                        className="absolute bottom-3 right-4 flex h-8 w-8 items-center justify-center rounded-full border bg-background shadow-md transition-all hover:bg-muted"
-                    >
-                        <ChevronDown className="h-4 w-4" />
-                    </button>
-                )}
             </div>
 
             {/* ══ ERROR BANNER ═════════════════════════════════ */}
@@ -402,10 +390,14 @@ const Chatbot = () => {
             {/* ══ INPUT AREA ═══════════════════════════════════ */}
             <div className="shrink-0 border-t bg-background px-4 py-3">
 
-                {/* Input Box */}
-                <div className="flex items-end gap-2 rounded-xl border bg-muted/30 px-3 py-2 transition-all focus-within:border-primary/50 focus-within:bg-background focus-within:shadow-sm">
-
-                    {/* Auto-resize textarea */}
+                {/* Input box — focus করলে cyan border আসবে */}
+                <div
+                    className="flex items-end gap-2 rounded-xl border bg-slate-50 px-3 py-2 transition-all focus-within:bg-background focus-within:shadow-md dark:bg-muted/30"
+                    style={{ borderColor: "#e2e8f0" }}
+                    onFocus={(e) => e.currentTarget.style.borderColor = BRAND_COLOR_FROM}
+                    onBlur={(e) => e.currentTarget.style.borderColor = "#e2e8f0"}
+                >
+                    {/* Auto-resize Textarea */}
                     <textarea
                         ref={textareaRef}
                         value={input}
@@ -422,16 +414,15 @@ const Chatbot = () => {
                         className="max-h-[120px] min-h-[24px] flex-1 resize-none bg-transparent text-sm outline-none placeholder:text-muted-foreground disabled:cursor-not-allowed"
                     />
 
-                    {/* Send Button */}
+                    {/* Send Button — brand gradient */}
                     <button
                         onClick={() => void handleSend()}
                         disabled={!canSend}
-                        className={cn(
-                            "mb-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-all",
-                            canSend
-                                ? "bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 active:scale-95"
-                                : "cursor-not-allowed bg-muted text-muted-foreground"
-                        )}
+                        className="mb-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg transition-all active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
+                        style={canSend
+                            ? { background: BRAND_GRADIENT, color: "white" }
+                            : { background: "#e2e8f0", color: "#94a3b8" }
+                        }
                     >
                         {isLoading
                             ? <Loader2 className="h-4 w-4 animate-spin" />
