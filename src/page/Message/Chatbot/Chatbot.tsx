@@ -138,13 +138,13 @@ const Chatbot = () => {
     };
 
     return (
-        <div className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
+        <div className="grid min-w-0 gap-4 lg:grid-cols-[0.95fr_1.05fr]">
 
             {/* LEFT */}
-            <Card>
+            <Card className="min-w-0 overflow-hidden">
                 <CardHeader>
-                    <div className="flex justify-between">
-                        <div>
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                        <div className="min-w-0">
                             <CardTitle>AI Chatbot</CardTitle>
                             <CardDescription>Ask anything about coaching system</CardDescription>
                         </div>
@@ -156,14 +156,14 @@ const Chatbot = () => {
                     </div>
                 </CardHeader>
 
-                <CardContent className="space-y-4">
+                <CardContent className="min-w-0 space-y-4">
 
-                    <div className="grid sm:grid-cols-2 gap-2">
+                    <div className="grid min-w-0 gap-2 sm:grid-cols-2">
                         {quickPrompts.map((q) => (
                             <Button
                                 key={q}
                                 variant="outline"
-                                className="justify-start"
+                                className="h-auto min-w-0 justify-start whitespace-normal break-words px-3 py-2 text-left"
                                 onClick={() => handleQuickPrompt(q)}
                             >
                                 <Sparkles className="h-4 w-4 mr-2" />
@@ -186,7 +186,7 @@ const Chatbot = () => {
                     />
 
                     <div className="flex gap-3">
-                        <Button onClick={() => void handleSend()} disabled={!canSend}>
+                        <Button onClick={() => void handleSend()} disabled={!canSend} variant="primaryGradient">
                             {isLoading ? (
                                 <Loader2 className="h-4 w-4 animate-spin mr-2" />
                             ) : (
@@ -195,7 +195,7 @@ const Chatbot = () => {
                             Send
                         </Button>
 
-                        <Button variant="outline" onClick={() => setInput("")}>
+                        <Button variant="outline" onClick={() => setInput("")} className="rounded-xl">
                             <RefreshCcw className="h-4 w-4 mr-2" />
                             Reset
                         </Button>
@@ -210,30 +210,27 @@ const Chatbot = () => {
             </Card>
 
             {/* RIGHT */}
-            <Card>
+            <Card className="min-w-0 overflow-hidden">
                 <CardHeader>
                     <CardTitle>Conversation</CardTitle>
                 </CardHeader>
 
-                <CardContent>
-                    <ScrollArea className="h-[560px] pr-3">
+                <CardContent className="min-w-0">
+                    <ScrollArea className="h-[560px] w-full min-w-0 pr-3">
 
                         {messages.map((m) => {
                             const isUser = m.role === "user";
 
                             return (
-                                <div
-                                    key={m.id}
-                                    className={cn("flex gap-3 mb-3", isUser ? "justify-end" : "justify-start")}
-                                >
+                                <div key={m.id} className={cn("mb-3 flex min-w-0 gap-3", isUser ? "justify-end" : "justify-start")}>
                                     {!isUser && (
                                         <Avatar>
                                             <AvatarFallback><Bot /></AvatarFallback>
                                         </Avatar>
                                     )}
 
-                                    <div className="max-w-[80%] bg-muted p-3 rounded-xl">
-                                        <p className="whitespace-pre-wrap">{m.content}</p>
+                                    <div className="min-w-0 max-w-[80%] rounded-xl bg-muted p-3">
+                                        <p className="whitespace-pre-wrap break-words">{m.content}</p>
 
                                         <button
                                             className="text-xs mt-1 flex items-center gap-1"
