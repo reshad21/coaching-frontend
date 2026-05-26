@@ -22,10 +22,10 @@ type ChatMessage = {
 const STORAGE_KEY = "educare-ai-chat-history";
 
 const quickPrompts = [
-    "আজকের unpaid student কারা?",
-    "এই মাসের total collection কত?",
-    "কোন student-এর payment due আছে?",
-    "Latest expense summary দাও",
+    "সব student-এর তালিকা দাও",
+    "কোন ক্লাসে কতজন student আছে?",
+    "Student ID দিয়ে কাউকে খুঁজে দাও",
+    "মোট কতজন student আছে?",
 ];
 
 const createId = () => crypto.randomUUID();
