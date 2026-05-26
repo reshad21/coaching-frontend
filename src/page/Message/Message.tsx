@@ -58,7 +58,7 @@ const Message = () => {
   ]
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background overflow-x-hidden">
       <div className="w-full px-2 py-3 xs:px-3 xs:py-4 sm:px-4 sm:py-6 md:px-6 md:py-8 lg:px-8">
         <div className="max-w-7xl mx-auto">
           {/* Header Section */}
