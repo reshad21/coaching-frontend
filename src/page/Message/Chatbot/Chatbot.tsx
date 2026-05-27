@@ -34,9 +34,10 @@ const MAX_STORED_MESSAGES = 50;
 
 const quickPrompts = [
     "সব student-এর তালিকা দাও",
-    "কোন ক্লাসে কতজন student আছে?",
-    "Student ID দিয়ে কাউকে খুঁজে দাও",
+    "এই মাসে কারা payment করেছে?",
+    "কোন student-এর payment বাকি আছে?",
     "মোট কতজন student আছে?",
+    "Student ID দিয়ে কাউকে খুঁজে দাও",
 ];
 
 // App-এর brand color — cyan gradient
